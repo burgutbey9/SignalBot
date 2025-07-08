@@ -1,557 +1,436 @@
-# -*- coding: utf-8 -*-
 """
-🤖 AI OrderFlow & Signal Bot - Asosiy Konfiguratsiya
-═══════════════════════════════════════════════════════════
-
-Bu fayl barcha bot sozlamalarini boshqaradi:
-- API timeout va rate limitlar
-- Database ulanish parametrlari
-- Risk management sozlamalar
-- Fallback tizimi konfiguratsiyasi
-- Propshot 2x himoya qoidalari
-
-Author: AI OrderFlow Bot
-Version: 1.0
-Language: O'zbekcha
+AI OrderFlow & Signal Bot - Asosiy konfiguratsiya moduli
+Barcha tizim sozlamalari va konfiguratsiyalarni boshqaradi
 """
 
 import os
-import logging
-from typing import Dict, Any, Optional
-from dataclasses import dataclass
-from pathlib import Path
 import json
+from dataclasses import dataclass, field
+from typing import Dict, List, Optional, Any
+from pathlib import Path
+from datetime import datetime, time
+import pytz
 
-# =============================================================================
-# 🛡️ PROPSHOT RISK QOIDALARI (2x HIMOYA TIZIMI)
-# =============================================================================
-
-@dataclass
-class PropshotRiskConfig:
-    """Propshot challenge qoidalari va bizning 2x himoya tizimi"""
-    
-    # Propshot standart qoidalar
-    PROPSHOT_MAX_DAILY_LOSS: float = 0.05  # 5%
-    PROPSHOT_MAX_TOTAL_LOSS: float = 0.10  # 10%
-    PROPSHOT_PROFIT_TARGET: float = 0.10   # 10%
-    PROPSHOT_MIN_TRADING_DAYS: int = 10
-    PROPSHOT_MAX_LOT_SIZE: float = 1.0
-    
-    # Bizning 2x himoya tizimi (Propshot qoidalarining yarmi)
-    OUR_MAX_DAILY_LOSS: float = 0.025       # 2.5% (5% ning yarmi)
-    OUR_MAX_TOTAL_LOSS: float = 0.05        # 5% (10% ning yarmi)
-    OUR_PROFIT_TARGET: float = 0.05         # 5% (ehtiyotkorlik bilan)
-    OUR_MAX_LOT_SIZE: float = 0.5           # 0.5 lot (1.0 ning yarmi)
-    OUR_MAX_RISK_PER_TRADE: float = 0.005   # 0.5% (1% ning yarmi)
-    OUR_MAX_DAILY_TRADES: int = 3           # 3 ta (5 ta emas)
-    
-    # Alert chegaralar
-    DAILY_LOSS_WARNING: float = 0.015       # 1.5% da ogohlantirish
-    TOTAL_LOSS_WARNING: float = 0.03        # 3% da ogohlantirish
-    CONSECUTIVE_LOSSES_LIMIT: int = 3       # Ketma-ket 3 ta loss da to'xtatish
-
-# =============================================================================
-# 📊 API RATE LIMITS VA TIMEOUTS
-# =============================================================================
-
-@dataclass
-class APILimits:
-    """API rate limitlar va timeout sozlamalar"""
-    
-    # 1inch API (asosiy DEX data)
-    ONEINCH_RATE_LIMIT: int = 100          # 100 req/min
-    ONEINCH_TIMEOUT: int = 30              # 30 sekund
-    ONEINCH_RETRY_COUNT: int = 3
-    
-    # Alchemy API (on-chain monitoring)
-    ALCHEMY_RATE_LIMIT: int = 300          # 300 req/sec
-    ALCHEMY_TIMEOUT: int = 15              # 15 sekund
-    ALCHEMY_RETRY_COUNT: int = 3
-    
-    # HuggingFace AI (asosiy sentiment)
-    HUGGINGFACE_RATE_LIMIT: int = 1000     # 1000 req/month
-    HUGGINGFACE_TIMEOUT: int = 60          # 60 sekund
-    HUGGINGFACE_RETRY_COUNT: int = 2
-    
-    # Gemini AI (5 ta key, fallback)
-    GEMINI_RATE_LIMIT: int = 60            # 60 req/min per key
-    GEMINI_TIMEOUT: int = 45               # 45 sekund
-    GEMINI_RETRY_COUNT: int = 2
-    GEMINI_KEYS_COUNT: int = 5
-    
-    # Claude AI (limitli fallback)
-    CLAUDE_RATE_LIMIT: int = 20            # 20 req/min
-    CLAUDE_TIMEOUT: int = 60               # 60 sekund
-    CLAUDE_RETRY_COUNT: int = 1
-    
-    # CCXT (CEX market data)
-    CCXT_TIMEOUT: int = 20                 # 20 sekund
-    CCXT_RETRY_COUNT: int = 3
-    
-    # NewsAPI
-    NEWS_API_TIMEOUT: int = 30             # 30 sekund
-    NEWS_API_RETRY_COUNT: int = 2
-    
-    # Reddit API
-    REDDIT_TIMEOUT: int = 25               # 25 sekund
-    REDDIT_RETRY_COUNT: int = 2
-    
-    # Telegram Bot
-    TELEGRAM_TIMEOUT: int = 30             # 30 sekund
-    TELEGRAM_RETRY_COUNT: int = 5
-
-# =============================================================================
-# 🗄️ DATABASE KONFIGURATSIYA
-# =============================================================================
+# Logger import qilish (keyinroq yaratiladi)
+# from utils.logger import get_logger
+# logger = get_logger(__name__)
 
 @dataclass
 class DatabaseConfig:
-    """Database ulanish va sozlamalar"""
-    
-    # SQLite (development)
-    SQLITE_PATH: str = "data/bot_database.db"
-    SQLITE_TIMEOUT: int = 30
-    
-    # PostgreSQL (production)
-    POSTGRES_HOST: str = os.getenv("DB_HOST", "localhost")
-    POSTGRES_PORT: int = int(os.getenv("DB_PORT", "5432"))
-    POSTGRES_NAME: str = os.getenv("DB_NAME", "orderflow_bot")
-    POSTGRES_USER: str = os.getenv("DB_USER", "postgres")
-    POSTGRES_PASSWORD: str = os.getenv("DB_PASSWORD", "")
-    
-    # Connection pool sozlamalar
-    CONNECTION_POOL_SIZE: int = 5
-    MAX_OVERFLOW: int = 10
-    POOL_TIMEOUT: int = 30
-    
-    # Backup sozlamalar
-    BACKUP_INTERVAL_HOURS: int = 6
-    BACKUP_RETENTION_DAYS: int = 30
-    BACKUP_PATH: str = "data/backups/"
+    """Database konfiguratsiyasi"""
+    url: str = "sqlite:///data/bot.db"
+    max_connections: int = 10
+    timeout: int = 30
+    pool_size: int = 20
+    echo: bool = False
 
-# =============================================================================
-# 📈 TRADING KONFIGURATSIYA
-# =============================================================================
+@dataclass
+class APIConfig:
+    """API konfiguratsiyasi"""
+    timeout: int = 30
+    max_retries: int = 3
+    rate_limit: int = 100
+    base_delay: float = 1.0
+    max_delay: float = 60.0
+    backoff_factor: float = 2.0
 
 @dataclass
 class TradingConfig:
-    """Trading strategiya va signal sozlamalar"""
+    """Trading konfiguratsiyasi"""
+    max_risk_per_trade: float = 0.02
+    max_daily_loss: float = 0.05
+    max_daily_trades: int = 20
+    position_size_method: str = "kelly"
+    min_confidence: float = 0.75
     
-    # Signal parametrlari
-    MIN_SIGNAL_CONFIDENCE: float = 0.75    # 75% minimum ishonch
-    MAX_SIGNALS_PER_HOUR: int = 5          # Soatiga maksimal 5 ta signal
-    SIGNAL_COOLDOWN_MINUTES: int = 10      # Signallar orasida 10 daqiqa
+    # Propshot EA sozlamalari
+    propshot_max_daily_loss: float = 0.025
+    propshot_max_total_loss: float = 0.05
+    propshot_max_lot_size: float = 0.5
+    propshot_max_daily_trades: int = 3
     
-    # Order Flow tahlil
-    WHALE_THRESHOLD_USD: float = 100000    # $100k+ whale deb hisoblanadi
-    VOLUME_SPIKE_MULTIPLIER: float = 2.0   # O'rtacha volumdan 2x ko'p
-    ORDER_FLOW_TIMEFRAMES: list = [5, 15, 30, 60]  # Daqiqalarda
-    
-    # Sentiment tahlil
-    SENTIMENT_SOURCES: list = ["news", "reddit", "twitter", "telegram"]
-    SENTIMENT_WEIGHT_NEWS: float = 0.4     # 40% vazn
-    SENTIMENT_WEIGHT_SOCIAL: float = 0.6   # 60% vazn
-    SENTIMENT_THRESHOLD: float = 0.6       # 60% ijobiy/salbiy
-    
-    # Technical indicators
-    RSI_PERIOD: int = 14
-    RSI_OVERSOLD: float = 30
-    RSI_OVERBOUGHT: float = 70
-    MA_FAST: int = 10
-    MA_SLOW: int = 20
-    BOLLINGER_PERIOD: int = 20
-    BOLLINGER_STD: float = 2.0
-    
-    # Risk management
-    MAX_POSITION_SIZE_PERCENT: float = 0.02  # 2% maksimal pozitsiya
-    STOP_LOSS_PERCENT: float = 0.015        # 1.5% stop loss
-    TAKE_PROFIT_PERCENT: float = 0.03       # 3% take profit
-    TRAILING_STOP_PERCENT: float = 0.01     # 1% trailing stop
-
-# =============================================================================
-# 🔄 FALLBACK TIZIMI KONFIGURATSIYA
-# =============================================================================
-
-@dataclass
-class FallbackConfig:
-    """Fallback tizimi sozlamalar"""
-    
-    # AI Services fallback zanjiri
-    AI_FALLBACK_CHAIN: list = [
-        "huggingface",  # Asosiy
-        "gemini",       # 5 ta key
-        "claude",       # Limitli
-        "local_nlp"     # Oxirgi
-    ]
-    
-    # DEX Data fallback zanjiri
-    DEX_FALLBACK_CHAIN: list = [
-        "oneinch",      # Asosiy, verifikatsiyali
-        "thegraph",     # Uniswap V3 fallback
-        "alchemy"       # On-chain backup
-    ]
-    
-    # Market Data fallback
-    MARKET_FALLBACK_CHAIN: list = [
-        "ccxt_gateio",  # Gate.io
-        "ccxt_kucoin",  # KuCoin
-        "ccxt_mexc",    # MEXC
-        "alchemy"       # On-chain
-    ]
-    
-    # News fallback
-    NEWS_FALLBACK_CHAIN: list = [
-        "newsapi",      # Asosiy, verifikatsiyali
-        "reddit",       # Ijtimoiy sentiment
-        "claude"        # News tahlil backup
-    ]
-    
-    # Fallback aktivatsiya sozlamalar
-    FALLBACK_DELAY_SECONDS: int = 5         # 5 sekund kutish
-    MAX_FALLBACK_ATTEMPTS: int = 3          # 3 ta fallback
-    FALLBACK_SUCCESS_RESET_HOURS: int = 1   # 1 soat muvaffaqiyatdan keyin reset
-
-# =============================================================================
-# 📱 TELEGRAM BOT KONFIGURATSIYA
-# =============================================================================
+    # Stop Loss va Take Profit
+    default_sl_pips: int = 20
+    default_tp_pips: int = 40
+    max_sl_pips: int = 50
+    max_tp_pips: int = 100
 
 @dataclass
 class TelegramConfig:
-    """Telegram bot sozlamalar"""
-    
-    # Bot sozlamalar
-    BOT_TOKEN: str = os.getenv("TELEGRAM_BOT_TOKEN", "")
-    CHAT_ID: str = os.getenv("TELEGRAM_CHAT_ID", "")
-    
-    # Xabar formatlash
-    MESSAGE_LANGUAGE: str = "uzbek"
-    USE_MARKDOWN: bool = True
-    MAX_MESSAGE_LENGTH: int = 4000
-    
-    # Signal xabar templatelari
-    SIGNAL_TEMPLATE: str = """
-📊 SIGNAL KELDI
-════════════════
-📈 Savdo: {action} {symbol}
-💰 Narx: {price}
-📊 Lot: {lot_size} lot
-🛡️ Stop Loss: {stop_loss} ({sl_pips} pips)
-🎯 Take Profit: {take_profit} ({tp_pips} pips)
-⚡ Ishonch: {confidence}%
-🔥 Risk: {risk}% (Propshot 2x himoya)
-════════════════
-📝 Sabab: {reason}
-⏰ Vaqt: {time} (UZB)
-💼 Akavunt: {account}
-"""
-    
-    # Button sozlamalar
-    ENABLE_INLINE_BUTTONS: bool = True
-    AUTO_TRADE_BUTTON: str = "🟢 AVTO SAVDO"
-    CANCEL_BUTTON: str = "🔴 BEKOR QILISH"
-    
-    # Notification sozlamalar
-    ENABLE_DAILY_REPORTS: bool = True
-    DAILY_REPORT_TIME: str = "07:00"  # UZB vaqti
-    ENABLE_WEEKLY_REPORTS: bool = True
-    WEEKLY_REPORT_DAY: str = "sunday"
-    
-    # Error notification
-    ENABLE_ERROR_NOTIFICATIONS: bool = True
-    ERROR_NOTIFICATION_COOLDOWN: int = 300  # 5 daqiqa
-
-# =============================================================================
-# 🖥️ METATRADER 5 KONFIGURATSIYA
-# =============================================================================
+    """Telegram bot konfiguratsiyasi"""
+    bot_token: str = ""
+    chat_id: str = ""
+    channel_id: str = ""
+    admin_ids: List[str] = field(default_factory=list)
+    message_format: str = "markdown"
+    auto_delete_minutes: int = 60
 
 @dataclass
-class MT5Config:
-    """MetaTrader 5 terminal sozlamalar"""
-    
-    # Terminal sozlamalar
-    TERMINAL_PATH: str = r"C:\Program Files\MetaTrader 5\terminal64.exe"
-    CONNECTION_TIMEOUT: int = 30
-    LOGIN_TIMEOUT: int = 60
-    
-    # Demo akavunt
-    DEMO_SERVER: str = "Demo-Server"
-    DEMO_LOGIN: int = 0
-    DEMO_PASSWORD: str = ""
-    
-    # Propshot akavunt
-    PROPSHOT_SERVER: str = "Propshot-Server"
-    PROPSHOT_LOGIN: int = 0
-    PROPSHOT_PASSWORD: str = ""
-    
-    # Order parametrlari
-    SLIPPAGE: int = 3               # 3 pips slippage
-    MAGIC_NUMBER: int = 123456      # Bot magic number
-    ORDER_TIMEOUT: int = 30         # 30 sekund order timeout
-    
-    # Monitoring
-    POSITION_CHECK_INTERVAL: int = 5  # 5 sekund
-    ENABLE_TRAILING_STOP: bool = True
-    TRAILING_STOP_STEP: int = 10     # 10 pips step
-
-# =============================================================================
-# 📊 LOGGING KONFIGURATSIYA
-# =============================================================================
+class WorkingHours:
+    """Ish vaqti konfiguratsiyasi"""
+    timezone: str = "Asia/Tashkent"
+    start_time: time = time(7, 0)  # 07:00
+    end_time: time = time(19, 30)  # 19:30
+    trading_days: List[int] = field(default_factory=lambda: [0, 1, 2, 3, 4])  # Monday to Friday
+    break_start: time = time(12, 0)  # 12:00
+    break_end: time = time(13, 0)    # 13:00
 
 @dataclass
-class LoggingConfig:
-    """Logging tizimi sozlamalar"""
+class FallbackConfig:
+    """Fallback tizimi konfiguratsiyasi"""
+    order_flow_priority: List[str] = field(default_factory=lambda: ["oneinch", "thegraph", "alchemy"])
+    sentiment_priority: List[str] = field(default_factory=lambda: ["huggingface", "gemini", "claude"])
+    news_priority: List[str] = field(default_factory=lambda: ["newsapi", "reddit", "claude"])
     
-    # Log fayllar
-    LOG_DIR: str = "logs"
-    APP_LOG_FILE: str = "app.log"
-    ERROR_LOG_FILE: str = "error.log"
-    API_LOG_FILE: str = "api.log"
-    TRADE_LOG_FILE: str = "trade.log"
-    
-    # Log levellari
-    CONSOLE_LOG_LEVEL: str = "INFO"
-    FILE_LOG_LEVEL: str = "DEBUG"
-    
-    # Log rotation
-    MAX_LOG_SIZE_MB: int = 10
-    BACKUP_COUNT: int = 5
-    
-    # Log formatlar
-    LOG_FORMAT: str = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-    DATE_FORMAT: str = "%Y-%m-%d %H:%M:%S"
-    
-    # Sensitive data masking
-    MASK_API_KEYS: bool = True
-    MASK_PASSWORDS: bool = True
-    MASK_ACCOUNT_DATA: bool = True
+    # Fallback timeout (soniya)
+    fallback_timeout: int = 30
+    max_fallback_attempts: int = 3
+    cooldown_period: int = 300  # 5 minut
 
-# =============================================================================
-# 🎯 ASOSIY KONFIGURATSIYA KLASSI
-# =============================================================================
-
-class Config:
-    """Asosiy konfiguratsiya klassi - barcha sozlamalarni birlashtiradi"""
+class ConfigManager:
+    """Konfiguratsiya boshqaruvchi sinf"""
     
-    def __init__(self):
-        """Konfiguratsiya initsializatsiyasi"""
+    def __init__(self, config_dir: str = "config"):
+        self.config_dir = Path(config_dir)
+        self.settings_file = self.config_dir / "settings.json"
+        self.env_file = Path(".env")
         
-        # Fayl yo'llari
-        self.BASE_DIR = Path(__file__).parent.parent
-        self.CONFIG_DIR = self.BASE_DIR / "config"
-        self.DATA_DIR = self.BASE_DIR / "data"
-        self.LOGS_DIR = self.BASE_DIR / "logs"
+        # Konfiguratsiya ob'ektlari
+        self.database: DatabaseConfig = DatabaseConfig()
+        self.api: APIConfig = APIConfig()
+        self.trading: TradingConfig = TradingConfig()
+        self.telegram: TelegramConfig = TelegramConfig()
+        self.working_hours: WorkingHours = WorkingHours()
+        self.fallback: FallbackConfig = FallbackConfig()
         
-        # Papkalarni yaratish
-        self._create_directories()
+        # API kalitlar
+        self.api_keys: Dict[str, str] = {}
+        self.api_limits: Dict[str, Dict[str, Any]] = {}
         
-        # Konfiguratsiya obyektlari
-        self.propshot_risk = PropshotRiskConfig()
-        self.api_limits = APILimits()
-        self.database = DatabaseConfig()
-        self.trading = TradingConfig()
-        self.fallback = FallbackConfig()
-        self.telegram = TelegramConfig()
-        self.mt5 = MT5Config()
-        self.logging = LoggingConfig()
-        
-        # Muhit o'zgaruvchilar
-        self.ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
-        self.DEBUG = os.getenv("DEBUG", "False").lower() == "true"
-        
-        # Settings.json faylini yuklash
-        self._load_settings_from_file()
-        
-        # Konfiguratsiya validatsiyasi
-        self._validate_config()
+        # Konfiguratsiyani yuklash
+        self.load_config()
     
-    def _create_directories(self):
-        """Kerakli papkalarni yaratish"""
-        directories = [
-            self.DATA_DIR,
-            self.LOGS_DIR,
-            self.DATA_DIR / "backups",
-            self.DATA_DIR / "cache"
-        ]
-        
-        for directory in directories:
-            directory.mkdir(parents=True, exist_ok=True)
-    
-    def _load_settings_from_file(self):
-        """Settings.json faylidan sozlamalarni yuklash"""
-        settings_file = self.CONFIG_DIR / "settings.json"
-        
-        if settings_file.exists():
-            try:
-                with open(settings_file, 'r', encoding='utf-8') as f:
-                    settings = json.load(f)
-                
-                # Sozlamalarni qo'llash
-                self._apply_settings(settings)
-                
-            except Exception as e:
-                print(f"⚠️ Settings.json yuklashda xatolik: {e}")
-    
-    def _apply_settings(self, settings: Dict[str, Any]):
-        """JSON sozlamalarni qo'llash"""
-        
-        # Risk sozlamalar
-        if "risk" in settings:
-            risk_settings = settings["risk"]
-            for key, value in risk_settings.items():
-                if hasattr(self.propshot_risk, key.upper()):
-                    setattr(self.propshot_risk, key.upper(), value)
-        
-        # Trading sozlamalar
-        if "trading" in settings:
-            trading_settings = settings["trading"]
-            for key, value in trading_settings.items():
-                if hasattr(self.trading, key.upper()):
-                    setattr(self.trading, key.upper(), value)
-        
-        # Telegram sozlamalar
-        if "telegram" in settings:
-            telegram_settings = settings["telegram"]
-            for key, value in telegram_settings.items():
-                if hasattr(self.telegram, key.upper()):
-                    setattr(self.telegram, key.upper(), value)
-    
-    def _validate_config(self):
-        """Konfiguratsiya validatsiyasi"""
-        
-        # Telegram bot token tekshirish
-        if not self.telegram.BOT_TOKEN:
-            raise ValueError("❌ TELEGRAM_BOT_TOKEN muhit o'zgaruvchisi kerak!")
-        
-        # Telegram chat ID tekshirish
-        if not self.telegram.CHAT_ID:
-            raise ValueError("❌ TELEGRAM_CHAT_ID muhit o'zgaruvchisi kerak!")
-        
-        # Risk limitlar tekshirish
-        if self.propshot_risk.OUR_MAX_DAILY_LOSS >= self.propshot_risk.PROPSHOT_MAX_DAILY_LOSS:
-            raise ValueError("❌ Bizning kunlik risk Propshot limitdan kam bo'lishi kerak!")
-        
-        if self.propshot_risk.OUR_MAX_TOTAL_LOSS >= self.propshot_risk.PROPSHOT_MAX_TOTAL_LOSS:
-            raise ValueError("❌ Bizning umumiy risk Propshot limitdan kam bo'lishi kerak!")
-    
-    def save_settings_to_file(self):
-        """Joriy sozlamalarni settings.json ga saqlash"""
-        settings_file = self.CONFIG_DIR / "settings.json"
-        
-        settings = {
-            "risk": {
-                "our_max_daily_loss": self.propshot_risk.OUR_MAX_DAILY_LOSS,
-                "our_max_total_loss": self.propshot_risk.OUR_MAX_TOTAL_LOSS,
-                "our_max_risk_per_trade": self.propshot_risk.OUR_MAX_RISK_PER_TRADE,
-                "our_max_daily_trades": self.propshot_risk.OUR_MAX_DAILY_TRADES
-            },
-            "trading": {
-                "min_signal_confidence": self.trading.MIN_SIGNAL_CONFIDENCE,
-                "max_signals_per_hour": self.trading.MAX_SIGNALS_PER_HOUR,
-                "whale_threshold_usd": self.trading.WHALE_THRESHOLD_USD,
-                "sentiment_threshold": self.trading.SENTIMENT_THRESHOLD
-            },
-            "telegram": {
-                "message_language": self.telegram.MESSAGE_LANGUAGE,
-                "enable_daily_reports": self.telegram.ENABLE_DAILY_REPORTS,
-                "daily_report_time": self.telegram.DAILY_REPORT_TIME,
-                "enable_weekly_reports": self.telegram.ENABLE_WEEKLY_REPORTS
-            },
-            "last_updated": str(Path(__file__).stat().st_mtime)
-        }
-        
+    def load_config(self) -> None:
+        """Barcha konfiguratsiya fayllarini yuklash"""
         try:
-            with open(settings_file, 'w', encoding='utf-8') as f:
-                json.dump(settings, f, ensure_ascii=False, indent=2)
+            print("Konfiguratsiya yuklanyapti...")
             
-            print(f"✅ Sozlamalar saqlandi: {settings_file}")
+            # .env faylini yuklash
+            self._load_env_file()
+            
+            # JSON settings faylini yuklash
+            self._load_json_settings()
+            
+            # Konfiguratsiyani validatsiya qilish
+            self._validate_config()
+            
+            print("Konfiguratsiya muvaffaqiyatli yuklandi")
             
         except Exception as e:
-            print(f"❌ Sozlamalar saqlanmadi: {e}")
+            print(f"Konfiguratsiya yuklashda xato: {e}")
+            raise ConfigurationError(f"Konfiguratsiya yuklashda xato: {e}")
     
-    def get_database_url(self) -> str:
-        """Database URL yaratish"""
-        if self.ENVIRONMENT == "production":
-            return (
-                f"postgresql://{self.database.POSTGRES_USER}:"
-                f"{self.database.POSTGRES_PASSWORD}@"
-                f"{self.database.POSTGRES_HOST}:"
-                f"{self.database.POSTGRES_PORT}/"
-                f"{self.database.POSTGRES_NAME}"
-            )
+    def _load_env_file(self) -> None:
+        """Environment o'zgaruvchilarini yuklash"""
+        try:
+            if self.env_file.exists():
+                with open(self.env_file, 'r', encoding='utf-8') as f:
+                    for line in f:
+                        line = line.strip()
+                        if line and not line.startswith('#'):
+                            key, value = line.split('=', 1)
+                            os.environ[key.strip()] = value.strip().strip('"\'')
+            
+            # API kalitlarini yuklash
+            self.api_keys = {
+                'oneinch': os.getenv('ONEINCH_API_KEY', ''),
+                'alchemy': os.getenv('ALCHEMY_API_KEY', ''),
+                'huggingface': os.getenv('HUGGINGFACE_API_KEY', ''),
+                'gemini_keys': [
+                    os.getenv('GEMINI_API_KEY_1', ''),
+                    os.getenv('GEMINI_API_KEY_2', ''),
+                    os.getenv('GEMINI_API_KEY_3', ''),
+                    os.getenv('GEMINI_API_KEY_4', ''),
+                    os.getenv('GEMINI_API_KEY_5', '')
+                ],
+                'claude': os.getenv('CLAUDE_API_KEY', ''),
+                'news_api': os.getenv('NEWS_API_KEY', ''),
+                'reddit_client_id': os.getenv('REDDIT_CLIENT_ID', ''),
+                'reddit_client_secret': os.getenv('REDDIT_CLIENT_SECRET', ''),
+                'telegram_bot_token': os.getenv('TELEGRAM_BOT_TOKEN', ''),
+                'telegram_chat_id': os.getenv('TELEGRAM_CHAT_ID', ''),
+                'propshot_api': os.getenv('PROPSHOT_API_KEY', ''),
+                'mt5_server': os.getenv('MT5_SERVER', ''),
+                'mt5_login': os.getenv('MT5_LOGIN', ''),
+                'mt5_password': os.getenv('MT5_PASSWORD', '')
+            }
+            
+            # Database URL
+            if os.getenv('DATABASE_URL'):
+                self.database.url = os.getenv('DATABASE_URL')
+            
+            # Telegram konfiguratsiyasi
+            self.telegram.bot_token = self.api_keys['telegram_bot_token']
+            self.telegram.chat_id = self.api_keys['telegram_chat_id']
+            
+        except Exception as e:
+            raise ConfigurationError(f"Environment faylini yuklashda xato: {e}")
+    
+    def _load_json_settings(self) -> None:
+        """JSON settings faylini yuklash"""
+        try:
+            if self.settings_file.exists():
+                with open(self.settings_file, 'r', encoding='utf-8') as f:
+                    settings = json.load(f)
+                
+                # API limitlarini yuklash
+                if 'api_limits' in settings:
+                    self.api_limits = settings['api_limits']
+                
+                # Fallback tartibini yuklash
+                if 'fallback_order' in settings:
+                    fallback_data = settings['fallback_order']
+                    self.fallback.order_flow_priority = fallback_data.get('order_flow', self.fallback.order_flow_priority)
+                    self.fallback.sentiment_priority = fallback_data.get('sentiment', self.fallback.sentiment_priority)
+                    self.fallback.news_priority = fallback_data.get('news', self.fallback.news_priority)
+                
+                # Trading sozlamalarini yuklash
+                if 'trading' in settings:
+                    trading_data = settings['trading']
+                    self.trading.max_risk_per_trade = trading_data.get('max_risk_per_trade', self.trading.max_risk_per_trade)
+                    self.trading.max_daily_loss = trading_data.get('max_daily_loss', self.trading.max_daily_loss)
+                    self.trading.position_size_method = trading_data.get('position_size_method', self.trading.position_size_method)
+                    
+                    # Propshot sozlamalari
+                    if 'propshot_settings' in trading_data:
+                        propshot = trading_data['propshot_settings']
+                        self.trading.propshot_max_daily_loss = propshot.get('max_daily_loss', self.trading.propshot_max_daily_loss)
+                        self.trading.propshot_max_total_loss = propshot.get('max_total_loss', self.trading.propshot_max_total_loss)
+                        self.trading.propshot_max_lot_size = propshot.get('max_lot_size', self.trading.propshot_max_lot_size)
+                        self.trading.propshot_max_daily_trades = propshot.get('max_daily_trades', self.trading.propshot_max_daily_trades)
+                
+                # Ish vaqti sozlamalari
+                if 'working_hours' in settings:
+                    hours_data = settings['working_hours']
+                    self.working_hours.timezone = hours_data.get('timezone', self.working_hours.timezone)
+                    
+                    if 'start_time' in hours_data:
+                        start_parts = hours_data['start_time'].split(':')
+                        self.working_hours.start_time = time(int(start_parts[0]), int(start_parts[1]))
+                    
+                    if 'end_time' in hours_data:
+                        end_parts = hours_data['end_time'].split(':')
+                        self.working_hours.end_time = time(int(end_parts[0]), int(end_parts[1]))
+                
+            else:
+                # Default settings.json yaratish
+                self._create_default_settings()
+                
+        except Exception as e:
+            raise ConfigurationError(f"JSON settings faylini yuklashda xato: {e}")
+    
+    def _create_default_settings(self) -> None:
+        """Default settings.json faylini yaratish"""
+        default_settings = {
+            "api_limits": {
+                "oneinch": {
+                    "rate_limit": 100,
+                    "timeout": 30,
+                    "max_retries": 3
+                },
+                "alchemy": {
+                    "rate_limit": 300,
+                    "timeout": 15,
+                    "max_retries": 5
+                },
+                "huggingface": {
+                    "rate_limit": 1000,
+                    "timeout": 60,
+                    "max_retries": 2
+                },
+                "gemini": {
+                    "rate_limit": 60,
+                    "timeout": 45,
+                    "max_retries": 3
+                },
+                "claude": {
+                    "rate_limit": 20,
+                    "timeout": 60,
+                    "max_retries": 2
+                }
+            },
+            "fallback_order": {
+                "order_flow": ["oneinch", "thegraph", "alchemy"],
+                "sentiment": ["huggingface", "gemini", "claude"],
+                "news": ["newsapi", "reddit", "claude"]
+            },
+            "trading": {
+                "max_risk_per_trade": 0.02,
+                "max_daily_loss": 0.05,
+                "position_size_method": "kelly",
+                "propshot_settings": {
+                    "max_daily_loss": 0.025,
+                    "max_total_loss": 0.05,
+                    "max_lot_size": 0.5,
+                    "max_daily_trades": 3
+                }
+            },
+            "working_hours": {
+                "timezone": "Asia/Tashkent",
+                "start_time": "07:00",
+                "end_time": "19:30",
+                "trading_days": [0, 1, 2, 3, 4],
+                "break_start": "12:00",
+                "break_end": "13:00"
+            }
+        }
+        
+        # Papka yaratish
+        self.config_dir.mkdir(exist_ok=True)
+        
+        # Faylni yozish
+        with open(self.settings_file, 'w', encoding='utf-8') as f:
+            json.dump(default_settings, f, indent=2, ensure_ascii=False)
+        
+        print(f"Default settings.json fayli yaratildi: {self.settings_file}")
+    
+    def _validate_config(self) -> None:
+        """Konfiguratsiyani validatsiya qilish"""
+        errors = []
+        
+        # Majburiy API kalitlarini tekshirish
+        required_keys = ['telegram_bot_token', 'telegram_chat_id']
+        for key in required_keys:
+            if not self.api_keys.get(key):
+                errors.append(f"Majburiy API kaliti topilmadi: {key}")
+        
+        # Trading sozlamalarini tekshirish
+        if self.trading.max_risk_per_trade <= 0 or self.trading.max_risk_per_trade > 0.1:
+            errors.append("max_risk_per_trade 0 va 0.1 orasida bo'lishi kerak")
+        
+        if self.trading.max_daily_loss <= 0 or self.trading.max_daily_loss > 0.2:
+            errors.append("max_daily_loss 0 va 0.2 orasida bo'lishi kerak")
+        
+        # Xatolar bo'lsa exception
+        if errors:
+            raise ConfigurationError(f"Konfiguratsiya validatsiyasida xatolar: {'; '.join(errors)}")
+    
+    def is_working_hours(self) -> bool:
+        """Hozir ish vaqti ekanligini tekshirish"""
+        try:
+            tz = pytz.timezone(self.working_hours.timezone)
+            now = datetime.now(tz)
+            current_time = now.time()
+            current_day = now.weekday()
+            
+            # Ish kunlarini tekshirish
+            if current_day not in self.working_hours.trading_days:
+                return False
+            
+            # Ish vaqtini tekshirish
+            if not (self.working_hours.start_time <= current_time <= self.working_hours.end_time):
+                return False
+            
+            # Tushlik tanaffusini tekshirish
+            if self.working_hours.break_start <= current_time <= self.working_hours.break_end:
+                return False
+            
+            return True
+            
+        except Exception as e:
+            print(f"Ish vaqtini tekshirishda xato: {e}")
+            return False
+    
+    def get_api_config(self, api_name: str) -> Dict[str, Any]:
+        """API uchun konfiguratsiya olish"""
+        return self.api_limits.get(api_name, {
+            'rate_limit': self.api.rate_limit,
+            'timeout': self.api.timeout,
+            'max_retries': self.api.max_retries
+        })
+    
+    def get_fallback_order(self, service_type: str) -> List[str]:
+        """Fallback tartibini olish"""
+        if service_type == 'order_flow':
+            return self.fallback.order_flow_priority
+        elif service_type == 'sentiment':
+            return self.fallback.sentiment_priority
+        elif service_type == 'news':
+            return self.fallback.news_priority
         else:
-            return f"sqlite:///{self.database.SQLITE_PATH}"
+            return []
     
-    def is_production(self) -> bool:
-        """Production muhitmi?"""
-        return self.ENVIRONMENT == "production"
-    
-    def is_debug(self) -> bool:
-        """Debug rejimmi?"""
-        return self.DEBUG
-    
-    def get_log_level(self) -> int:
-        """Log level olish"""
-        if self.is_debug():
-            return logging.DEBUG
-        return logging.INFO
-    
-    def __str__(self) -> str:
-        """Konfiguratsiya string ko'rinishi"""
-        return f"""
-🤖 AI OrderFlow Bot Konfiguratsiya
-═══════════════════════════════════
-🌍 Muhit: {self.ENVIRONMENT}
-🔧 Debug: {self.DEBUG}
-🛡️ Propshot 2x himoya: ✅
-📊 Kunlik risk: {self.propshot_risk.OUR_MAX_DAILY_LOSS*100:.1f}%
-💰 Har savdo risk: {self.propshot_risk.OUR_MAX_RISK_PER_TRADE*100:.1f}%
-📈 Minimum ishonch: {self.trading.MIN_SIGNAL_CONFIDENCE*100:.0f}%
-🗄️ Database: {self.get_database_url()}
-═══════════════════════════════════
-"""
+    def save_config(self) -> None:
+        """Konfiguratsiyani saqlash"""
+        try:
+            settings = {
+                "api_limits": self.api_limits,
+                "fallback_order": {
+                    "order_flow": self.fallback.order_flow_priority,
+                    "sentiment": self.fallback.sentiment_priority,
+                    "news": self.fallback.news_priority
+                },
+                "trading": {
+                    "max_risk_per_trade": self.trading.max_risk_per_trade,
+                    "max_daily_loss": self.trading.max_daily_loss,
+                    "position_size_method": self.trading.position_size_method,
+                    "propshot_settings": {
+                        "max_daily_loss": self.trading.propshot_max_daily_loss,
+                        "max_total_loss": self.trading.propshot_max_total_loss,
+                        "max_lot_size": self.trading.propshot_max_lot_size,
+                        "max_daily_trades": self.trading.propshot_max_daily_trades
+                    }
+                },
+                "working_hours": {
+                    "timezone": self.working_hours.timezone,
+                    "start_time": self.working_hours.start_time.strftime('%H:%M'),
+                    "end_time": self.working_hours.end_time.strftime('%H:%M'),
+                    "trading_days": self.working_hours.trading_days,
+                    "break_start": self.working_hours.break_start.strftime('%H:%M'),
+                    "break_end": self.working_hours.break_end.strftime('%H:%M')
+                }
+            }
+            
+            with open(self.settings_file, 'w', encoding='utf-8') as f:
+                json.dump(settings, f, indent=2, ensure_ascii=False)
+            
+            print("Konfiguratsiya muvaffaqiyatli saqlandi")
+            
+        except Exception as e:
+            print(f"Konfiguratsiyani saqlashda xato: {e}")
+            raise ConfigurationError(f"Konfiguratsiyani saqlashda xato: {e}")
 
-# =============================================================================
-# 🚀 GLOBAL KONFIGURATSIYA OBYEKTI
-# =============================================================================
 
-# Global konfiguratsiya obyekti - barcha modullarda ishlatiladi
-try:
-    config = Config()
-    print("✅ Konfiguratsiya muvaffaqiyatli yuklandi!")
-    print(config)
-except Exception as e:
-    print(f"❌ Konfiguratsiya yuklashda xatolik: {e}")
-    raise
+class ConfigurationError(Exception):
+    """Konfiguratsiya xatosi"""
+    pass
 
-# =============================================================================
-# 🧪 TEST FUNKSIYASI
-# =============================================================================
 
-def test_config():
-    """Konfiguratsiya test funksiyasi"""
-    print("🧪 Konfiguratsiya test qilinmoqda...")
-    
-    # Asosiy parametrlar
-    assert config.propshot_risk.OUR_MAX_DAILY_LOSS < config.propshot_risk.PROPSHOT_MAX_DAILY_LOSS
-    assert config.propshot_risk.OUR_MAX_TOTAL_LOSS < config.propshot_risk.PROPSHOT_MAX_TOTAL_LOSS
-    assert config.trading.MIN_SIGNAL_CONFIDENCE > 0.5
-    assert config.trading.MIN_SIGNAL_CONFIDENCE < 1.0
-    
-    # API limitlar
-    assert config.api_limits.ONEINCH_RATE_LIMIT > 0
-    assert config.api_limits.ONEINCH_TIMEOUT > 0
-    
-    # Database
-    db_url = config.get_database_url()
-    assert db_url.startswith("sqlite://") or db_url.startswith("postgresql://")
-    
-    print("✅ Barcha testlar muvaffaqiyatli!")
+# Global konfiguratsiya instance
+config_manager = ConfigManager()
+
+
+def get_config() -> ConfigManager:
+    """Global konfiguratsiya manager olish"""
+    return config_manager
+
+
+def reload_config() -> None:
+    """Konfiguratsiyani qayta yuklash"""
+    global config_manager
+    config_manager.load_config()
+
 
 if __name__ == "__main__":
-    test_config()
-    
-    # Sozlamalarni faylga saqlash
-    config.save_settings_to_file()
-    
-    print("\n🎉 Config.py tayyor va test qilindi!")
-    print("🚀 Keyingi qadam: api_keys.py faylini yaratish")
+    # Test uchun
+    try:
+        config = get_config()
+        print("✅ Konfiguratsiya muvaffaqiyatli yuklandi")
+        print(f"📊 Database URL: {config.database.url}")
+        print(f"💬 Telegram Bot Token: {'✅ Mavjud' if config.telegram.bot_token else '❌ Yo\'q'}")
+        print(f"⏰ Ish vaqti: {config.working_hours.start_time} - {config.working_hours.end_time}")
+        print(f"🔄 Fallback tartibi: {config.fallback.order_flow_priority}")
+        print(f"🕐 Hozir ish vaqti: {'✅ Ha' if config.is_working_hours() else '❌ Yo\'q'}")
+        
+    except Exception as e:
+        print(f"❌ Konfiguratsiya xatosi: {e}")
