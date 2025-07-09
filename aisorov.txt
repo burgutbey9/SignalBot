@@ -51,9 +51,9 @@ ai_orderflow_signal_bot/
 │   │   └── signal_generator.py       # Signal generator
 │   ├── 📂 risk_management/
 │   │   ├── __init__.py
-│   │   ├── risk_calculator.py        # Risk hisoblash
+│   │   ├── risk_calculator.py        # Risk hisoblash   propshot qoidalari 2karra amal qilish, kunlik limit"
 │   │   ├── position_sizer.py         # Position size
-│   │   └── trade_monitor.py          # Trade monitoring
+│   │   └── trade_monitor.py          # Trade monitoring Trade kuzatuv va limit monitoring
 │   ├── 📂 utils/
 │   │   ├── __init__.py
 │   │   ├── logger.py                 # Logger setup
