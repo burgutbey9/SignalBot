@@ -1,0 +1,526 @@
+{
+  "app_info": {
+    "name": "AI OrderFlow & Signal Bot",
+    "version": "1.0.0",
+    "description": "AI yordamida DEX Order Flow va Sentiment tahlil qiluvchi bot",
+    "author": "AI OrderFlow Team",
+    "timezone": "Asia/Tashkent",
+    "work_hours": {
+      "start": "07:00",
+      "end": "19:30",
+      "description": "Foydalanuvchi ishda bo'lgan vaqt"
+    }
+  },
+  
+  "api_limits": {
+    "oneinch": {
+      "rate_limit": 100,
+      "timeout": 30,
+      "max_retries": 3,
+      "retry_delay": 1,
+      "priority": 1,
+      "description": "1inch DEX aggregator API"
+    },
+    "thegraph": {
+      "rate_limit": 1000,
+      "timeout": 25,
+      "max_retries": 5,
+      "retry_delay": 2,
+      "priority": 2,
+      "description": "The Graph Protocol API"
+    },
+    "alchemy": {
+      "rate_limit": 300,
+      "timeout": 15,
+      "max_retries": 5,
+      "retry_delay": 1,
+      "priority": 3,
+      "description": "Alchemy blockchain API"
+    },
+    "huggingface": {
+      "rate_limit": 1000,
+      "timeout": 60,
+      "max_retries": 2,
+      "retry_delay": 3,
+      "priority": 1,
+      "description": "HuggingFace AI models"
+    },
+    "gemini": {
+      "rate_limit": 60,
+      "timeout": 45,
+      "max_retries": 3,
+      "retry_delay": 2,
+      "priority": 2,
+      "description": "Google Gemini AI"
+    },
+    "claude": {
+      "rate_limit": 20,
+      "timeout": 60,
+      "max_retries": 2,
+      "retry_delay": 5,
+      "priority": 3,
+      "description": "Anthropic Claude AI"
+    },
+    "newsapi": {
+      "rate_limit": 1000,
+      "timeout": 30,
+      "max_retries": 3,
+      "retry_delay": 2,
+      "priority": 1,
+      "description": "NewsAPI yangilik manbai"
+    },
+    "reddit": {
+      "rate_limit": 100,
+      "timeout": 25,
+      "max_retries": 3,
+      "retry_delay": 3,
+      "priority": 2,
+      "description": "Reddit API ijtimoiy sentiment"
+    },
+    "ccxt": {
+      "rate_limit": 500,
+      "timeout": 20,
+      "max_retries": 3,
+      "retry_delay": 1,
+      "priority": 1,
+      "description": "CCXT exchange connector"
+    },
+    "telegram": {
+      "rate_limit": 30,
+      "timeout": 30,
+      "max_retries": 5,
+      "retry_delay": 1,
+      "priority": 1,
+      "description": "Telegram Bot API"
+    }
+  },
+  
+  "fallback_order": {
+    "order_flow": {
+      "primary": "oneinch",
+      "fallbacks": ["thegraph", "alchemy"],
+      "description": "Order Flow ma'lumotlari uchun fallback ketma-ketlik"
+    },
+    "sentiment": {
+      "primary": "huggingface",
+      "fallbacks": ["gemini", "claude"],
+      "description": "AI Sentiment tahlil uchun fallback ketma-ketlik"
+    },
+    "news": {
+      "primary": "newsapi",
+      "fallbacks": ["reddit", "claude"],
+      "description": "Yangilik va ijtimoiy sentiment uchun fallback"
+    },
+    "market_data": {
+      "primary": "ccxt",
+      "fallbacks": ["alchemy", "oneinch"],
+      "description": "Market ma'lumotlari uchun fallback"
+    }
+  },
+  
+  "blockchain_networks": {
+    "ethereum": {
+      "name": "Ethereum",
+      "chain_id": 1,
+      "rpc_priority": ["alchemy", "infura"],
+      "gas_limit": 500000,
+      "gas_price_multiplier": 1.2,
+      "enabled": true
+    },
+    "bsc": {
+      "name": "Binance Smart Chain",
+      "chain_id": 56,
+      "rpc_priority": ["alchemy", "moralis"],
+      "gas_limit": 300000,
+      "gas_price_multiplier": 1.1,
+      "enabled": true
+    },
+    "polygon": {
+      "name": "Polygon",
+      "chain_id": 137,
+      "rpc_priority": ["alchemy", "quicknode"],
+      "gas_limit": 400000,
+      "gas_price_multiplier": 1.15,
+      "enabled": true
+    },
+    "arbitrum": {
+      "name": "Arbitrum One",
+      "chain_id": 42161,
+      "rpc_priority": ["alchemy", "infura"],
+      "gas_limit": 1000000,
+      "gas_price_multiplier": 1.1,
+      "enabled": false
+    }
+  },
+  
+  "trading": {
+    "risk_management": {
+      "max_risk_per_trade": 0.02,
+      "max_daily_loss": 0.05,
+      "max_weekly_loss": 0.15,
+      "max_monthly_loss": 0.30,
+      "position_size_method": "kelly",
+      "min_confidence_threshold": 0.65,
+      "max_concurrent_trades": 3,
+      "cooldown_after_loss": 300,
+      "description": "Risk boshqaruv parametrlari"
+    },
+    "signal_filters": {
+      "min_volume_usd": 10000,
+      "min_liquidity_usd": 50000,
+      "max_slippage_percent": 3.0,
+      "min_price_change_percent": 0.5,
+      "sentiment_weight": 0.3,
+      "orderflow_weight": 0.4,
+      "technical_weight": 0.3,
+      "news_impact_multiplier": 1.2
+    },
+    "position_sizing": {
+      "kelly_multiplier": 0.5,
+      "fixed_percent": 0.01,
+      "volatility_adjustment": true,
+      "atr_multiplier": 2.0,
+      "min_position_size": 0.001,
+      "max_position_size": 0.05
+    },
+    "stop_loss": {
+      "method": "atr",
+      "atr_multiplier": 2.5,
+      "fixed_percent": 0.02,
+      "trailing_enabled": true,
+      "trailing_distance": 0.015,
+      "breakeven_trigger": 0.01
+    },
+    "take_profit": {
+      "method": "risk_reward",
+      "risk_reward_ratio": 2.0,
+      "partial_close_levels": [0.5, 0.8],
+      "partial_close_percentages": [30, 50],
+      "scale_out_enabled": true
+    }
+  },
+  
+  "propshot_settings": {
+    "connection": {
+      "timeout": 30,
+      "max_retries": 3,
+      "heartbeat_interval": 10,
+      "reconnect_delay": 5
+    },
+    "risk_limits": {
+      "max_daily_loss": 0.025,
+      "max_total_loss": 0.05,
+      "max_lot_size": 0.5,
+      "max_daily_trades": 3,
+      "max_concurrent_positions": 2,
+      "equity_stop_percent": 0.15
+    },
+    "execution": {
+      "slippage_tolerance": 2.0,
+      "max_execution_time": 10,
+      "fill_or_kill": false,
+      "partial_fills_allowed": true
+    },
+    "symbols": {
+      "allowed": ["EURUSD", "GBPUSD", "USDJPY", "AUDUSD", "USDCAD", "USDCHF", "NZDUSD"],
+      "min_spread": 0.0001,
+      "max_spread": 0.0050,
+      "trading_hours": "24/5"
+    }
+  },
+  
+  "mt5_bridge": {
+    "connection": {
+      "timeout": 15,
+      "login_timeout": 30,
+      "trade_timeout": 10,
+      "max_retries": 3
+    },
+    "symbols": {
+      "suffix": "",
+      "prefix": "",
+      "point_multiplier": 1.0,
+      "lot_step": 0.01,
+      "min_lot": 0.01,
+      "max_lot": 100.0
+    },
+    "execution": {
+      "deviation": 20,
+      "magic_number": 123456,
+      "comment": "AI_OrderFlow_Bot",
+      "fill_policy": "FOK"
+    }
+  },
+  
+  "telegram": {
+    "bot_settings": {
+      "parse_mode": "HTML",
+      "disable_web_page_preview": true,
+      "disable_notification": false,
+      "timeout": 30,
+      "max_retries": 3
+    },
+    "message_templates": {
+      "signal_format": "uzbek_detailed",
+      "log_format": "uzbek_simple",
+      "error_format": "uzbek_alert",
+      "status_format": "uzbek_summary"
+    },
+    "notifications": {
+      "signals": true,
+      "errors": true,
+      "status_updates": true,
+      "daily_summary": true,
+      "fallback_alerts": true,
+      "trade_confirmations": true,
+      "risk_warnings": true
+    },
+    "commands": {
+      "start": "Bot ishga tushirish",
+      "stop": "Bot to'xtatish",
+      "status": "Bot holati",
+      "balance": "Balans ma'lumoti",
+      "settings": "Sozlamalar",
+      "help": "Yordam"
+    }
+  },
+  
+  "ai_models": {
+    "huggingface": {
+      "sentiment_model": "cardiffnlp/twitter-roberta-base-sentiment-latest",
+      "text_classification": "microsoft/DialoGPT-medium",
+      "max_tokens": 512,
+      "temperature": 0.7,
+      "confidence_threshold": 0.6
+    },
+    "gemini": {
+      "model_name": "gemini-pro",
+      "temperature": 0.3,
+      "max_tokens": 1024,
+      "safety_settings": "high",
+      "response_format": "json"
+    },
+    "claude": {
+      "model_name": "claude-3-sonnet-20240229",
+      "temperature": 0.5,
+      "max_tokens": 2048,
+      "system_prompt": "You are a crypto trading sentiment analyzer"
+    }
+  },
+  
+  "data_sources": {
+    "exchanges": {
+      "gate": {
+        "name": "Gate.io",
+        "enabled": true,
+        "priority": 1,
+        "requires_auth": false,
+        "supported_symbols": ["BTC/USDT", "ETH/USDT", "BNB/USDT"]
+      },
+      "kucoin": {
+        "name": "KuCoin",
+        "enabled": true,
+        "priority": 2,
+        "requires_auth": false,
+        "supported_symbols": ["BTC/USDT", "ETH/USDT", "ADA/USDT"]
+      },
+      "mexc": {
+        "name": "MEXC",
+        "enabled": true,
+        "priority": 3,
+        "requires_auth": false,
+        "supported_symbols": ["BTC/USDT", "ETH/USDT", "SOL/USDT"]
+      }
+    },
+    "dex_protocols": {
+      "uniswap_v3": {
+        "name": "Uniswap V3",
+        "enabled": true,
+        "priority": 1,
+        "networks": ["ethereum", "polygon", "arbitrum"]
+      },
+      "pancakeswap": {
+        "name": "PancakeSwap",
+        "enabled": true,
+        "priority": 2,
+        "networks": ["bsc"]
+      },
+      "sushiswap": {
+        "name": "SushiSwap",
+        "enabled": true,
+        "priority": 3,
+        "networks": ["ethereum", "polygon"]
+      }
+    }
+  },
+  
+  "monitoring": {
+    "health_checks": {
+      "interval": 60,
+      "timeout": 10,
+      "critical_services": ["telegram", "database", "propshot"],
+      "warning_services": ["news", "reddit", "gemini"]
+    },
+    "performance": {
+      "log_slow_queries": true,
+      "slow_query_threshold": 5.0,
+      "memory_usage_alert": 80,
+      "cpu_usage_alert": 75,
+      "disk_space_alert": 85
+    },
+    "alerts": {
+      "email_enabled": false,
+      "telegram_enabled": true,
+      "discord_enabled": false,
+      "critical_threshold": 3,
+      "warning_threshold": 5
+    }
+  },
+  
+  "database": {
+    "connection": {
+      "pool_size": 10,
+      "max_overflow": 20,
+      "pool_timeout": 30,
+      "pool_recycle": 3600
+    },
+    "backup": {
+      "enabled": true,
+      "interval": 3600,
+      "retention_days": 30,
+      "compression": true,
+      "location": "data/backups/"
+    },
+    "tables": {
+      "signals": {
+        "retention_days": 90,
+        "index_columns": ["timestamp", "symbol", "confidence"]
+      },
+      "trades": {
+        "retention_days": 365,
+        "index_columns": ["timestamp", "symbol", "profit_loss"]
+      },
+      "logs": {
+        "retention_days": 30,
+        "index_columns": ["timestamp", "level", "module"]
+      }
+    }
+  },
+  
+  "backtesting": {
+    "data_source": "ccxt",
+    "timeframes": ["1m", "5m", "15m", "1h", "4h", "1d"],
+    "lookback_days": 30,
+    "commission_rate": 0.001,
+    "slippage_rate": 0.0005,
+    "initial_balance": 10000,
+    "max_drawdown_percent": 20,
+    "optimization": {
+      "enabled": true,
+      "method": "genetic_algorithm",
+      "population_size": 50,
+      "generations": 100,
+      "mutation_rate": 0.1
+    }
+  },
+  
+  "logging": {
+    "level": "INFO",
+    "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    "file_size": 10485760,
+    "backup_count": 5,
+    "modules": {
+      "api_clients": "DEBUG",
+      "data_processing": "INFO",
+      "trading": "INFO",
+      "risk_management": "WARNING",
+      "telegram": "INFO"
+    },
+    "filters": {
+      "exclude_patterns": ["heartbeat", "ping", "status_check"],
+      "include_patterns": ["error", "signal", "trade", "fallback"]
+    }
+  },
+  
+  "scheduler": {
+    "jobs": {
+      "market_analysis": {
+        "interval": 300,
+        "enabled": true,
+        "priority": "high",
+        "timeout": 60
+      },
+      "sentiment_analysis": {
+        "interval": 600,
+        "enabled": true,
+        "priority": "medium",
+        "timeout": 120
+      },
+      "news_monitoring": {
+        "interval": 900,
+        "enabled": true,
+        "priority": "low",
+        "timeout": 180
+      },
+      "portfolio_update": {
+        "interval": 60,
+        "enabled": true,
+        "priority": "high",
+        "timeout": 30
+      },
+      "daily_summary": {
+        "time": "20:00",
+        "enabled": true,
+        "priority": "medium",
+        "timeout": 300
+      }
+    }
+  },
+  
+  "features": {
+    "auto_trading": {
+      "enabled": false,
+      "confirmation_required": true,
+      "max_auto_trades_per_day": 5,
+      "auto_mode_hours": ["22:00", "06:00"]
+    },
+    "paper_trading": {
+      "enabled": true,
+      "initial_balance": 10000,
+      "reset_monthly": false,
+      "track_performance": true
+    },
+    "advanced_analytics": {
+      "enabled": true,
+      "correlation_analysis": true,
+      "volatility_prediction": true,
+      "pattern_recognition": true
+    }
+  },
+  
+  "security": {
+    "encryption": {
+      "enabled": true,
+      "algorithm": "AES-256",
+      "key_rotation_days": 30
+    },
+    "authentication": {
+      "telegram_user_id_required": true,
+      "api_key_validation": true,
+      "rate_limiting": true
+    },
+    "data_protection": {
+      "anonymize_logs": true,
+      "secure_storage": true,
+      "gdpr_compliance": true
+    }
+  },
+  
+  "development": {
+    "debug_mode": false,
+    "test_mode": false,
+    "verbose_logging": false,
+    "mock_apis": false,
+    "performance_profiling": false
+  }
+}
