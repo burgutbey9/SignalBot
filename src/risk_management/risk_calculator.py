@@ -1,20 +1,11 @@
-"""
-Risk Calculator - AI OrderFlow & Signal Bot
-
-Risk hisoblash va boshqaruv tizimi. Har bir savdo uchun risk darajasini
-aniqlaydi, stop loss va take profit hisoblaydi.
-
-O'zbekcha: Bu modul savdo riskini hisoblash va nazorat qilish uchun
-"""
-
 import asyncio
+import json
 import math
 from typing import Dict, List, Optional, Tuple
 from dataclasses import dataclass
-from enum import Enum
 from datetime import datetime, timedelta
-import json
-
+from enum import Enum
+import numpy as np
 from utils.logger import get_logger
 from utils.error_handler import handle_processing_error
 from config.config import ConfigManager
@@ -28,675 +19,437 @@ class RiskLevel(Enum):
     HIGH = "high"
     EXTREME = "extreme"
 
-class MarketCondition(Enum):
-    """Bozor holatini aniqlash"""
-    TRENDING = "trending"
-    RANGING = "ranging"
-    VOLATILE = "volatile"
-    CALM = "calm"
+class PositionType(Enum):
+    """Pozitsiya turi enum"""
+    BUY = "buy"
+    SELL = "sell"
+    LONG = "long"
+    SHORT = "short"
 
 @dataclass
 class RiskMetrics:
     """Risk ko'rsatkichlari"""
-    account_balance: float
-    risk_per_trade: float
-    max_risk_percent: float
-    daily_loss_limit: float
-    current_drawdown: float
-    open_positions: int
-    total_exposure: float
-    
-    def __post_init__(self):
-        """Validatsiya qilish"""
-        if self.risk_per_trade <= 0 or self.risk_per_trade > 0.1:
-            raise ValueError("Risk per trade 0.1% dan 10% gacha bo'lishi kerak")
-
-@dataclass
-class RiskCalculationResult:
-    """Risk hisoblash natijasi"""
-    success: bool
+    max_risk_per_trade: float
+    max_daily_loss: float
+    max_total_loss: float
+    current_daily_loss: float
+    current_total_loss: float
     risk_level: RiskLevel
-    recommended_lot_size: float
-    max_lot_size: float
-    stop_loss_price: float
-    take_profit_price: float
-    risk_reward_ratio: float
-    position_value: float
-    pip_value: float
-    confidence_score: float
-    warnings: List[str]
-    error: Optional[str] = None
-
-class RiskCalculator:
-    """Risk hisoblash va boshqaruv class"""
+    allowed_position_size: float
     
-    def __init__(self, config_manager: ConfigManager):
-        """
-        Risk calculator init
-        
-        Args:
-            config_manager: Konfiguratsiya boshqaruvchi
-        """
-        self.config = config_manager
-        self.name = self.__class__.__name__
-        logger.info(f"{self.name} ishga tushirildi")
-        
-        # Risk sozlamalari
-        self.max_risk_per_trade = self.config.get('trading.max_risk_per_trade', 0.02)
-        self.max_daily_loss = self.config.get('trading.max_daily_loss', 0.05)
-        self.max_total_exposure = self.config.get('trading.max_total_exposure', 0.1)
-        self.min_risk_reward = self.config.get('trading.min_risk_reward', 1.5)
-        
-        # Bozor holatini kuzatish
-        self.market_volatility = {}
-        self.recent_trades = []
-        
-        logger.info(f"Risk sozlamalari yuklandi: max_risk={self.max_risk_per_trade}")
-
-    async def calculate_risk(self, 
-                           symbol: str,
-                           entry_price: float,
-                           direction: str,
-                           account_balance: float,
-                           market_data: Dict) -> RiskCalculationResult:
-        """
-        Asosiy risk hisoblash methodi
-        
-        Args:
-            symbol: Valyuta juftligi
-            entry_price: Kirish narxi
-            direction: 'buy' yoki 'sell'
-            account_balance: Akkaunt balansi
-            market_data: Bozor ma'lumotlari
-            
-        Returns:
-            RiskCalculationResult: Risk hisoblash natijasi
-        """
+@dataclass
+class TradeRisk:
+    """Savdo risk ma'lumotlari"""
+    symbol: str
+    position_type: PositionType
+    entry_price: float
+    stop_loss: float
+    take_profit: float
+    position_size: float
+    risk_amount: float
+    risk_percent: float
+    reward_ratio: float
+    pip_value: float
+    
+@dataclass
+class PropShotLimits:
+    """Propshot limitlari"""
+    max_daily_loss: float = 0.025  # 2.5%
+    max_total_loss: float = 0.05   # 5%
+    max_lot_size: float = 0.5      # 0.5 lot
+    max_daily_trades: int = 3      # 3 ta savdo
+    max_drawdown: float = 0.08     # 8%
+    
+class RiskCalculator:
+    """Risk hisoblash va boshqaruv"""
+    
+    def __init__(self):
+        self.config = ConfigManager()
+        self.propshot_limits = PropShotLimits()
+        self.daily_trades = []
+        self.daily_loss = 0.0
+        self.total_loss = 0.0
+        self.account_balance = 10000.0  # Default balance
+        logger.info("RiskCalculator ishga tushirildi")
+    
+    async def calculate_position_size(self, 
+                                    symbol: str,
+                                    entry_price: float,
+                                    stop_loss: float,
+                                    risk_percent: float = 0.02) -> Dict:
+        """Pozitsiya hajmini hisoblash"""
         try:
-            logger.info(f"Risk hisoblash boshlandi: {symbol} - {direction}")
-            
-            # Kirish ma'lumotlarini validatsiya qilish
-            if not self._validate_inputs(symbol, entry_price, direction, account_balance):
-                return RiskCalculationResult(
-                    success=False,
-                    risk_level=RiskLevel.EXTREME,
-                    recommended_lot_size=0,
-                    max_lot_size=0,
-                    stop_loss_price=0,
-                    take_profit_price=0,
-                    risk_reward_ratio=0,
-                    position_value=0,
-                    pip_value=0,
-                    confidence_score=0,
-                    warnings=[],
-                    error="Noto'g'ri kirish ma'lumotlari"
-                )
-            
-            # Bozor holatini aniqlash
-            market_condition = await self._analyze_market_condition(symbol, market_data)
-            
-            # Risk darajasini aniqlash
-            risk_level = await self._calculate_risk_level(symbol, market_condition, market_data)
-            
-            # Stop Loss va Take Profit hisoblash
-            stop_loss_price, take_profit_price = await self._calculate_sl_tp(
-                symbol, entry_price, direction, market_data, risk_level
-            )
-            
             # Pip qiymatini hisoblash
-            pip_value = await self._calculate_pip_value(symbol, account_balance)
+            pip_value = await self._calculate_pip_value(symbol, entry_price)
             
-            # Lot hajmini hisoblash
-            recommended_lot_size = await self._calculate_lot_size(
-                account_balance, entry_price, stop_loss_price, pip_value, symbol
-            )
+            # Pips farqini hisoblash
+            pips_distance = abs(entry_price - stop_loss) / pip_value
             
-            # Maksimal lot hajmi
-            max_lot_size = await self._calculate_max_lot_size(
-                account_balance, symbol, risk_level
-            )
+            # Risk miqdorini hisoblash
+            risk_amount = self.account_balance * risk_percent
             
-            # Risk/Reward ratio
-            risk_reward_ratio = await self._calculate_risk_reward_ratio(
-                entry_price, stop_loss_price, take_profit_price, direction
-            )
+            # Pozitsiya hajmini hisoblash
+            position_size = risk_amount / (pips_distance * pip_value)
             
-            # Position qiymatini hisoblash
-            position_value = recommended_lot_size * entry_price * 100000  # 100k = 1 lot
+            # Propshot limitlarini tekshirish
+            max_allowed_size = await self._check_propshot_limits(position_size)
             
-            # Ishonch darajasini hisoblash
-            confidence_score = await self._calculate_confidence_score(
-                risk_level, market_condition, risk_reward_ratio
-            )
+            # Yakuniy pozitsiya hajmi
+            final_position_size = min(position_size, max_allowed_size)
             
-            # Ogohlantirishlar
-            warnings = await self._generate_warnings(
-                risk_level, recommended_lot_size, max_lot_size, 
-                risk_reward_ratio, market_condition
-            )
+            result = {
+                "symbol": symbol,
+                "position_size": final_position_size,
+                "risk_amount": risk_amount,
+                "risk_percent": risk_percent,
+                "pip_value": pip_value,
+                "pips_distance": pips_distance,
+                "max_allowed_size": max_allowed_size,
+                "is_within_limits": final_position_size == position_size
+            }
             
-            result = RiskCalculationResult(
-                success=True,
-                risk_level=risk_level,
-                recommended_lot_size=min(recommended_lot_size, max_lot_size),
-                max_lot_size=max_lot_size,
-                stop_loss_price=stop_loss_price,
-                take_profit_price=take_profit_price,
-                risk_reward_ratio=risk_reward_ratio,
-                position_value=position_value,
-                pip_value=pip_value,
-                confidence_score=confidence_score,
-                warnings=warnings
-            )
-            
-            logger.info(f"Risk hisoblash tugadi: {symbol} - Risk: {risk_level.value}")
+            logger.info(f"Pozitsiya hajmi hisoblandi: {symbol} - {final_position_size} lot")
             return result
             
         except Exception as e:
-            logger.error(f"Risk hisoblashda xato: {e}")
-            return RiskCalculationResult(
-                success=False,
-                risk_level=RiskLevel.EXTREME,
-                recommended_lot_size=0,
-                max_lot_size=0,
-                stop_loss_price=0,
-                take_profit_price=0,
-                risk_reward_ratio=0,
-                position_value=0,
-                pip_value=0,
-                confidence_score=0,
-                warnings=[],
-                error=str(e)
-            )
-
-    async def _validate_inputs(self, symbol: str, entry_price: float, 
-                             direction: str, account_balance: float) -> bool:
-        """
-        Kirish ma'lumotlarini validatsiya qilish
-        
-        Args:
-            symbol: Valyuta juftligi
-            entry_price: Kirish narxi
-            direction: Savdo yo'nalishi
-            account_balance: Akkaunt balansi
-            
-        Returns:
-            bool: Validatsiya natijasi
-        """
+            logger.error(f"Pozitsiya hajmi hisoblashda xato: {e}")
+            return {"error": str(e)}
+    
+    async def calculate_trade_risk(self, 
+                                 symbol: str,
+                                 position_type: PositionType,
+                                 entry_price: float,
+                                 stop_loss: float,
+                                 take_profit: float,
+                                 position_size: float) -> TradeRisk:
+        """Savdo riskini hisoblash"""
         try:
-            # Symbol tekshirish
-            if not symbol or len(symbol) < 6:
-                logger.error(f"Noto'g'ri symbol: {symbol}")
-                return False
+            # Pip qiymatini hisoblash
+            pip_value = await self._calculate_pip_value(symbol, entry_price)
             
-            # Narx tekshirish
-            if entry_price <= 0:
-                logger.error(f"Noto'g'ri narx: {entry_price}")
-                return False
-            
-            # Yo'nalish tekshirish
-            if direction not in ['buy', 'sell']:
-                logger.error(f"Noto'g'ri yo'nalish: {direction}")
-                return False
-            
-            # Balans tekshirish
-            if account_balance <= 0:
-                logger.error(f"Noto'g'ri balans: {account_balance}")
-                return False
-            
-            return True
-            
-        except Exception as e:
-            logger.error(f"Validatsiya xatosi: {e}")
-            return False
-
-    async def _analyze_market_condition(self, symbol: str, market_data: Dict) -> MarketCondition:
-        """
-        Bozor holatini aniqlash
-        
-        Args:
-            symbol: Valyuta juftligi
-            market_data: Bozor ma'lumotlari
-            
-        Returns:
-            MarketCondition: Bozor holati
-        """
-        try:
-            # Volatillikni hisoblash
-            volatility = market_data.get('volatility', 0)
-            atr = market_data.get('atr', 0)
-            volume = market_data.get('volume', 0)
-            
-            # Trend kuchini aniqlash
-            trend_strength = market_data.get('trend_strength', 0)
-            
-            # Bozor holatini aniqlash
-            if volatility > 0.02 and atr > 0.001:
-                return MarketCondition.VOLATILE
-            elif trend_strength > 0.7:
-                return MarketCondition.TRENDING
-            elif volatility < 0.005 and atr < 0.0005:
-                return MarketCondition.CALM
-            else:
-                return MarketCondition.RANGING
-                
-        except Exception as e:
-            logger.error(f"Bozor holatini aniqlashda xato: {e}")
-            return MarketCondition.RANGING
-
-    async def _calculate_risk_level(self, symbol: str, market_condition: MarketCondition, 
-                                  market_data: Dict) -> RiskLevel:
-        """
-        Risk darajasini aniqlash
-        
-        Args:
-            symbol: Valyuta juftligi
-            market_condition: Bozor holati
-            market_data: Bozor ma'lumotlari
-            
-        Returns:
-            RiskLevel: Risk darajasi
-        """
-        try:
-            risk_score = 0
-            
-            # Bozor holatiga qarab risk
-            if market_condition == MarketCondition.VOLATILE:
-                risk_score += 3
-            elif market_condition == MarketCondition.TRENDING:
-                risk_score += 1
-            elif market_condition == MarketCondition.RANGING:
-                risk_score += 2
-            else:  # CALM
-                risk_score += 0
-            
-            # Volatillikka qarab risk
-            volatility = market_data.get('volatility', 0)
-            if volatility > 0.03:
-                risk_score += 2
-            elif volatility > 0.015:
-                risk_score += 1
-            
-            # Spread ga qarab risk
-            spread = market_data.get('spread', 0)
-            if spread > 0.0005:
-                risk_score += 1
-            
-            # Likvidlikka qarab risk
-            volume = market_data.get('volume', 0)
-            if volume < 1000:
-                risk_score += 1
-            
-            # Risk darajasini aniqlash
-            if risk_score >= 5:
-                return RiskLevel.EXTREME
-            elif risk_score >= 3:
-                return RiskLevel.HIGH
-            elif risk_score >= 1:
-                return RiskLevel.MEDIUM
-            else:
-                return RiskLevel.LOW
-                
-        except Exception as e:
-            logger.error(f"Risk darajasini aniqlashda xato: {e}")
-            return RiskLevel.HIGH
-
-    async def _calculate_sl_tp(self, symbol: str, entry_price: float, direction: str,
-                             market_data: Dict, risk_level: RiskLevel) -> Tuple[float, float]:
-        """
-        Stop Loss va Take Profit hisoblash
-        
-        Args:
-            symbol: Valyuta juftligi
-            entry_price: Kirish narxi
-            direction: Savdo yo'nalishi
-            market_data: Bozor ma'lumotlari
-            risk_level: Risk darajasi
-            
-        Returns:
-            Tuple[float, float]: Stop Loss va Take Profit narxlari
-        """
-        try:
-            # ATR (Average True Range) olish
-            atr = market_data.get('atr', 0.001)
-            
-            # Risk darajasiga qarab multiplier
-            multipliers = {
-                RiskLevel.LOW: {'sl': 1.5, 'tp': 3.0},
-                RiskLevel.MEDIUM: {'sl': 2.0, 'tp': 3.5},
-                RiskLevel.HIGH: {'sl': 2.5, 'tp': 4.0},
-                RiskLevel.EXTREME: {'sl': 3.0, 'tp': 4.5}
-            }
-            
-            sl_multiplier = multipliers[risk_level]['sl']
-            tp_multiplier = multipliers[risk_level]['tp']
-            
-            # Stop Loss va Take Profit hisoblash
-            if direction == 'buy':
-                stop_loss = entry_price - (atr * sl_multiplier)
-                take_profit = entry_price + (atr * tp_multiplier)
-            else:  # sell
-                stop_loss = entry_price + (atr * sl_multiplier)
-                take_profit = entry_price - (atr * tp_multiplier)
-            
-            # Minimal qadam hisobga olish
-            pip_size = 0.0001 if 'JPY' not in symbol else 0.01
-            
-            stop_loss = round(stop_loss / pip_size) * pip_size
-            take_profit = round(take_profit / pip_size) * pip_size
-            
-            return stop_loss, take_profit
-            
-        except Exception as e:
-            logger.error(f"SL/TP hisoblashda xato: {e}")
-            # Default qiymatlar
-            if direction == 'buy':
-                return entry_price * 0.99, entry_price * 1.02
-            else:
-                return entry_price * 1.01, entry_price * 0.98
-
-    async def _calculate_pip_value(self, symbol: str, account_balance: float) -> float:
-        """
-        Pip qiymatini hisoblash
-        
-        Args:
-            symbol: Valyuta juftligi
-            account_balance: Akkaunt balansi
-            
-        Returns:
-            float: Pip qiymat
-        """
-        try:
-            # Base currency USD hisobida
-            if symbol.endswith('USD'):
-                pip_value = 10  # $10 per pip for 1 lot
-            elif symbol.startswith('USD'):
-                # USD/JPY kabi
-                pip_value = 8  # taxminan
-            else:
-                # Cross currency
-                pip_value = 10  # default
-            
-            return pip_value
-            
-        except Exception as e:
-            logger.error(f"Pip qiymat hisoblashda xato: {e}")
-            return 10
-
-    async def _calculate_lot_size(self, account_balance: float, entry_price: float,
-                                stop_loss_price: float, pip_value: float, symbol: str) -> float:
-        """
-        Lot hajmini hisoblash
-        
-        Args:
-            account_balance: Akkaunt balansi
-            entry_price: Kirish narxi
-            stop_loss_price: Stop Loss narxi
-            pip_value: Pip qiymat
-            symbol: Valyuta juftligi
-            
-        Returns:
-            float: Tavsiya etilgan lot hajmi
-        """
-        try:
             # Risk miqdorini hisoblash
-            risk_amount = account_balance * self.max_risk_per_trade
+            risk_pips = abs(entry_price - stop_loss) / pip_value
+            risk_amount = risk_pips * pip_value * position_size
+            risk_percent = (risk_amount / self.account_balance) * 100
             
-            # Stop Loss masofasini hisoblash (pip hisobida)
-            pip_size = 0.0001 if 'JPY' not in symbol else 0.01
-            sl_distance_pips = abs(entry_price - stop_loss_price) / pip_size
+            # Reward ratio hisoblash
+            reward_pips = abs(take_profit - entry_price) / pip_value
+            reward_ratio = reward_pips / risk_pips if risk_pips > 0 else 0
             
-            # Lot hajmini hisoblash
-            if sl_distance_pips > 0 and pip_value > 0:
-                lot_size = risk_amount / (sl_distance_pips * pip_value)
-            else:
-                lot_size = 0.01  # minimal lot
+            trade_risk = TradeRisk(
+                symbol=symbol,
+                position_type=position_type,
+                entry_price=entry_price,
+                stop_loss=stop_loss,
+                take_profit=take_profit,
+                position_size=position_size,
+                risk_amount=risk_amount,
+                risk_percent=risk_percent,
+                reward_ratio=reward_ratio,
+                pip_value=pip_value
+            )
             
-            # Lot hajmini cheklash
-            lot_size = max(0.01, min(lot_size, 5.0))
-            
-            # 0.01 ga yaxlitlash
-            lot_size = round(lot_size, 2)
-            
-            return lot_size
+            logger.info(f"Savdo riski hisoblandi: {symbol} - Risk: {risk_percent:.2f}%")
+            return trade_risk
             
         except Exception as e:
-            logger.error(f"Lot hajmini hisoblashda xato: {e}")
-            return 0.01
-
-    async def _calculate_max_lot_size(self, account_balance: float, symbol: str,
-                                    risk_level: RiskLevel) -> float:
-        """
-        Maksimal lot hajmini hisoblash
-        
-        Args:
-            account_balance: Akkaunt balansi
-            symbol: Valyuta juftligi
-            risk_level: Risk darajasi
-            
-        Returns:
-            float: Maksimal lot hajmi
-        """
+            logger.error(f"Savdo riski hisoblashda xato: {e}")
+            raise
+    
+    async def check_trade_approval(self, trade_risk: TradeRisk) -> Dict:
+        """Savdoni tasdiqlash yoki rad etish"""
         try:
-            # Risk darajasiga qarab maksimal lot
-            max_lots = {
-                RiskLevel.LOW: 1.0,
-                RiskLevel.MEDIUM: 0.5,
-                RiskLevel.HIGH: 0.25,
-                RiskLevel.EXTREME: 0.1
+            approval_result = {
+                "approved": False,
+                "reason": "",
+                "risk_level": RiskLevel.LOW,
+                "recommendations": []
             }
             
-            base_max_lot = max_lots[risk_level]
+            # Propshot limitlarini tekshirish
+            if not await self._check_daily_loss_limit(trade_risk.risk_amount):
+                approval_result["reason"] = "Kunlik zarar limiti oshib ketdi"
+                approval_result["risk_level"] = RiskLevel.EXTREME
+                return approval_result
             
-            # Balansga qarab sozlash
-            if account_balance < 1000:
-                base_max_lot *= 0.5
-            elif account_balance > 10000:
-                base_max_lot *= 1.5
+            if not await self._check_total_loss_limit(trade_risk.risk_amount):
+                approval_result["reason"] = "Umumiy zarar limiti oshib ketdi"
+                approval_result["risk_level"] = RiskLevel.EXTREME
+                return approval_result
             
-            return round(base_max_lot, 2)
+            if trade_risk.position_size > self.propshot_limits.max_lot_size:
+                approval_result["reason"] = "Lot hajmi limiti oshib ketdi"
+                approval_result["risk_level"] = RiskLevel.HIGH
+                return approval_result
             
-        except Exception as e:
-            logger.error(f"Max lot hisoblashda xato: {e}")
-            return 0.1
-
-    async def _calculate_risk_reward_ratio(self, entry_price: float, stop_loss_price: float,
-                                         take_profit_price: float, direction: str) -> float:
-        """
-        Risk/Reward ratio hisoblash
-        
-        Args:
-            entry_price: Kirish narxi
-            stop_loss_price: Stop Loss narxi
-            take_profit_price: Take Profit narxi
-            direction: Savdo yo'nalishi
+            if len(self.daily_trades) >= self.propshot_limits.max_daily_trades:
+                approval_result["reason"] = "Kunlik savdo limiti oshib ketdi"
+                approval_result["risk_level"] = RiskLevel.HIGH
+                return approval_result
             
-        Returns:
-            float: Risk/Reward ratio
-        """
-        try:
-            # Risk va reward masofasini hisoblash
-            risk_distance = abs(entry_price - stop_loss_price)
-            reward_distance = abs(take_profit_price - entry_price)
+            # Risk darajasini baholash
+            risk_level = await self._assess_risk_level(trade_risk)
+            approval_result["risk_level"] = risk_level
             
-            if risk_distance > 0:
-                ratio = reward_distance / risk_distance
+            # Reward ratio tekshirish
+            if trade_risk.reward_ratio < 1.5:
+                approval_result["recommendations"].append(
+                    "Reward ratio past (< 1.5). Take profit ni oshiring."
+                )
+            
+            # Risk foizini tekshirish
+            if trade_risk.risk_percent > 2.0:
+                approval_result["recommendations"].append(
+                    "Risk foizi yuqori (> 2%). Pozitsiya hajmini kamaytiring."
+                )
+            
+            # Tasdiqlash
+            if risk_level in [RiskLevel.LOW, RiskLevel.MEDIUM]:
+                approval_result["approved"] = True
+                approval_result["reason"] = "Savdo tasdiqlandi"
             else:
-                ratio = 0
+                approval_result["reason"] = "Risk darajasi juda yuqori"
             
-            return round(ratio, 2)
+            logger.info(f"Savdo tasdiqlanishi: {approval_result['approved']} - {approval_result['reason']}")
+            return approval_result
             
         except Exception as e:
-            logger.error(f"Risk/Reward ratio hisoblashda xato: {e}")
-            return 0
-
-    async def _calculate_confidence_score(self, risk_level: RiskLevel, 
-                                        market_condition: MarketCondition,
-                                        risk_reward_ratio: float) -> float:
-        """
-        Ishonch darajasini hisoblash
-        
-        Args:
-            risk_level: Risk darajasi
-            market_condition: Bozor holati
-            risk_reward_ratio: Risk/Reward ratio
-            
-        Returns:
-            float: Ishonch darajasi (0-100)
-        """
+            logger.error(f"Savdo tasdiqlashda xato: {e}")
+            return {"approved": False, "reason": f"Xato: {e}"}
+    
+    async def get_risk_metrics(self) -> RiskMetrics:
+        """Joriy risk ko'rsatkichlarini olish"""
         try:
-            confidence = 50  # base confidence
+            # Kunlik zarar hisoblash
+            today = datetime.now().date()
+            daily_loss = sum(
+                trade.get("loss", 0) for trade in self.daily_trades
+                if trade.get("date", datetime.now().date()) == today
+            )
             
-            # Risk darajasiga qarab
-            if risk_level == RiskLevel.LOW:
-                confidence += 20
-            elif risk_level == RiskLevel.MEDIUM:
-                confidence += 10
-            elif risk_level == RiskLevel.HIGH:
-                confidence -= 10
-            else:  # EXTREME
-                confidence -= 20
+            # Risk darajasini baholash
+            risk_level = RiskLevel.LOW
+            if daily_loss > self.propshot_limits.max_daily_loss * 0.5:
+                risk_level = RiskLevel.MEDIUM
+            if daily_loss > self.propshot_limits.max_daily_loss * 0.8:
+                risk_level = RiskLevel.HIGH
+            if daily_loss > self.propshot_limits.max_daily_loss:
+                risk_level = RiskLevel.EXTREME
             
-            # Bozor holatiga qarab
-            if market_condition == MarketCondition.TRENDING:
-                confidence += 15
-            elif market_condition == MarketCondition.CALM:
-                confidence += 5
-            elif market_condition == MarketCondition.VOLATILE:
-                confidence -= 15
+            # Ruxsat etilgan pozitsiya hajmini hisoblash
+            remaining_daily_risk = self.propshot_limits.max_daily_loss - daily_loss
+            allowed_position_size = min(
+                self.propshot_limits.max_lot_size,
+                remaining_daily_risk / 0.02  # 2% per trade
+            )
             
-            # Risk/Reward ratio ga qarab
-            if risk_reward_ratio >= 3.0:
-                confidence += 15
-            elif risk_reward_ratio >= 2.0:
-                confidence += 10
-            elif risk_reward_ratio >= 1.5:
-                confidence += 5
+            metrics = RiskMetrics(
+                max_risk_per_trade=0.02,
+                max_daily_loss=self.propshot_limits.max_daily_loss,
+                max_total_loss=self.propshot_limits.max_total_loss,
+                current_daily_loss=daily_loss,
+                current_total_loss=self.total_loss,
+                risk_level=risk_level,
+                allowed_position_size=max(0, allowed_position_size)
+            )
+            
+            return metrics
+            
+        except Exception as e:
+            logger.error(f"Risk ko'rsatkichlarini olishda xato: {e}")
+            raise
+    
+    async def kelly_criterion(self, 
+                            win_rate: float,
+                            avg_win: float,
+                            avg_loss: float) -> float:
+        """Kelly kriteriyasi bo'yicha optimal pozitsiya hajmi"""
+        try:
+            if avg_loss == 0:
+                return 0.0
+            
+            # Kelly formulasi: f* = (bp - q) / b
+            # b = avg_win / avg_loss (odds)
+            # p = win_rate
+            # q = 1 - p
+            
+            b = avg_win / avg_loss
+            p = win_rate
+            q = 1 - p
+            
+            kelly_fraction = (b * p - q) / b
+            
+            # Kelly ni cheklash (max 25%)
+            kelly_fraction = max(0, min(kelly_fraction, 0.25))
+            
+            logger.info(f"Kelly kriteriyasi: {kelly_fraction:.4f}")
+            return kelly_fraction
+            
+        except Exception as e:
+            logger.error(f"Kelly kriteriyasida xato: {e}")
+            return 0.02  # Default 2%
+    
+    async def _calculate_pip_value(self, symbol: str, price: float) -> float:
+        """Pip qiymatini hisoblash"""
+        try:
+            # Forex juftliklari uchun pip qiymati
+            if "JPY" in symbol:
+                return 0.01  # JPY juftliklari uchun
+            elif "USD" in symbol:
+                return 0.0001  # USD juftliklari uchun
             else:
-                confidence -= 10
-            
-            # 0-100 oralig'ida cheklash
-            confidence = max(0, min(100, confidence))
-            
-            return round(confidence, 1)
-            
+                return 0.0001  # Default pip qiymati
+                
         except Exception as e:
-            logger.error(f"Ishonch darajasini hisoblashda xato: {e}")
-            return 50.0
-
-    async def _generate_warnings(self, risk_level: RiskLevel, recommended_lot_size: float,
-                               max_lot_size: float, risk_reward_ratio: float,
-                               market_condition: MarketCondition) -> List[str]:
-        """
-        Ogohlantirishlar yaratish
-        
-        Args:
-            risk_level: Risk darajasi
-            recommended_lot_size: Tavsiya etilgan lot hajmi
-            max_lot_size: Maksimal lot hajmi
-            risk_reward_ratio: Risk/Reward ratio
-            market_condition: Bozor holati
-            
-        Returns:
-            List[str]: Ogohlantirishlar ro'yxati
-        """
-        warnings = []
-        
+            logger.error(f"Pip qiymatini hisoblashda xato: {e}")
+            return 0.0001
+    
+    async def _check_propshot_limits(self, position_size: float) -> float:
+        """Propshot limitlarini tekshirish"""
         try:
-            # Yuqori risk ogohlantirish
-            if risk_level == RiskLevel.HIGH:
-                warnings.append("⚠️ Yuqori risk darajasi - ehtiyotkorlik tavsiya etiladi")
-            elif risk_level == RiskLevel.EXTREME:
-                warnings.append("🚨 Haddan tashqari risk - savdo tavsiya etilmaydi")
+            # Maksimal lot hajmi
+            max_size = self.propshot_limits.max_lot_size
             
-            # Lot hajmi ogohlantirish
-            if recommended_lot_size > max_lot_size:
-                warnings.append(f"⚠️ Tavsiya etilgan lot hajmi ({recommended_lot_size}) maksimaldan katta")
+            # Kunlik savdo limitini tekshirish
+            if len(self.daily_trades) >= self.propshot_limits.max_daily_trades:
+                return 0.0
             
-            # Risk/Reward ratio ogohlantirish
-            if risk_reward_ratio < self.min_risk_reward:
-                warnings.append(f"⚠️ Risk/Reward ratio ({risk_reward_ratio}) juda past")
+            # Kunlik zarar limitini tekshirish
+            if self.daily_loss >= self.propshot_limits.max_daily_loss:
+                return 0.0
             
-            # Bozor holati ogohlantirish
-            if market_condition == MarketCondition.VOLATILE:
-                warnings.append("⚠️ Bozor juda o'zgaruvchan - ehtiyotkorlik tavsiya etiladi")
-            
-            # Minimal lot ogohlantirish
-            if recommended_lot_size < 0.01:
-                warnings.append("⚠️ Juda kichik lot hajmi - savdo samarasiz bo'lishi mumkin")
+            return min(position_size, max_size)
             
         except Exception as e:
-            logger.error(f"Ogohlantirishlar yaratishda xato: {e}")
-            warnings.append("⚠️ Risk tahlilida xato yuz berdi")
-        
-        return warnings
-
-    async def check_daily_risk_limits(self, current_losses: float, account_balance: float) -> bool:
-        """
-        Kunlik risk limitlarini tekshirish
-        
-        Args:
-            current_losses: Joriy kunlik yo'qotishlar
-            account_balance: Akkaunt balansi
-            
-        Returns:
-            bool: Savdo davom etish mumkinmi
-        """
+            logger.error(f"Propshot limitlarini tekshirishda xato: {e}")
+            return 0.0
+    
+    async def _check_daily_loss_limit(self, risk_amount: float) -> bool:
+        """Kunlik zarar limitini tekshirish"""
         try:
-            daily_loss_percent = abs(current_losses) / account_balance
-            
-            if daily_loss_percent >= self.max_daily_loss:
-                logger.warning(f"Kunlik yo'qotish limiti oshdi: {daily_loss_percent:.2%}")
-                return False
-            
-            return True
+            potential_loss = self.daily_loss + risk_amount
+            return potential_loss <= self.propshot_limits.max_daily_loss * self.account_balance
             
         except Exception as e:
-            logger.error(f"Kunlik risk limitini tekshirishda xato: {e}")
+            logger.error(f"Kunlik zarar limitini tekshirishda xato: {e}")
             return False
-
-    async def update_market_volatility(self, symbol: str, volatility: float) -> None:
-        """
-        Bozor volatilligini yangilash
-        
-        Args:
-            symbol: Valyuta juftligi
-            volatility: Volatillik qiymat
-        """
+    
+    async def _check_total_loss_limit(self, risk_amount: float) -> bool:
+        """Umumiy zarar limitini tekshirish"""
         try:
-            self.market_volatility[symbol] = {
-                'volatility': volatility,
-                'updated_at': datetime.now()
-            }
-            
-            # Eski ma'lumotlarni tozalash (24 soatdan katta)
-            cutoff_time = datetime.now() - timedelta(hours=24)
-            self.market_volatility = {
-                k: v for k, v in self.market_volatility.items()
-                if v['updated_at'] > cutoff_time
-            }
+            potential_loss = self.total_loss + risk_amount
+            return potential_loss <= self.propshot_limits.max_total_loss * self.account_balance
             
         except Exception as e:
-            logger.error(f"Volatillikni yangilashda xato: {e}")
-
-    async def get_risk_summary(self) -> Dict:
-        """
-        Risk xulosasi olish
-        
-        Returns:
-            Dict: Risk xulosasi
-        """
+            logger.error(f"Umumiy zarar limitini tekshirishda xato: {e}")
+            return False
+    
+    async def _assess_risk_level(self, trade_risk: TradeRisk) -> RiskLevel:
+        """Risk darajasini baholash"""
         try:
-            return {
-                'max_risk_per_trade': self.max_risk_per_trade,
-                'max_daily_loss': self.max_daily_loss,
-                'max_total_exposure': self.max_total_exposure,
-                'min_risk_reward': self.min_risk_reward,
-                'market_volatility_count': len(self.market_volatility),
-                'recent_trades_count': len(self.recent_trades),
-                'status': 'active'
+            # Risk foiziga asoslangan baholash
+            if trade_risk.risk_percent <= 1.0:
+                return RiskLevel.LOW
+            elif trade_risk.risk_percent <= 2.0:
+                return RiskLevel.MEDIUM
+            elif trade_risk.risk_percent <= 3.0:
+                return RiskLevel.HIGH
+            else:
+                return RiskLevel.EXTREME
+                
+        except Exception as e:
+            logger.error(f"Risk darajasini baholashda xato: {e}")
+            return RiskLevel.EXTREME
+    
+    async def update_daily_loss(self, loss_amount: float):
+        """Kunlik zaralni yangilash"""
+        try:
+            self.daily_loss += loss_amount
+            self.total_loss += loss_amount
+            
+            # Savdo tarixini yangilash
+            self.daily_trades.append({
+                "date": datetime.now().date(),
+                "loss": loss_amount,
+                "timestamp": datetime.now()
+            })
+            
+            logger.info(f"Kunlik zarar yangilandi: {self.daily_loss:.2f}")
+            
+        except Exception as e:
+            logger.error(f"Kunlik zaralni yangilashda xato: {e}")
+    
+    async def reset_daily_metrics(self):
+        """Kunlik ko'rsatkichlarni qayta tiklash"""
+        try:
+            self.daily_loss = 0.0
+            self.daily_trades = []
+            logger.info("Kunlik ko'rsatkichlar qayta tiklandi")
+            
+        except Exception as e:
+            logger.error(f"Kunlik ko'rsatkichlarni qayta tiklashda xato: {e}")
+    
+    async def get_risk_summary(self) -> Dict:
+        """Risk xulosasini olish"""
+        try:
+            metrics = await self.get_risk_metrics()
+            
+            summary = {
+                "account_balance": self.account_balance,
+                "daily_loss": self.daily_loss,
+                "daily_loss_percent": (self.daily_loss / self.account_balance) * 100,
+                "total_loss": self.total_loss,
+                "total_loss_percent": (self.total_loss / self.account_balance) * 100,
+                "risk_level": metrics.risk_level.value,
+                "daily_trades_count": len(self.daily_trades),
+                "max_daily_trades": self.propshot_limits.max_daily_trades,
+                "allowed_position_size": metrics.allowed_position_size,
+                "max_lot_size": self.propshot_limits.max_lot_size,
+                "limits": {
+                    "max_daily_loss": self.propshot_limits.max_daily_loss,
+                    "max_total_loss": self.propshot_limits.max_total_loss,
+                    "max_lot_size": self.propshot_limits.max_lot_size,
+                    "max_daily_trades": self.propshot_limits.max_daily_trades
+                }
             }
+            
+            return summary
             
         except Exception as e:
             logger.error(f"Risk xulosasini olishda xato: {e}")
-            return {'status': 'error', 'error': str(e)}
+            return {"error": str(e)}
+
+# Singleton instance
+risk_calculator = RiskCalculator()
+
+async def main():
+    """Test funktsiyasi"""
+    try:
+        # Test ma'lumotlari
+        symbol = "EURUSD"
+        position_type = PositionType.BUY
+        entry_price = 1.0500
+        stop_loss = 1.0450
+        take_profit = 1.0600
+        position_size = 0.1
+        
+        # Savdo riskini hisoblash
+        trade_risk = await risk_calculator.calculate_trade_risk(
+            symbol, position_type, entry_price, stop_loss, take_profit, position_size
+        )
+        
+        print(f"Savdo riski: {trade_risk}")
+        
+        # Tasdiqlash
+        approval = await risk_calculator.check_trade_approval(trade_risk)
+        print(f"Tasdiqlash: {approval}")
+        
+        # Risk xulosasi
+        summary = await risk_calculator.get_risk_summary()
+        print(f"Risk xulosasi: {summary}")
+        
+    except Exception as e:
+        print(f"Test xatosi: {e}")
+
+if __name__ == "__main__":
+    asyncio.run(main())
