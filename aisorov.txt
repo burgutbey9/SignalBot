@@ -575,3 +575,612 @@ Masalan:
 - ✅ Type hints
 - ✅ O'zbekcha komentarlar
 - ✅ Async support
+
+
+# 📁 BO'SH PAPKALAR - FAYL YARATISH YO'RIQNOMASI
+
+## 📋 FAQAT BO'SH PAPKALARDAGI FAYLLAR
+
+### 📂 tests/ - Test Fayllar (8 ta fayl)
+
+#### 📄 tests/__init__.py
+```python
+# AI yo'riqnomasi: Bo'sh __init__.py fayl
+"""
+Test modulini yaratish
+"""
+pass
+```
+
+#### 📄 tests/test_config.py
+```
+AI PROMPT:
+"tests/test_config.py yaratish - Config testlari.
+Quyidagi testlar bo'lsin:
+- test_config_loading() - konfiguratsiya yuklash testi
+- test_api_keys_loading() - API kalitlar testi
+- test_fallback_config() - fallback konfiguratsiya testi
+- test_config_validation() - konfiguratsiya tekshirish testi
+- pytest fixtures ishlatish
+- Mock objects
+- Type hints
+- O'zbekcha komentarlar
+Fayl hajmi: 150-200 qator"
+```
+
+#### 📄 tests/test_api_clients.py
+```
+AI PROMPT:
+"tests/test_api_clients.py yaratish - API client testlari.
+Quyidagi testlar bo'lsin:
+- test_oneinch_client() - 1inch API testi
+- test_telegram_client() - Telegram API testi
+- test_huggingface_client() - HuggingFace API testi
+- test_rate_limiting() - rate limit testi
+- test_fallback_system() - fallback tizimi testi
+- API response mock qilish
+- Error handling testlari
+- Type hints
+- O'zbekcha komentarlar
+Fayl hajmi: 200-300 qator"
+```
+
+#### 📄 tests/test_data_processing.py
+```
+AI PROMPT:
+"tests/test_data_processing.py yaratish - Data processing testlari.
+Quyidagi testlar bo'lsin:
+- test_order_flow_analyzer() - order flow tahlil testi
+- test_sentiment_analyzer() - sentiment tahlil testi
+- test_signal_generator() - signal generator testi
+- test_market_analyzer() - market tahlil testi
+- Sample data bilan testlar
+- Processing accuracy testlari
+- Type hints
+- O'zbekcha komentarlar
+Fayl hajmi: 200-300 qator"
+```
+
+#### 📄 tests/test_risk_management.py
+```
+AI PROMPT:
+"tests/test_risk_management.py yaratish - Risk management testlari.
+Quyidagi testlar bo'lsin:
+- test_risk_calculator() - risk hisoblash testi
+- test_position_sizer() - position size testi
+- test_trade_monitor() - trade monitoring testi
+- test_propshot_limits() - propshot limit testlari
+- Risk scenario testlari
+- Limit checking testlari
+- Type hints
+- O'zbekcha komentarlar
+Fayl hajmi: 200-250 qator"
+```
+
+#### 📄 tests/test_trading.py
+```
+AI PROMPT:
+"tests/test_trading.py yaratish - Trading testlari.
+Quyidagi testlar bo'lsin:
+- test_strategy_manager() - strategiya boshqaruv testi
+- test_execution_engine() - savdo bajarish testi
+- test_propshot_connector() - propshot bog'lanish testi
+- test_backtest_engine() - backtest tizimi testi
+- Mock trading environment
+- Performance testlari
+- Type hints
+- O'zbekcha komentarlar
+Fayl hajmi: 250-300 qator"
+```
+
+#### 📄 tests/test_utils.py
+```
+AI PROMPT:
+"tests/test_utils.py yaratish - Utils testlari.
+Quyidagi testlar bo'lsin:
+- test_logger() - logger testi
+- test_error_handler() - error handler testi
+- test_rate_limiter() - rate limiter testi
+- test_retry_handler() - retry handler testi
+- test_fallback_manager() - fallback manager testi
+- Utility functions testlari
+- Type hints
+- O'zbekcha komentarlar
+Fayl hajmi: 200-250 qator"
+```
+
+#### 📄 tests/conftest.py
+```
+AI PROMPT:
+"tests/conftest.py yaratish - PyTest konfiguratsiya.
+Quyidagi fixtures bo'lsin:
+- mock_api_client() - API client mock
+- mock_database() - database mock
+- sample_data() - test ma'lumotlari
+- mock_telegram() - telegram mock
+- mock_config() - konfiguratsiya mock
+- pytest fixtures setup
+- Mock objects yaratish
+- Test environment setup
+- Type hints
+- O'zbekcha komentarlar
+Fayl hajmi: 150-200 qator"
+```
+
+### 📂 database/migrations/ - Database Migratsiya (6 ta fayl)
+
+#### 📄 database/migrations/__init__.py
+```python
+# AI yo'riqnomasi: Bo'sh __init__.py fayl
+"""
+Database migrations modulini yaratish
+"""
+pass
+```
+
+#### 📄 database/migrations/001_initial_tables.py
+```
+AI PROMPT:
+"database/migrations/001_initial_tables.py yaratish - Asosiy jadvallar.
+Quyidagi jadvallar bo'lsin:
+- users table - foydalanuvchilar jadvali
+- config table - konfiguratsiya jadvali
+- api_keys table - API kalitlar jadvali
+- settings table - sozlamalar jadvali
+- Alembic migration format
+- SQLAlchemy ORM
+- Table creation scripts
+- Type hints
+- O'zbekcha komentarlar
+Fayl hajmi: 200-250 qator"
+```
+
+#### 📄 database/migrations/002_add_signals_table.py
+```
+AI PROMPT:
+"database/migrations/002_add_signals_table.py yaratish - Signal jadvali.
+Quyidagi jadval bo'lsin:
+- signals table - signallar jadvali
+- signal_id, timestamp, symbol, action, price, confidence
+- stop_loss, take_profit, risk_percent
+- status, result, notes
+- Alembic migration
+- Foreign key relationships
+- Indexes
+- Type hints
+- O'zbekcha komentarlar
+Fayl hajmi: 150-200 qator"
+```
+
+#### 📄 database/migrations/003_add_trades_table.py
+```
+AI PROMPT:
+"database/migrations/003_add_trades_table.py yaratish - Savdo jadvali.
+Quyidagi jadval bo'lsin:
+- trades table - savdolar jadvali
+- trade_id, signal_id, entry_time, exit_time
+- entry_price, exit_price, lot_size, profit_loss
+- status, account_id, notes
+- Alembic migration
+- Foreign key to signals
+- Indexes
+- Type hints
+- O'zbekcha komentarlar
+Fayl hajmi: 150-200 qator"
+```
+
+#### 📄 database/migrations/004_add_logs_table.py
+```
+AI PROMPT:
+"database/migrations/004_add_logs_table.py yaratish - Log jadvali.
+Quyidagi jadval bo'lsin:
+- logs table - loglar jadvali
+- log_id, timestamp, level, module, message
+- error_details, stack_trace, user_id
+- Alembic migration
+- Log level enum
+- Text search indexes
+- Type hints
+- O'zbekcha komentarlar
+Fayl hajmi: 150-200 qator"
+```
+
+#### 📄 database/migrations/005_add_indexes.py
+```
+AI PROMPT:
+"database/migrations/005_add_indexes.py yaratish - Index qo'shish.
+Quyidagi indexlar bo'lsin:
+- timestamp indexes - vaqt bo'yicha
+- symbol indexes - simbol bo'yicha
+- status indexes - holat bo'yicha
+- user_id indexes - foydalanuvchi bo'yicha
+- composite indexes - murakkab indexlar
+- Alembic migration
+- Performance optimization
+- Type hints
+- O'zbekcha komentarlar
+Fayl hajmi: 100-150 qator"
+```
+
+### 📂 data/ - Ma'lumotlar (12 ta fayl)
+
+#### 📂 data/backtest/ - Backtest ma'lumotlari (3 ta fayl)
+
+#### 📄 data/backtest/historical_data.csv
+```
+AI PROMPT:
+"data/backtest/historical_data.csv yaratish - Tarixiy ma'lumotlar.
+Quyidagi ma'lumotlar bo'lsin:
+- timestamp, symbol, open, high, low, close, volume
+- EURUSD, GBPUSD, USDJPY, AUDUSD, USDCAD
+- 1 yillik ma'lumotlar
+- CSV format
+- Backtest uchun sample data
+- O'zbekcha header komentarlar
+Fayl hajmi: 1000-2000 qator"
+```
+
+#### 📄 data/backtest/strategy_results.json
+```
+AI PROMPT:
+"data/backtest/strategy_results.json yaratish - Strategiya natijalari.
+Quyidagi ma'lumotlar bo'lsin:
+- strategy_name, backtest_period, total_trades
+- win_rate, profit_factor, max_drawdown
+- sharpe_ratio, sortino_ratio, calmar_ratio
+- monthly_returns, yearly_returns
+- JSON format
+- Multiple strategies
+- Performance metrics
+- O'zbekcha field descriptions
+Fayl hajmi: 500-1000 qator"
+```
+
+#### 📄 data/backtest/performance_metrics.json
+```
+AI PROMPT:
+"data/backtest/performance_metrics.json yaratish - Performance metrikalar.
+Quyidagi metrikalar bo'lsin:
+- total_return, annualized_return, volatility
+- max_drawdown, recovery_time, var_95
+- correlation_matrix, beta, alpha
+- information_ratio, treynor_ratio
+- JSON format
+- Statistical metrics
+- Risk metrics
+- O'zbekcha descriptions
+Fayl hajmi: 300-500 qator"
+```
+
+#### 📂 data/models/ - AI modellari (3 ta fayl)
+
+#### 📄 data/models/sentiment_model.pkl
+```
+AI PROMPT:
+"data/models/sentiment_model.pkl yaratish - Sentiment AI modeli.
+Quyidagi model bo'lsin:
+- Trained sentiment classifier
+- Input: text, Output: sentiment score
+- Scikit-learn yoki HuggingFace model
+- Crypto/forex news uchun
+- Pickle format
+- Model versioning
+- Performance: 85%+ accuracy
+- O'zbekcha model description
+Binary fayl - 5-10 MB"
+```
+
+#### 📄 data/models/price_prediction_model.pkl
+```
+AI PROMPT:
+"data/models/price_prediction_model.pkl yaratish - Narx prognoz modeli.
+Quyidagi model bo'lsin:
+- Price prediction model
+- Input: OHLCV data, Output: price direction
+- LSTM yoki RandomForest
+- 1H-4H timeframe prediction
+- Pickle format
+- Model performance metrics
+- Feature importance
+- O'zbekcha model description
+Binary fayl - 10-20 MB"
+```
+
+#### 📄 data/models/signal_classifier.pkl
+```
+AI PROMPT:
+"data/models/signal_classifier.pkl yaratish - Signal klassifikator.
+Quyidagi model bo'lsin:
+- Signal quality classifier
+- Input: multiple indicators, Output: signal strength
+- Ensemble model
+- Buy/Sell/Hold classification
+- Pickle format
+- Cross-validation results
+- Feature engineering
+- O'zbekcha model description
+Binary fayl - 5-15 MB"
+```
+
+#### 📂 data/cache/ - Kesh ma'lumotlari (3 ta fayl)
+
+#### 📄 data/cache/market_data.json
+```
+AI PROMPT:
+"data/cache/market_data.json yaratish - Market ma'lumotlar keshi.
+Quyidagi ma'lumotlar bo'lsin:
+- cached_time, symbol, price, volume, change
+- bid, ask, spread, last_update
+- OHLCV data
+- Multiple timeframes
+- JSON format
+- Cache expiry time
+- Data freshness
+- O'zbekcha field names
+Fayl hajmi: 200-500 qator"
+```
+
+#### 📄 data/cache/orderflow_cache.json
+```
+AI PROMPT:
+"data/cache/orderflow_cache.json yaratish - Order flow keshi.
+Quyidagi ma'lumotlar bo'lsin:
+- cached_time, symbol, buy_pressure, sell_pressure
+- large_orders, whale_activity, flow_strength
+- liquidity_levels, support_resistance
+- JSON format
+- Real-time data cache
+- Cache validation
+- O'zbekcha descriptions
+Fayl hajmi: 300-600 qator"
+```
+
+#### 📄 data/cache/sentiment_cache.json
+```
+AI PROMPT:
+"data/cache/sentiment_cache.json yaratish - Sentiment keshi.
+Quyidagi ma'lumotlar bo'lsin:
+- cached_time, symbol, news_sentiment, social_sentiment
+- reddit_buzz, twitter_sentiment, overall_score
+- sentiment_sources, confidence_level
+- JSON format
+- Sentiment aggregation
+- Source tracking
+- O'zbekcha field descriptions
+Fayl hajmi: 200-400 qator"
+```
+
+#### 📂 data/exports/ - Export fayllar (3 ta fayl)
+
+#### 📄 data/exports/daily_report.csv
+```
+AI PROMPT:
+"data/exports/daily_report.csv yaratish - Kunlik hisobot.
+Quyidagi ma'lumotlar bo'lsin:
+- date, symbol, signal_count, trade_count
+- profit_loss, win_rate, drawdown
+- best_trade, worst_trade, total_pips
+- CSV format
+- Daily performance summary
+- Export template
+- O'zbekcha headers
+Fayl hajmi: 100-200 qator"
+```
+
+#### 📄 data/exports/weekly_summary.json
+```
+AI PROMPT:
+"data/exports/weekly_summary.json yaratish - Haftalik xulosa.
+Quyidagi ma'lumotlar bo'lsin:
+- week_start, week_end, total_trades, profit_loss
+- win_rate, sharpe_ratio, max_drawdown
+- best_day, worst_day, weekly_return
+- strategy_performance, risk_metrics
+- JSON format
+- Weekly analytics
+- O'zbekcha descriptions
+Fayl hajmi: 200-300 qator"
+```
+
+#### 📄 data/exports/monthly_stats.xlsx
+```
+AI PROMPT:
+"data/exports/monthly_stats.xlsx yaratish - Oylik statistika.
+Quyidagi ma'lumotlar bo'lsin:
+- Monthly performance sheets
+- Trade log sheet
+- Risk metrics sheet
+- Strategy comparison sheet
+- Charts va graphs
+- Excel format
+- Professional reporting
+- O'zbekcha sheet names
+Excel fayl - 1-2 MB"
+```
+
+### 📂 logs/ - Log fayllar (7 ta fayl)
+
+#### 📄 logs/bot.log
+```
+AI PROMPT:
+"logs/bot.log yaratish - Asosiy bot logi.
+Quyidagi log formatida:
+- timestamp, level, module, message
+- Bot startup/shutdown logs
+- Main process logs
+- Error summaries
+- Performance logs
+- O'zbekcha log messages
+- Rotation ready
+Sample log entries: 500-1000 qator"
+```
+
+#### 📄 logs/api_calls.log
+```
+AI PROMPT:
+"logs/api_calls.log yaratish - API so'rovlar logi.
+Quyidagi log formatida:
+- timestamp, api_name, endpoint, status_code
+- response_time, rate_limit_remaining
+- error_details, retry_count
+- Request/response logs
+- Performance monitoring
+- O'zbekcha descriptions
+Sample log entries: 300-500 qator"
+```
+
+#### 📄 logs/trading.log
+```
+AI PROMPT:
+"logs/trading.log yaratish - Savdo loglari.
+Quyidagi log formatida:
+- timestamp, symbol, action, price, lot_size
+- entry_time, exit_time, profit_loss
+- signal_id, strategy_name, confidence
+- Order execution logs
+- Trade results
+- O'zbekcha trading terms
+Sample log entries: 200-400 qator"
+```
+
+#### 📄 logs/errors.log
+```
+AI PROMPT:
+"logs/errors.log yaratish - Xatolar logi.
+Quyidagi log formatida:
+- timestamp, error_level, module, error_message
+- stack_trace, context_info
+- resolution_status, recovery_action
+- Critical errors
+- Exception handling
+- O'zbekcha error messages
+Sample log entries: 100-200 qator"
+```
+
+#### 📄 logs/fallback.log
+```
+AI PROMPT:
+"logs/fallback.log yaratish - Fallback loglari.
+Quyidagi log formatida:
+- timestamp, primary_service, fallback_service
+- failure_reason, switch_time, success_rate
+- Fallback activations
+- Service health monitoring
+- Recovery tracking
+- O'zbekcha status messages
+Sample log entries: 100-200 qator"
+```
+
+#### 📄 logs/telegram.log
+```
+AI PROMPT:
+"logs/telegram.log yaratish - Telegram loglari.
+Quyidagi log formatida:
+- timestamp, chat_id, message_type, status
+- signal_sent, user_response, callback_data
+- Telegram bot activities
+- Message delivery status
+- User interactions
+- O'zbekcha messages
+Sample log entries: 200-300 qator"
+```
+
+#### 📄 logs/archive/ (papka)
+```
+AI PROMPT:
+"logs/archive/ papka yaratish - Arxiv loglar.
+Quyidagi struktura bo'lsin:
+- 2024-01/, 2024-02/, 2024-03/ papkalar
+- Compressed log files
+- Monthly archives
+- Automatic cleanup
+- Storage optimization
+- O'zbekcha folder names
+Directory structure"
+```
+
+---
+
+## 📊 FAYLLAR STATISTIKASI
+
+### 📈 **Jami fayllar soni: 39 ta**
+
+#### 📂 **tests/**: 8 ta fayl
+- Python test fayllar: 7 ta
+- Konfiguratsiya: 1 ta
+
+#### 📂 **database/migrations/**: 6 ta fayl  
+- Migration scriptlar: 5 ta
+- Init fayl: 1 ta
+
+#### 📂 **data/**: 12 ta fayl
+- Backtest: 3 ta
+- Models: 3 ta  
+- Cache: 3 ta
+- Exports: 3 ta
+
+#### 📂 **logs/**: 7 ta fayl
+- Log fayllar: 6 ta
+- Archive papka: 1 ta
+
+### 💾 **Fayl hajmi taxminlari:**
+- **Kichik fayllar (100-200 qator):** 20 ta
+- **O'rtacha fayllar (200-500 qator):** 15 ta
+- **Katta fayllar (500+ qator):** 4 ta
+
+### 🎯 **Fayl turlari:**
+- **Python fayllar:** 20 ta
+- **JSON fayllar:** 10 ta
+- **CSV fayllar:** 4 ta
+- **Binary fayllar:** 3 ta
+- **Log fayllar:** 7 ta
+- **Excel fayllar:** 1 ta
+
+---
+
+## 🚀 YARATISH KETMA-KETLIGI
+
+### 1. **Testlar (muhim):**
+```
+1. tests/conftest.py
+2. tests/test_config.py
+3. tests/test_api_clients.py
+4. tests/test_utils.py
+```
+
+### 2. **Database migrations:**
+```
+5. database/migrations/001_initial_tables.py
+6. database/migrations/002_add_signals_table.py
+7. database/migrations/003_add_trades_table.py
+```
+
+### 3. **Data fayllar:**
+```
+8. data/cache/market_data.json
+9. data/backtest/historical_data.csv
+10. data/models/sentiment_model.pkl
+```
+
+### 4. **Log fayllar:**
+```
+11. logs/bot.log
+12. logs/api_calls.log
+13. logs/trading.log
+```
+
+---
+
+## 💡 FAYL YARATISH NAMUNASI
+
+```
+"tests/test_config.py yaratish - Config testlari.
+Kerakli testlar:
+- test_config_loading() - konfiguratsiya yuklash
+- test_api_keys_loading() - API kalitlar
+- test_validation() - validatsiya
+- pytest fixtures ishlatish
+- Mock objects
+- 150-200 qator
+- O'zbekcha komentarlar"
+```
