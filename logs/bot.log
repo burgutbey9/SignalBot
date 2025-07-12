@@ -1,0 +1,213 @@
+2024-07-12 07:00:01.123 - main - INFO - Bot ishga tushirildi - AI OrderFlow Signal Bot v1.0
+2024-07-12 07:00:01.125 - config - INFO - Konfiguratsiya muvaffaqiyatli yuklandi
+2024-07-12 07:00:01.127 - api_keys - INFO - API kalitlar tekshirildi: 15/15 aktiv
+2024-07-12 07:00:01.130 - database - INFO - Database ulanish muvaffaqiyatli - SQLite: bot.db
+2024-07-12 07:00:01.135 - fallback_manager - INFO - Fallback tizimi ishga tushirildi
+2024-07-12 07:00:01.140 - telegram_client - INFO - Telegram bot ulanish muvaffaqiyatli - Chat ID: 123456789
+2024-07-12 07:00:01.145 - oneinch_client - INFO - 1inch API ulanish tekshirildi - Rate limit: 100/100
+2024-07-12 07:00:01.150 - alchemy_client - INFO - Alchemy API ulanish muvaffaqiyatli - 4 endpoint aktiv
+2024-07-12 07:00:01.155 - huggingface_client - INFO - HuggingFace API ulanish muvaffaqiyatli - 2 model yuklandi
+2024-07-12 07:00:01.160 - gemini_client - INFO - Gemini API ulanish muvaffaqiyatli - 5/5 kalit aktiv
+2024-07-12 07:00:01.165 - main - INFO - Barcha API clientlar ishga tushirildi
+
+2024-07-12 07:00:05.200 - order_flow_analyzer - INFO - Order flow tahlil ishga tushirildi
+2024-07-12 07:00:05.205 - sentiment_analyzer - INFO - Sentiment tahlil ishga tushirildi
+2024-07-12 07:00:05.210 - market_analyzer - INFO - Market tahlil ishga tushirildi
+2024-07-12 07:00:05.215 - signal_generator - INFO - Signal generator ishga tushirildi
+2024-07-12 07:00:05.220 - risk_calculator - INFO - Risk calculator ishga tushirildi
+2024-07-12 07:00:05.225 - propshot_connector - INFO - Propshot EA bog'lanish muvaffaqiyatli
+2024-07-12 07:00:05.230 - main - INFO - Barcha tahlil modullari ishga tushirildi
+
+2024-07-12 07:00:10.300 - main - INFO - Bot to'liq ishga tushdi - UZB vaqti: 07:00:10
+2024-07-12 07:00:10.305 - telegram_client - INFO - Telegram ga xabar yuborildi: "Bot ishga tushdi ✅"
+2024-07-12 07:00:10.310 - main - INFO - Real-time monitoring boshlandi
+
+2024-07-12 07:05:15.456 - order_flow_analyzer - INFO - EURUSD: Katta buyurtma aniqlandi - 5.2M EUR
+2024-07-12 07:05:15.460 - sentiment_analyzer - INFO - EURUSD: Ijobiy sentiment - 78% ishonch
+2024-07-12 07:05:15.465 - market_analyzer - INFO - EURUSD: Texnik tahlil - Bullish signal
+2024-07-12 07:05:15.470 - signal_generator - INFO - Signal yaratildi: EURUSD BUY - 85% ishonch
+2024-07-12 07:05:15.475 - risk_calculator - INFO - Risk hisoblandi: 1.5% kapital, 0.02 lot
+2024-07-12 07:05:15.480 - telegram_client - INFO - Signal yuborildi: EURUSD BUY 1.0850
+2024-07-12 07:05:15.485 - propshot_connector - INFO - Propshot ga signal yuborildi - Order ID: 12345
+
+2024-07-12 07:15:30.789 - fallback_manager - WARNING - 1inch API sekin javob berdi - 5.2s
+2024-07-12 07:15:30.795 - thegraph_client - INFO - Fallback: The Graph API ishlatildi
+2024-07-12 07:15:30.800 - telegram_client - INFO - Fallback xabari yuborildi: "1inch API sekin - The Graph ishlatildi"
+
+2024-07-12 07:20:45.123 - trading_monitor - INFO - EURUSD BUY pozitsiya ochildi - Entry: 1.0850
+2024-07-12 07:20:45.128 - risk_calculator - INFO - Stop Loss: 1.0830, Take Profit: 1.0880
+2024-07-12 07:20:45.133 - telegram_client - INFO - Pozitsiya ochildi xabari yuborildi
+
+2024-07-12 07:25:12.456 - market_analyzer - INFO - GBPUSD: Volatillik oshdi - 45 pips/soat
+2024-07-12 07:25:12.461 - sentiment_analyzer - INFO - GBPUSD: Aralash sentiment - 52% ijobiy
+2024-07-12 07:25:12.466 - signal_generator - INFO - GBPUSD: Signal kuchsiz - 45% ishonch, rad etildi
+
+2024-07-12 07:30:00.000 - main - INFO - Yarim soatlik performance: 1 signal, 1 savdo, +12 pips
+2024-07-12 07:30:00.005 - database - INFO - Performance ma'lumotlar saqlandi
+
+2024-07-12 07:35:22.789 - huggingface_client - ERROR - HuggingFace API xatosi - 503 Service Unavailable
+2024-07-12 07:35:22.795 - fallback_manager - WARNING - Sentiment fallback: Gemini API #1 ishlatildi
+2024-07-12 07:35:22.800 - gemini_client - INFO - Gemini API sentiment tahlil muvaffaqiyatli
+2024-07-12 07:35:22.805 - telegram_client - INFO - Fallback xabari: "HuggingFace ishlamadi - Gemini ishlatildi"
+
+2024-07-12 07:40:15.333 - news_client - INFO - Yangi xabar: "ECB faiz stavkasi o'zgarishi"
+2024-07-12 07:40:15.338 - sentiment_analyzer - INFO - Xabar tahlil: EUR kuchayishi kutiladi
+2024-07-12 07:40:15.343 - market_analyzer - INFO - Fundamental tahlil: EUR/USD ga ijobiy ta'sir
+
+2024-07-12 07:45:30.567 - trading_monitor - INFO - EURUSD BUY Take Profit ga yetdi - Exit: 1.0880
+2024-07-12 07:45:30.572 - risk_calculator - INFO - Foyda: +30 pips, +$150 (1.5% kapital)
+2024-07-12 07:45:30.577 - telegram_client - INFO - Muvaffaqiyatli savdo xabari yuborildi
+2024-07-12 07:45:30.582 - propshot_connector - INFO - Propshot ga yopilish signali yuborildi
+
+2024-07-12 07:50:45.678 - order_flow_analyzer - INFO - USDJPY: Katta sotish bosimi - 8.7M USD
+2024-07-12 07:50:45.683 - sentiment_analyzer - INFO - USDJPY: Salbiy sentiment - 72% bearish
+2024-07-12 07:50:45.688 - market_analyzer - INFO - USDJPY: Texnik tahlil - Bearish breakout
+2024-07-12 07:50:45.693 - signal_generator - INFO - Signal yaratildi: USDJPY SELL - 82% ishonch
+2024-07-12 07:50:45.698 - risk_calculator - INFO - Risk hisoblandi: 1.8% kapital, 0.02 lot
+2024-07-12 07:50:45.703 - telegram_client - INFO - Signal yuborildi: USDJPY SELL 148.50
+
+2024-07-12 08:00:00.000 - main - INFO - Soatlik performance: 2 signal, 1 yopilgan, +30 pips
+2024-07-12 08:00:00.005 - database - INFO - Soatlik statistika saqlandi
+2024-07-12 08:00:00.010 - main - INFO - Hozirgi kapital: $10,150 (+1.5%)
+
+2024-07-12 08:05:12.345 - reddit_client - INFO - Reddit buzz: Bitcoin va DXY muhokamasi
+2024-07-12 08:05:12.350 - sentiment_analyzer - INFO - Kripto sentiment USD ga ta'sir qilishi mumkin
+2024-07-12 08:05:12.355 - market_analyzer - INFO - Korrelyatsiya tahlil: BTC/USD va DXY
+
+2024-07-12 08:10:33.456 - ccxt_client - INFO - CEX ma'lumotlar yangilandi - 5 birja
+2024-07-12 08:10:33.461 - market_analyzer - INFO - Arbitraj imkoniyati: EUR/USD 0.3 pips farq
+2024-07-12 08:10:33.466 - signal_generator - INFO - Arbitraj signal kuchsiz - rad etildi
+
+2024-07-12 08:15:44.567 - trading_monitor - INFO - USDJPY SELL pozitsiya ochildi - Entry: 148.50
+2024-07-12 08:15:44.572 - risk_calculator - INFO - Stop Loss: 148.70, Take Profit: 148.00
+2024-07-12 08:15:44.577 - telegram_client - INFO - Yangi pozitsiya xabari yuborildi
+
+2024-07-12 08:20:55.678 - alchemy_client - INFO - On-chain tahlil: ETH/USD o'zgarish signallari
+2024-07-12 08:20:55.683 - order_flow_analyzer - INFO - Kripto-forex korrelyatsiya kuzatildi
+2024-07-12 08:20:55.688 - market_analyzer - INFO - Cross-market tahlil amalga oshirildi
+
+2024-07-12 08:25:11.789 - gemini_client - WARNING - Gemini API #2 rate limit - #3 ga o'tildi
+2024-07-12 08:25:11.795 - fallback_manager - INFO - Gemini fallback muvaffaqiyatli bajarildi
+2024-07-12 08:25:11.800 - telegram_client - INFO - Rate limit xabari yuborildi
+
+2024-07-12 08:30:00.000 - main - INFO - Yarim soatlik performance: 1 yangi signal, 1 ochiq pozitsiya
+2024-07-12 08:30:00.005 - database - INFO - Performance ma'lumotlar saqlandi
+2024-07-12 08:30:00.010 - main - INFO - Jami ochiq pozitsiyalar: 1 (USDJPY SELL)
+
+2024-07-12 08:35:22.123 - news_client - INFO - Yangi xabar: "US PCE ma'lumotlari e'lon qilindi"
+2024-07-12 08:35:22.128 - sentiment_analyzer - INFO - Fundamental tahlil: USD ga ijobiy ta'sir
+2024-07-12 08:35:22.133 - trading_monitor - WARNING - USDJPY SELL pozitsiya riskda - fundamental o'zgarish
+
+2024-07-12 08:40:33.234 - risk_calculator - INFO - Pozitsiya risk darajasi yangilandi - 2.1%
+2024-07-12 08:40:33.239 - trading_monitor - INFO - Stop Loss 148.65 ga yaqinlashtirildi
+2024-07-12 08:40:33.244 - telegram_client - INFO - Risk boshqaruv xabari yuborildi
+
+2024-07-12 08:45:44.345 - order_flow_analyzer - INFO - AUDUSD: Katta buyurtma - 4.1M AUD
+2024-07-12 08:45:44.350 - sentiment_analyzer - INFO - AUDUSD: Ijobiy sentiment - 69% bullish
+2024-07-12 08:45:44.355 - market_analyzer - INFO - AUDUSD: Texnik tahlil - Bullish momentum
+2024-07-12 08:45:44.360 - signal_generator - INFO - Signal yaratildi: AUDUSD BUY - 73% ishonch
+2024-07-12 08:45:44.365 - risk_calculator - WARNING - Kunlik risk limiti tekshirildi - 3.6%/5%
+2024-07-12 08:45:44.370 - telegram_client - INFO - Signal yuborildi: AUDUSD BUY 0.6750
+
+2024-07-12 08:50:55.456 - propshot_connector - INFO - Propshot daily limit tekshirildi - 2/3 savdo
+2024-07-12 08:50:55.461 - trading_monitor - INFO - AUDUSD BUY pozitsiya ochildi - Entry: 0.6750
+2024-07-12 08:50:55.466 - risk_calculator - INFO - Stop Loss: 0.6730, Take Profit: 0.6780
+
+2024-07-12 08:55:11.567 - main - INFO - Ochiq pozitsiyalar: 2 (USDJPY SELL, AUDUSD BUY)
+2024-07-12 08:55:11.572 - risk_calculator - INFO - Umumiy risk: 3.9% kapital
+2024-07-12 08:55:11.577 - database - INFO - Risk ma'lumotlar saqlandi
+
+2024-07-12 09:00:00.000 - main - INFO - Soatlik performance: 3 signal, 2 ochiq pozitsiya
+2024-07-12 09:00:00.005 - database - INFO - Soatlik statistika saqlandi
+2024-07-12 09:00:00.010 - main - INFO - Kunlik progress: 3 signal, 66% win rate
+
+2024-07-12 09:05:22.678 - claude_client - INFO - Claude API fallback ishlatildi - sentiment tahlil
+2024-07-12 09:05:22.683 - fallback_manager - INFO - Gemini rate limit tugashi - Claude aktivlashtirildi
+2024-07-12 09:05:22.688 - telegram_client - INFO - AI fallback xabari yuborildi
+
+2024-07-12 09:10:33.789 - trading_monitor - INFO - USDJPY SELL Stop Loss ga yetdi - Exit: 148.65
+2024-07-12 09:10:33.794 - risk_calculator - INFO - Zarar: -15 pips, -$75 (0.75% kapital)
+2024-07-12 09:10:33.799 - telegram_client - INFO - Zarar xabari yuborildi
+2024-07-12 09:10:33.804 - propshot_connector - INFO - Propshot ga yopilish signali yuborildi
+
+2024-07-12 09:15:44.890 - order_flow_analyzer - INFO - GBPUSD: O'rtacha buyurtma faoliyati
+2024-07-12 09:15:44.895 - sentiment_analyzer - INFO - GBPUSD: Neytral sentiment - 48% ijobiy
+2024-07-12 09:15:44.900 - signal_generator - INFO - GBPUSD: Signal kuchsiz - 42% ishonch, rad etildi
+
+2024-07-12 09:20:55.123 - market_analyzer - INFO - Volatillik kamaydi - London ochilishini kutish
+2024-07-12 09:20:55.128 - main - INFO - Market faoliyati past - monitoring davom etadi
+
+2024-07-12 09:25:11.234 - trading_monitor - INFO - AUDUSD BUY pozitsiya monitoring - +8 pips
+2024-07-12 09:25:11.239 - risk_calculator - INFO - Joriy foyda: +$40 (0.4% kapital)
+2024-07-12 09:25:11.244 - telegram_client - INFO - Pozitsiya yangilanishi yuborildi
+
+2024-07-12 09:30:00.000 - main - INFO - Yarim soatlik performance: 0 yangi signal, 1 ochiq pozitsiya
+2024-07-12 09:30:00.005 - database - INFO - Performance ma'lumotlar saqlandi
+2024-07-12 09:30:00.010 - main - INFO - Jami P&L: +$75 (0.75% kapital)
+
+2024-07-12 09:35:22.345 - news_client - INFO - London market ochilishi yaqinlashdi
+2024-07-12 09:35:22.350 - market_analyzer - INFO - Volatillik oshishi kutiladi
+2024-07-12 09:35:22.355 - main - INFO - London session tayyorligi
+
+2024-07-12 09:40:33.456 - oneinch_client - INFO - 1inch API tezlik tiklandi - 2.1s response time
+2024-07-12 09:40:33.461 - fallback_manager - INFO - Primary service tiklandi
+2024-07-12 09:40:33.466 - telegram_client - INFO - API tiklanish xabari yuborildi
+
+2024-07-12 09:45:44.567 - order_flow_analyzer - INFO - EURUSD: Yangi katta buyurtma - 6.8M EUR
+2024-07-12 09:45:44.572 - sentiment_analyzer - INFO - EURUSD: Kuchli ijobiy sentiment - 84% bullish
+2024-07-12 09:45:44.577 - market_analyzer - INFO - EURUSD: London ochilishi, kuchli momentum
+2024-07-12 09:45:44.582 - signal_generator - INFO - Signal yaratildi: EURUSD BUY - 89% ishonch
+2024-07-12 09:45:44.587 - risk_calculator - INFO - Risk hisoblandi: 2.2% kapital, 0.03 lot
+2024-07-12 09:45:44.592 - telegram_client - INFO - Kuchli signal yuborildi: EURUSD BUY 1.0865
+
+2024-07-12 09:50:55.678 - propshot_connector - INFO - Propshot daily limit - 3/3 savdo (limit yetdi)
+2024-07-12 09:50:55.683 - trading_monitor - WARNING - Kunlik savdo limiti yetdi - yangi savdo rad etildi
+2024-07-12 09:50:55.688 - telegram_client - INFO - Savdo limit xabari yuborildi
+2024-07-12 09:50:55.693 - risk_calculator - INFO - Propshot himoya - limit saqlandi
+
+2024-07-12 09:55:11.789 - main - INFO - Kunlik savdo limiti yetdi - faqat monitoring
+2024-07-12 09:55:11.794 - database - INFO - Limit ma'lumotlar saqlandi
+2024-07-12 09:55:11.799 - main - INFO - Ochiq pozitsiyalar: 1 (AUDUSD BUY)
+
+2024-07-12 10:00:00.000 - main - INFO - Soatlik performance: 1 signal (limit), 1 ochiq pozitsiya
+2024-07-12 10:00:00.005 - database - INFO - Soatlik statistika saqlandi
+2024-07-12 10:00:00.010 - main - INFO - Kunlik P&L: +$75, Win Rate: 67%
+
+2024-07-12 10:05:22.123 - trading_monitor - INFO - AUDUSD BUY Take Profit ga yetdi - Exit: 0.6780
+2024-07-12 10:05:22.128 - risk_calculator - INFO - Foyda: +30 pips, +$150 (1.5% kapital)
+2024-07-12 10:05:22.133 - telegram_client - INFO - Muvaffaqiyatli savdo xabari yuborildi
+2024-07-12 10:05:22.138 - propshot_connector - INFO - Propshot ga yopilish signali yuborildi
+
+2024-07-12 10:10:33.234 - main - INFO - Barcha pozitsiyalar yopildi - kun yakunlandi
+2024-07-12 10:10:33.239 - database - INFO - Kunlik yakuniy statistika saqlandi
+2024-07-12 10:10:33.244 - main - INFO - Yakuniy P&L: +$225 (2.25% kapital)
+
+2024-07-12 10:15:44.345 - main - INFO - Monitoring rejimi - yangi signal izlash davom etadi
+2024-07-12 10:15:44.350 - telegram_client - INFO - Kun yakuniy hisobot yuborildi
+
+2024-07-12 10:30:00.000 - main - INFO - Yarim soatlik performance: 0 yangi signal, 0 ochiq pozitsiya
+2024-07-12 10:30:00.005 - database - INFO - Performance ma'lumotlar saqlandi
+2024-07-12 10:30:00.010 - main - INFO - Monitoring davom etadi - signal kutilmoqda
+
+2024-07-12 11:00:00.000 - main - INFO - Soatlik performance: 0 signal, monitoring rejimi
+2024-07-12 11:00:00.005 - database - INFO - Soatlik statistika saqlandi
+2024-07-12 11:00:00.010 - main - INFO - Tushdan keyin faollik kutiladi
+
+2024-07-12 12:00:00.000 - main - INFO - Tushlik performance: monitoring rejimi davom etadi
+2024-07-12 12:00:00.005 - database - INFO - Performance ma'lumotlar saqlandi
+2024-07-12 12:00:00.010 - main - INFO - US session tayyorligi
+
+2024-07-12 13:00:00.000 - main - INFO - Soatlik performance: 0 signal, monitoring aktiv
+2024-07-12 13:00:00.005 - database - INFO - Statistika saqlandi
+2024-07-12 13:00:00.010 - main - INFO - US market ochilishi yaqinlashdi
+
+2024-07-12 19:30:00.000 - main - INFO - Ish kuni yakunlandi - bot to'xtatilmoqda
+2024-07-12 19:30:00.005 - database - INFO - Yakuniy ma'lumotlar saqlandi
+2024-07-12 19:30:00.010 - telegram_client - INFO - Kun yakuniy hisobot yuborildi
+2024-07-12 19:30:00.015 - propshot_connector - INFO - Propshot bog'lanish uzildi
+2024-07-12 19:30:00.020 - main - INFO - Barcha API clientlar yopildi
+2024-07-12 19:30:00.025 - main - INFO - Bot to'xtatildi - Yakuniy P&L: +$225 (2.25%)
+
+2024-07-12 19:30:00.030 - main - INFO - Kechki monitoring rejimi boshlandi
+2024-07-12 19:30:00.035 - main - INFO - Keyingi ishga tushish: 2024-07-13 07:00:00
+2024-07-12 19:30:00.040 - main - INFO - ================== KUN YAKUNLANDI ==================
