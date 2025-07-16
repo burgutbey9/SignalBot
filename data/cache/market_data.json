@@ -1,0 +1,333 @@
+{
+  "_metadata": {
+    "created_at": "2024-12-15T10:30:00Z",
+    "last_updated": "2024-12-15T10:30:00Z",
+    "cache_version": "1.0",
+    "expiry_minutes": 5,
+    "description": "Market ma'lumotlar keshi - Real vaqt narx va volume ma'lumotlari"
+  },
+  "major_pairs": {
+    "EURUSD": {
+      "vaqt_belgi": "2024-12-15T10:30:00Z",
+      "simbol": "EURUSD",
+      "joriy_narx": 1.05234,
+      "ochilish_narxi": 1.05180,
+      "eng_yuqori": 1.05267,
+      "eng_past": 1.05142,
+      "yopilish_narxi": 1.05234,
+      "hajm": 145623.50,
+      "o'zgarish": 0.00054,
+      "o'zgarish_foiz": 0.051,
+      "savdo_narxi": {
+        "sotish": 1.05230,
+        "sotib_olish": 1.05238,
+        "spread": 0.00008
+      },
+      "oxirgi_yangilanish": "2024-12-15T10:30:00Z",
+      "likvidlik_darajasi": "yuqori",
+      "trend_yo'nalishi": "yuqoriga",
+      "qo'llab_quvvatlash": 1.05100,
+      "qarshilik": 1.05350,
+      "volatillik": 0.0023
+    },
+    "GBPUSD": {
+      "vaqt_belgi": "2024-12-15T10:30:00Z",
+      "simbol": "GBPUSD",
+      "joriy_narx": 1.26789,
+      "ochilish_narxi": 1.26654,
+      "eng_yuqori": 1.26823,
+      "eng_past": 1.26598,
+      "yopilish_narxi": 1.26789,
+      "hajm": 98765.25,
+      "o'zgarish": 0.00135,
+      "o'zgarish_foiz": 0.107,
+      "savdo_narxi": {
+        "sotish": 1.26785,
+        "sotib_olish": 1.26793,
+        "spread": 0.00008
+      },
+      "oxirgi_yangilanish": "2024-12-15T10:30:00Z",
+      "likvidlik_darajasi": "yuqori",
+      "trend_yo'nalishi": "yuqoriga",
+      "qo'llab_quvvatlash": 1.26500,
+      "qarshilik": 1.27000,
+      "volatillik": 0.0028
+    },
+    "USDJPY": {
+      "vaqt_belgi": "2024-12-15T10:30:00Z",
+      "simbol": "USDJPY",
+      "joriy_narx": 149.567,
+      "ochilish_narxi": 149.423,
+      "eng_yuqori": 149.678,
+      "eng_past": 149.234,
+      "yopilish_narxi": 149.567,
+      "hajm": 87432.80,
+      "o'zgarish": 0.144,
+      "o'zgarish_foiz": 0.096,
+      "savdo_narxi": {
+        "sotish": 149.563,
+        "sotib_olish": 149.571,
+        "spread": 0.008
+      },
+      "oxirgi_yangilanish": "2024-12-15T10:30:00Z",
+      "likvidlik_darajasi": "yuqori",
+      "trend_yo'nalishi": "yuqoriga",
+      "qo'llab_quvvatlash": 149.000,
+      "qarshilik": 150.000,
+      "volatillik": 0.0034
+    },
+    "AUDUSD": {
+      "vaqt_belgi": "2024-12-15T10:30:00Z",
+      "simbol": "AUDUSD",
+      "joriy_narx": 0.64125,
+      "ochilish_narxi": 0.64089,
+      "eng_yuqori": 0.64156,
+      "eng_past": 0.64045,
+      "yopilish_narxi": 0.64125,
+      "hajm": 56789.40,
+      "o'zgarish": 0.00036,
+      "o'zgarish_foiz": 0.056,
+      "savdo_narxi": {
+        "sotish": 0.64121,
+        "sotib_olish": 0.64129,
+        "spread": 0.00008
+      },
+      "oxirgi_yangilanish": "2024-12-15T10:30:00Z",
+      "likvidlik_darajasi": "o'rta",
+      "trend_yo'nalishi": "yuqoriga",
+      "qo'llab_quvvatlash": 0.64000,
+      "qarshilik": 0.64300,
+      "volatillik": 0.0021
+    }
+  },
+  "crypto_pairs": {
+    "BTCUSD": {
+      "vaqt_belgi": "2024-12-15T10:30:00Z",
+      "simbol": "BTCUSD",
+      "joriy_narx": 43567.89,
+      "ochilish_narxi": 43234.56,
+      "eng_yuqori": 43678.12,
+      "eng_past": 43098.45,
+      "yopilish_narxi": 43567.89,
+      "hajm": 2345.67,
+      "o'zgarish": 333.33,
+      "o'zgarish_foiz": 0.77,
+      "savdo_narxi": {
+        "sotish": 43565.00,
+        "sotib_olish": 43570.00,
+        "spread": 5.00
+      },
+      "oxirgi_yangilanish": "2024-12-15T10:30:00Z",
+      "likvidlik_darajasi": "yuqori",
+      "trend_yo'nalishi": "yuqoriga",
+      "qo'llab_quvvatlash": 43000.00,
+      "qarshilik": 44000.00,
+      "volatillik": 0.045
+    },
+    "ETHUSD": {
+      "vaqt_belgi": "2024-12-15T10:30:00Z",
+      "simbol": "ETHUSD",
+      "joriy_narx": 2456.78,
+      "ochilish_narxi": 2434.56,
+      "eng_yuqori": 2467.89,
+      "eng_past": 2423.45,
+      "yopilish_narxi": 2456.78,
+      "hajm": 15678.90,
+      "o'zgarish": 22.22,
+      "o'zgarish_foiz": 0.91,
+      "savdo_narxi": {
+        "sotish": 2456.00,
+        "sotib_olish": 2458.00,
+        "spread": 2.00
+      },
+      "oxirgi_yangilanish": "2024-12-15T10:30:00Z",
+      "likvidlik_darajasi": "yuqori",
+      "trend_yo'nalishi": "yuqoriga",
+      "qo'llab_quvvatlash": 2400.00,
+      "qarshilik": 2500.00,
+      "volatillik": 0.038
+    }
+  },
+  "timeframes": {
+    "M1": {
+      "oxirgi_yangilanish": "2024-12-15T10:30:00Z",
+      "keyingi_yangilanish": "2024-12-15T10:31:00Z",
+      "ma'lumotlar_soni": 1440,
+      "holati": "faol"
+    },
+    "M5": {
+      "oxirgi_yangilanish": "2024-12-15T10:30:00Z",
+      "keyingi_yangilanish": "2024-12-15T10:35:00Z",
+      "ma'lumotlar_soni": 288,
+      "holati": "faol"
+    },
+    "M15": {
+      "oxirgi_yangilanish": "2024-12-15T10:30:00Z",
+      "keyingi_yangilanish": "2024-12-15T10:45:00Z",
+      "ma'lumotlar_soni": 96,
+      "holati": "faol"
+    },
+    "H1": {
+      "oxirgi_yangilanish": "2024-12-15T10:00:00Z",
+      "keyingi_yangilanish": "2024-12-15T11:00:00Z",
+      "ma'lumotlar_soni": 24,
+      "holati": "faol"
+    },
+    "H4": {
+      "oxirgi_yangilanish": "2024-12-15T08:00:00Z",
+      "keyingi_yangilanish": "2024-12-15T12:00:00Z",
+      "ma'lumotlar_soni": 6,
+      "holati": "faol"
+    },
+    "D1": {
+      "oxirgi_yangilanish": "2024-12-15T00:00:00Z",
+      "keyingi_yangilanish": "2024-12-16T00:00:00Z",
+      "ma'lumotlar_soni": 1,
+      "holati": "faol"
+    }
+  },
+  "market_status": {
+    "forex": {
+      "holati": "ochiq",
+      "yopilish_vaqti": "2024-12-15T21:00:00Z",
+      "ochilish_vaqti": "2024-12-16T21:00:00Z",
+      "seanslar": {
+        "sydney": {
+          "holati": "yopiq",
+          "ochilish": "21:00",
+          "yopilish": "06:00"
+        },
+        "tokyo": {
+          "holati": "ochiq",
+          "ochilish": "00:00",
+          "yopilish": "09:00"
+        },
+        "london": {
+          "holati": "ochiq",
+          "ochilish": "08:00",
+          "yopilish": "17:00"
+        },
+        "new_york": {
+          "holati": "kutilmoqda",
+          "ochilish": "13:00",
+          "yopilish": "22:00"
+        }
+      },
+      "likvidlik_darajasi": "yuqori"
+    },
+    "crypto": {
+      "holati": "24/7_ochiq",
+      "yopilish_vaqti": null,
+      "ochilish_vaqti": null,
+      "likvidlik_darajasi": "yuqori"
+    }
+  },
+  "volatility_data": {
+    "EURUSD": {
+      "kunlik_volatillik": 0.0023,
+      "haftalik_volatillik": 0.0087,
+      "oylik_volatillik": 0.0234,
+      "ATR_14": 0.00089,
+      "volatillik_darajasi": "past"
+    },
+    "GBPUSD": {
+      "kunlik_volatillik": 0.0028,
+      "haftalik_volatillik": 0.0098,
+      "oylik_volatillik": 0.0267,
+      "ATR_14": 0.00102,
+      "volatillik_darajasi": "o'rta"
+    },
+    "USDJPY": {
+      "kunlik_volatillik": 0.0034,
+      "haftalik_volatillik": 0.0123,
+      "oylik_volatillik": 0.0298,
+      "ATR_14": 0.156,
+      "volatillik_darajasi": "o'rta"
+    },
+    "BTCUSD": {
+      "kunlik_volatillik": 0.045,
+      "haftalik_volatillik": 0.089,
+      "oylik_volatillik": 0.234,
+      "ATR_14": 1456.78,
+      "volatillik_darajasi": "yuqori"
+    }
+  },
+  "liquidity_levels": {
+    "EURUSD": {
+      "qo'llab_quvvatlash_darajalari": [1.05100, 1.05050, 1.05000],
+      "qarshilik_darajalari": [1.05350, 1.05400, 1.05500],
+      "hajm_profili": {
+        "yuqori_hajm_zonasi": [1.05200, 1.05250],
+        "past_hajm_zonasi": [1.05150, 1.05175]
+      },
+      "katta_buyurtmalar": {
+        "sotish_buyurtmalari": [1.05400, 1.05500],
+        "sotib_olish_buyurtmalari": [1.05100, 1.05000]
+      }
+    },
+    "GBPUSD": {
+      "qo'llab_quvvatlash_darajalari": [1.26500, 1.26400, 1.26300],
+      "qarshilik_darajalari": [1.27000, 1.27100, 1.27200],
+      "hajm_profili": {
+        "yuqori_hajm_zonasi": [1.26700, 1.26800],
+        "past_hajm_zonasi": [1.26600, 1.26650]
+      },
+      "katta_buyurtmalar": {
+        "sotish_buyurtmalari": [1.27000, 1.27100],
+        "sotib_olish_buyurtmalari": [1.26500, 1.26400]
+      }
+    }
+  },
+  "correlation_matrix": {
+    "EURUSD_GBPUSD": 0.78,
+    "EURUSD_USDJPY": -0.45,
+    "GBPUSD_USDJPY": -0.52,
+    "AUDUSD_EURUSD": 0.67,
+    "BTCUSD_EURUSD": 0.23,
+    "ETHUSD_BTCUSD": 0.89,
+    "oxirgi_hisoblash": "2024-12-15T10:30:00Z",
+    "hisoblash_davri": "30_kun"
+  },
+  "economic_calendar": {
+    "bugun": [
+      {
+        "vaqt": "14:30",
+        "mamlakat": "AQSh",
+        "voqea": "Ishsizlik ma'lumotlari",
+        "kutilayotgan": "3.7%",
+        "oldingi": "3.9%",
+        "muhimlik": "yuqori"
+      },
+      {
+        "vaqt": "16:00",
+        "mamlakat": "Yevropa",
+        "voqea": "Markaziy bank yig'ilishi",
+        "kutilayotgan": "4.50%",
+        "oldingi": "4.25%",
+        "muhimlik": "juda_yuqori"
+      }
+    ],
+    "ertaga": [
+      {
+        "vaqt": "09:30",
+        "mamlakat": "Buyuk_Britaniya",
+        "voqea": "Inflyatsiya ma'lumotlari",
+        "kutilayotgan": "2.1%",
+        "oldingi": "2.3%",
+        "muhimlik": "yuqori"
+      }
+    ]
+  },
+  "cache_health": {
+    "umumiy_holati": "sog'lom",
+    "ma'lumotlar_yangiligi": "yangi",
+    "xatolik_soni": 0,
+    "oxirgi_xatolik": null,
+    "ishlash_vaqti": "99.9%",
+    "o'rtacha_javob_vaqti": "15ms",
+    "keshlangan_so'rovlar": 1547,
+    "kesh_hit_nisbati": "94.2%",
+    "xotira_ishlatilishi": "67.8%",
+    "oxirgi_tozalash": "2024-12-15T08:00:00Z"
+  }
+}

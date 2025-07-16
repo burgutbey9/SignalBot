@@ -1,0 +1,1186 @@
+📄 AI OrderFlow & Signal Bot — To‘liq O‘zbek Reja --- ## 🎯 1. Loyiha maqsadi AI yordamida DEX (masalan, Uniswap, 1inch) Order Flow va AI Sentiment tahlil qilib, real vaqtda signal beradi. Signal foydalanuvchiga Telegram orqali O‘zbekcha yuboriladi. Foydalanuvchi: * Avtomatik rejimda savdo qilish, * Yoki qo‘l bilan tasdiqlash imkoniyatiga ega. --- ## ⚙️ 2. Asosiy modullar ✅ Order Flow: 1inch API asosiy manba, fallback: The Graph API yoki Alchemy. ✅ On-chain kuzatuv: Alchemy API — Ethereum, BNB, Polygon, Arbitrum Nova. ✅ AI Sentiment: HuggingFace asosiy, fallback: Gemini (5 ta API), keyin Claude. ✅ Yangilik: NewsAPI asosiy, fallback: Reddit buzz, keyin Claude. ✅ Tarixiy Data: CCXT — Gate.io, KuCoin, MEXC, verifikatsiyasiz. ✅ Trainer: Backtest va real natijalardan strategiya optimizatsiyasi. ✅ Telegram modul: Signal, log, fallback va holatni O‘zbekcha yuboradi. ✅ EA Ulanish: Propshot yoki boshqa terminalga JSON formatda signal beradi. --- ## 🔄 3. Fallback zanjiri * Order Flow: 1inch ➜ The Graph ➜ Alchemy ➜ Xabar. * Sentiment: HuggingFace ➜ Gemini 1–5 ➜ Claude ➜ Local NLP ➜ Xabar. * Yangilik: NewsAPI ➜ Reddit ➜ Claude ➜ Xabar. Har bir modul ishlamasa log yoziladi va Telegramga xatolik O‘zbekcha ogohlantiriladi. --- ## ⏰ 4. Ish vaqti Ish vaqti: UZB vaqti bilan 07:00–19:30 foydalanuvchi ishda bo‘ladi. Bot asosan kechki va tunda ishlaydi. Kompyuter doimiy quvvatda bo‘lishi tavsiya etiladi. VPS ishlatilmasa, kompyuter quvvat rejimi "Sleep Off" bo‘lsin. --- ## 🧩 5. Risk va signal formati * Signal: Market Order / Limit Order. * Qo‘lda rejim: Tasdiqlash tugmasi. * Avto rejim: Tasdiqsiz savdo. * Risk: Kapitalning 1–2% dan oshmaydi. * Stop Loss va Take Profit AI tomonidan belgilanadi. --- ## 📌 6. Log va monitoring Har signal va fallback logs/bot.log ga yoziladi. Namuna: "Gemini API 2 ishlamadi, keyingisi ishga tushirildi". Barcha loglar Telegramga O‘zbekcha yuboriladi. --- ## 📌 7. APILAR ro‘yxati * 1inch API — Asosiy Order Flow. * The Graph API — Uniswap narx fallback. * Alchemy API — On-chain kuzatuv (4 endpoint). * CCXT — Tarixiy CEX data. * HuggingFace — AI Sentiment (2 ta). * Gemini — AI fallback (5 ta). * Claude — Extra AI fallback (limitli). * NewsAPI — Yangilik. * Reddit API — Ijtimoiy sentiment. * Telegram Bot — Signal va log. * Twitter API — ishlatilmaydi. --- ## 📌 8. Yakun Bot Order Flow, AI Sentiment, on-chain data, backtest va trainer bilan signal beradi. Propshot EA bog‘lanadi. Signal Telegram orqali foydalanuvchiga O‘zbekcha keladi. Har hafta strategiya yangilanadi. Har bir qadam loglanadi. ✅ Loyiha avtomat yoki qo‘l rejimi bilan moslashuvchan ishlaydi
+# 🤖 AI OrderFlow & Signal Bot - Universal Prompt Template
+
+## 📋 LOYIHA MAQSADI
+AI yordamida DEX Order Flow va Sentiment tahlil qilib, real vaqtda signal beruvchi bot. Signal O'zbekcha Telegram orqali yuboriladi. Propshot EA bog'lanadi.
+
+## 🎯 ASOSIY TALABLAR
+
+### 📌 KOD YOZISH STANDARTI (MUHIM!)
+```
+🔴 DIQQAT: Barcha kodlar quyidagi standartlarga QATIY AMAL QILISHI KERAK:
+
+1. ✅ PYTHON 3.9+ - asyncio, aiohttp, dataclasses ishlatish
+2. ✅ LOGGING - har fayl logger.py dan import qiladi
+3. ✅ ERROR HANDLING - try/except har function da
+4. ✅ FALLBACK - har API client fallback sistemaga ega
+5. ✅ RATE LIMITING - har API uchun rate limiter
+6. ✅ TYPING - har function type hints bilan
+7. ✅ DOCSTRING - har function va class uchun
+8. ✅ O'ZBEKCHA KOMENTARLAR - muhim qismlar
+9. ✅ JSON CONFIG - settings.json dan o'qish
+10. ✅ ENV VARIABLES - .env fayldan API keys
+```
+
+### 📂 LOYIHA STRUKTURASI (O'ZGARTIRMASLIK!)
+```
+ai_orderflow_signal_bot/
+├── 📂 config/
+│   ├── config.py              # Asosiy konfiguratsiya
+│   ├── api_keys.py            # API kalitlar
+│   ├── settings.json          # JSON sozlamalar
+│   └── fallback_config.py     # Fallback tizimi
+├── 📂 src/
+│   ├── 📂 api_clients/
+│   │   ├── __init__.py
+│   │   ├── oneinch_client.py         # 1inch API
+│   │   ├── thegraph_client.py        # The Graph API
+│   │   ├── alchemy_client.py         # Alchemy API
+│   │   ├── ccxt_client.py            # CCXT market data
+│   │   ├── huggingface_client.py     # HuggingFace AI
+│   │   ├── gemini_client.py          # Gemini AI (5 ta key)
+│   │   ├── claude_client.py          # Claude AI
+│   │   ├── news_client.py            # NewsAPI
+│   │   ├── reddit_client.py          # Reddit API
+│   │   └── telegram_client.py        # Telegram Bot
+│   ├── 📂 data_processing/
+│   │   ├── __init__.py
+│   │   ├── order_flow_analyzer.py    # Order Flow tahlil
+│   │   ├── sentiment_analyzer.py     # Sentiment tahlil
+│   │   ├── market_analyzer.py        # Market data tahlil
+│   │   └── signal_generator.py       # Signal generator
+│   ├── 📂 risk_management/
+│   │   ├── __init__.py
+│   │   ├── risk_calculator.py        # Risk hisoblash   propshot qoidalari 2karra amal qilish, kunlik limit"
+│   │   ├── position_sizer.py         # Position size
+│   │   └── trade_monitor.py          # Trade monitoring Trade kuzatuv va limit monitoring
+│   ├── 📂 utils/
+│   │   ├── __init__.py
+│   │   ├── logger.py                 # Logger setup
+│   │   ├── error_handler.py          # Error handling
+│   │   ├── rate_limiter.py           # Rate limiting
+│   │   ├── retry_handler.py          # Retry logika
+│   │   └── fallback_manager.py       # Fallback tizimi
+│   ├── 📂 database/
+│   │   ├── __init__.py
+│   │   ├── db_manager.py             # Database manager
+│   │   ├── models.py                 # Data modellari
+│   │   └── migrations/               # Database migratsiya
+│   ├── 📂 trading/
+│   │   ├── __init__.py
+│   │   ├── strategy_manager.py       # Trading strategiyalar
+│   │   ├── backtest_engine.py        # Backtest tizimi
+│   │   ├── portfolio_manager.py      # Portfolio boshqaruv
+│   │   ├── execution_engine.py       # Savdo bajarish
+│   │   ├── propshot_connector.py     # Propshot API
+│   │   └── mt5_bridge.py             # MetaTrader 5 bridge
+│   └── main.py                       # Asosiy fayl
+├── 📂 tests/
+├── 📂 logs/
+├── 📂 data/
+├── requirements.txt
+├── .env.example
+└── README.md
+```
+
+## 🔧 MODUL VAZIFALAR VA STANDARTLAR
+
+### 📂 config/ - Konfiguratsiya Modullar
+**config.py**:
+```python
+# Standart format - har fayl shunday boshlansa
+import os
+import json
+from dataclasses import dataclass
+from typing import Dict, List, Optional
+from utils.logger import get_logger
+
+logger = get_logger(__name__)
+
+@dataclass
+class DatabaseConfig:
+    url: str
+    max_connections: int = 10
+    timeout: int = 30
+    
+@dataclass
+class APIConfig:
+    timeout: int = 30
+    max_retries: int = 3
+    rate_limit: int = 100
+    
+class ConfigManager:
+    def __init__(self):
+        self.load_config()
+    
+    def load_config(self) -> None:
+        """Konfiguratsiya fayllarini yuklash"""
+        try:
+            # JSON fayl o'qish
+            # .env o'qish
+            # Validatsiya
+            pass
+        except Exception as e:
+            logger.error(f"Config yuklashda xato: {e}")
+            raise
+```
+
+### 📂 api_clients/ - API Mijozlar
+**Har API client quyidagi standartga ega:**
+```python
+import asyncio
+import aiohttp
+from typing import Dict, List, Optional, Any
+from dataclasses import dataclass
+from utils.logger import get_logger
+from utils.rate_limiter import RateLimiter
+from utils.error_handler import handle_api_error
+from utils.retry_handler import retry_async
+
+logger = get_logger(__name__)
+
+@dataclass
+class APIResponse:
+    success: bool
+    data: Optional[Any] = None
+    error: Optional[str] = None
+    rate_limit_remaining: int = 0
+    
+class BaseAPIClient:
+    def __init__(self, api_key: str, base_url: str):
+        self.api_key = api_key
+        self.base_url = base_url
+        self.rate_limiter = RateLimiter(calls=100, period=60)
+        self.session: Optional[aiohttp.ClientSession] = None
+        
+    async def __aenter__(self):
+        """Async context manager kirish"""
+        self.session = aiohttp.ClientSession()
+        return self
+        
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        """Async context manager chiqish"""
+        if self.session:
+            await self.session.close()
+    
+    @retry_async(max_retries=3, delay=1)
+    async def make_request(self, endpoint: str, params: Dict = None) -> APIResponse:
+        """Asosiy so'rov yuborish methodi"""
+        try:
+            await self.rate_limiter.wait()
+            # So'rov yuborish logikasi
+            pass
+        except Exception as e:
+            logger.error(f"API so'rov xatosi: {e}")
+            return APIResponse(success=False, error=str(e))
+```
+
+### 📂 data_processing/ - Ma'lumot Qayta Ishlash
+**Har processor quyidagi standartga ega:**
+```python
+import asyncio
+from typing import Dict, List, Optional
+from dataclasses import dataclass
+from utils.logger import get_logger
+from utils.error_handler import handle_processing_error
+
+logger = get_logger(__name__)
+
+@dataclass
+class ProcessingResult:
+    success: bool
+    data: Optional[Dict] = None
+    confidence: float = 0.0
+    error: Optional[str] = None
+    
+class BaseProcessor:
+    def __init__(self):
+        self.name = self.__class__.__name__
+        logger.info(f"{self.name} ishga tushirildi")
+    
+    async def process(self, data: Dict) -> ProcessingResult:
+        """Asosiy qayta ishlash methodi"""
+        try:
+            # Ma'lumotlarni qayta ishlash
+            pass
+        except Exception as e:
+            logger.error(f"{self.name} qayta ishlashda xato: {e}")
+            return ProcessingResult(success=False, error=str(e))
+    
+    def validate_input(self, data: Dict) -> bool:
+        """Kirish ma'lumotlarini tekshirish"""
+        pass
+```
+
+## 🔄 FALLBACK TIZIMI STANDARTI
+
+### Har API client fallback sistemaga ega:
+```python
+class FallbackAPIClient:
+    def __init__(self):
+        self.clients = [
+            PrimaryClient(),
+            SecondaryClient(),
+            TertiaryClient()
+        ]
+        self.current_client_index = 0
+    
+    async def execute_with_fallback(self, operation: str, **kwargs):
+        """Fallback bilan operatsiya bajarish"""
+        for i, client in enumerate(self.clients):
+            try:
+                result = await getattr(client, operation)(**kwargs)
+                if result.success:
+                    if i > 0:
+                        logger.warning(f"Fallback ishlatildi: {client.__class__.__name__}")
+                    return result
+            except Exception as e:
+                logger.error(f"Client {i} ishlamadi: {e}")
+                continue
+        
+        logger.error("Barcha clientlar ishlamadi")
+        return APIResponse(success=False, error="Barcha fallback clientlar ishlamadi")
+```
+
+## 📊 RATE LIMITING STANDARTI
+
+### utils/rate_limiter.py:
+```python
+import asyncio
+import time
+from typing import Dict
+from dataclasses import dataclass
+
+@dataclass
+class RateLimit:
+    calls: int
+    period: int  # seconds
+    remaining: int = 0
+    reset_time: float = 0
+
+class RateLimiter:
+    def __init__(self, calls: int, period: int):
+        self.calls = calls
+        self.period = period
+        self.requests = []
+    
+    async def wait(self):
+        """Rate limit tekshirish va kutish"""
+        now = time.time()
+        # Eski so'rovlarni o'chirish
+        self.requests = [req for req in self.requests if now - req < self.period]
+        
+        if len(self.requests) >= self.calls:
+            sleep_time = self.period - (now - self.requests[0])
+            if sleep_time > 0:
+                await asyncio.sleep(sleep_time)
+        
+        self.requests.append(now)
+```
+
+## 🎯 API KONFIGURATSIYA
+
+### settings.json standarti:
+```json
+{
+  "api_limits": {
+    "oneinch": {
+      "rate_limit": 100,
+      "timeout": 30,
+      "max_retries": 3
+    },
+    "alchemy": {
+      "rate_limit": 300,
+      "timeout": 15,
+      "max_retries": 5
+    },
+    "huggingface": {
+      "rate_limit": 1000,
+      "timeout": 60,
+      "max_retries": 2
+    },
+    "gemini": {
+      "rate_limit": 60,
+      "timeout": 45,
+      "max_retries": 3
+    },
+    "claude": {
+      "rate_limit": 20,
+      "timeout": 60,
+      "max_retries": 2
+    }
+  },
+  "fallback_order": {
+    "order_flow": ["oneinch", "thegraph", "alchemy"],
+    "sentiment": ["huggingface", "gemini", "claude"],
+    "news": ["newsapi", "reddit", "claude"]
+  },
+  "trading": {
+    "max_risk_per_trade": 0.02,
+    "max_daily_loss": 0.05,
+    "position_size_method": "kelly",
+    "propshot_settings": {
+      "max_daily_loss": 0.025,
+      "max_total_loss": 0.05,
+      "max_lot_size": 0.5,
+      "max_daily_trades": 3
+    }
+  }
+}
+```
+
+## 🔐 .env.example standarti:
+```
+# API Keys
+ONEINCH_API_KEY=your_oneinch_key
+ALCHEMY_API_KEY=your_alchemy_key
+HUGGINGFACE_API_KEY=your_huggingface_key
+GEMINI_API_KEY_1=your_gemini_key_1
+GEMINI_API_KEY_2=your_gemini_key_2
+GEMINI_API_KEY_3=your_gemini_key_3
+GEMINI_API_KEY_4=your_gemini_key_4
+GEMINI_API_KEY_5=your_gemini_key_5
+CLAUDE_API_KEY=your_claude_key
+NEWS_API_KEY=your_news_key
+REDDIT_CLIENT_ID=your_reddit_client_id
+REDDIT_CLIENT_SECRET=your_reddit_client_secret
+TELEGRAM_BOT_TOKEN=your_telegram_bot_token
+TELEGRAM_CHAT_ID=your_telegram_chat_id
+
+# Database
+DATABASE_URL=sqlite:///data/bot.db
+
+# Trading
+
+MT5_SERVER=your_mt5_server
+MT5_LOGIN=your_mt5_login
+MT5_PASSWORD=your_mt5_password
+```
+
+## 📱 TELEGRAM SIGNAL FORMATI
+
+### Signal template (O'zbekcha):
+```python
+def format_signal(signal_data: Dict) -> str:
+    """Signal formatini yaratish"""
+    return f"""
+📊 SIGNAL KELDI
+════════════════
+📈 Savdo: {signal_data['action']} {signal_data['symbol']}
+💰 Narx: {signal_data['price']}
+📊 Lot: {signal_data['lot_size']} lot
+🛡️ Stop Loss: {signal_data['stop_loss']} ({signal_data['sl_pips']} pips)
+🎯 Take Profit: {signal_data['take_profit']} ({signal_data['tp_pips']} pips)
+⚡ Ishonch: {signal_data['confidence']}%
+🔥 Risk: {signal_data['risk_percent']}%
+════════════════
+📝 Sabab: {signal_data['reason']}
+⏰ Vaqt: {signal_data['time']} (UZB)
+💼 Akavunt: {signal_data['account']}
+
+[🟢 AVTO SAVDO] [🔴 BEKOR QILISH]
+"""
+```
+
+## 📊 LOGGING STANDARTI
+
+### utils/logger.py:
+```python
+import logging
+import sys
+from pathlib import Path
+from logging.handlers import RotatingFileHandler
+
+def setup_logger(name: str, log_file: str, level=logging.INFO):
+    """Logger sozlash"""
+    logger = logging.getLogger(name)
+    logger.setLevel(level)
+    
+    # Fayl handler
+    file_handler = RotatingFileHandler(
+        log_file, maxBytes=10*1024*1024, backupCount=5
+    )
+    file_handler.setLevel(level)
+    
+    # Console handler
+    console_handler = logging.StreamHandler(sys.stdout)
+    console_handler.setLevel(level)
+    
+    # Formatter
+    formatter = logging.Formatter(
+        '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    )
+    file_handler.setFormatter(formatter)
+    console_handler.setFormatter(formatter)
+    
+    logger.addHandler(file_handler)
+    logger.addHandler(console_handler)
+    
+    return logger
+
+def get_logger(name: str):
+    """Logger olish"""
+    return setup_logger(name, f"logs/{name}.log")
+```
+
+## 🚀 REQUIREMENTS.TXT STANDARTI
+
+```
+# Core
+asyncio
+aiohttp>=3.8.0
+python-dotenv>=1.0.0
+pydantic>=2.0.0
+dataclasses-json>=0.6.0
+
+# Database
+sqlalchemy>=2.0.0
+alembic>=1.12.0
+aiosqlite>=0.19.0
+
+# Trading
+ccxt>=4.0.0
+MetaTrader5>=5.0.0
+pandas>=2.0.0
+numpy>=1.24.0
+ta-lib>=0.4.0
+
+# AI/ML
+transformers>=4.30.0
+torch>=2.0.0
+scikit-learn>=1.3.0
+google-generativeai>=0.3.0
+
+# APIs
+requests>=2.31.0
+websockets>=11.0.0
+python-telegram-bot>=20.0.0
+praw>=7.7.0
+
+# Utils
+schedule>=1.2.0
+python-dateutil>=2.8.0
+pytz>=2023.3
+colorama>=0.4.6
+tqdm>=4.65.0
+
+# Development
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+black>=23.0.0
+flake8>=6.0.0
+```
+
+## 🎯 FAYLLAR YARATISH KETMA-KETLIGI
+
+### 1. Asosiy konfiguratsiya fayllar:
+1. `config/config.py` - Asosiy konfiguratsiya
+2. `config/api_keys.py` - API kalitlar
+3. `config/settings.json` - JSON sozlamalar
+4. `config/fallback_config.py` - Fallback tizimi
+
+### 2. Utils fayllar:
+5. `utils/logger.py` - Logger setup
+6. `utils/error_handler.py` - Error handling
+7. `utils/rate_limiter.py` - Rate limiting
+8. `utils/retry_handler.py` - Retry logika
+9. `utils/fallback_manager.py` - Fallback tizimi
+
+### 3. API clients:
+10. `api_clients/oneinch_client.py` - 1inch API
+11. `api_clients/thegraph_client.py` - The Graph API
+12. `api_clients/alchemy_client.py` - Alchemy API
+13. `api_clients/ccxt_client.py` - CCXT market data
+14. `api_clients/huggingface_client.py` - HuggingFace AI
+15. `api_clients/gemini_client.py` - Gemini AI
+16. `api_clients/claude_client.py` - Claude AI
+17. `api_clients/news_client.py` - NewsAPI
+18. `api_clients/reddit_client.py` - Reddit API
+19. `api_clients/telegram_client.py` - Telegram Bot
+
+### 4. Data processing:
+20. `data_processing/order_flow_analyzer.py` - Order Flow tahlil
+21. `data_processing/sentiment_analyzer.py` - Sentiment tahlil
+22. `data_processing/market_analyzer.py` - Market data tahlil
+23. `data_processing/signal_generator.py` - Signal generator
+
+### 5. Risk management:
+24. `risk_management/risk_calculator.py` - Risk hisoblash
+25. `risk_management/position_sizer.py` - Position size
+26. `risk_management/trade_monitor.py` - Trade monitoring
+
+### 6. Database:
+27. `database/models.py` - Data modellari
+28. `database/db_manager.py` - Database manager
+
+### 7. Trading:
+29. `trading/strategy_manager.py` - Trading strategiyalar
+30. `trading/backtest_engine.py` - Backtest tizimi
+31. `trading/portfolio_manager.py` - Portfolio boshqaruv
+32. `trading/execution_engine.py` - Savdo bajarish
+33. `trading/propshot_connector.py` - Propshot API
+34. `trading/mt5_bridge.py` - MetaTrader 5 bridge
+
+### 8. Asosiy fayl:
+35. `main.py` - Asosiy fayl
+
+## 📝 FAYL YARATISH BUYRUQLARI
+
+**Har fayl yaratishda quyidagi formatdan foydalaning:**
+
+```
+"[FAYL_NOMI]ni yarat - [QISQACHA_TAVSIF]"
+
+Masalan:
+"config/config.py ni yarat - Asosiy konfiguratsiya class bilan"
+"utils/logger.py ni yarat - Logger setup va formatlar"
+"api_clients/oneinch_client.py ni yarat - 1inch API client fallback bilan"
+```
+
+## 🔴 MUHIM QOIDALAR
+
+### ✅ HAR FAYL YARATILGANDA:
+1. **Standart import struktura** - yuqoridagi formatga rioya qiling
+2. **Type hints** - har function va variable uchun
+3. **Docstrings** - har class va method uchun
+4. **Error handling** - try/except har joyda
+5. **Logging** - muhim operatsiyalarni loglash
+6. **Async support** - aiohttp va asyncio ishlatish
+7. **Rate limiting** - har API client uchun
+8. **Fallback system** - backup variantlar
+9. **Config integration** - settings.json va .env ishlatish
+10. **O'zbekcha komentarlar** - muhim qismlar uchun
+
+### ❌ QILMASLIK KERAK:
+1. **Turli xil kod stillar** - faqat yuqoridagi standartlar
+2. **Boshqa kutubxonalar** - faqat requirements.txt dagi
+3. **Sync code** - faqat async ishlatish
+4. **Hardcoded values** - faqat config dan o'qish
+5. **Inglizcha komentarlar** - faqat O'zbekcha
+6. **Boshqa fayl strukturasi** - faqat yuqoridagi struktura
+
+---
+
+## 🚀 KEYINGI QADAM
+
+**Qaysi faylni yaratishni xohlaysiz? Masalan:**
+
+`"config/config.py ni yarat - Asosiy konfiguratsiya class bilan"`
+
+**Har fayl yaratilganda:**
+- ✅ To'liq kod standartga mos
+- ✅ Fallback support
+- ✅ Error handling
+- ✅ Logging integration
+- ✅ Type hints
+- ✅ O'zbekcha komentarlar
+- ✅ Async support
+
+
+# 📁 BO'SH PAPKALAR - FAYL YARATISH YO'RIQNOMASI
+
+## 📋 FAQAT BO'SH PAPKALARDAGI FAYLLAR
+
+### 📂 tests/ - Test Fayllar (8 ta fayl)
+
+#### 📄 tests/__init__.py
+```python
+# AI yo'riqnomasi: Bo'sh __init__.py fayl
+"""
+Test modulini yaratish
+"""
+pass
+```
+
+#### 📄 tests/test_config.py
+```
+AI PROMPT:
+"tests/test_config.py yaratish - Config testlari.
+Quyidagi testlar bo'lsin:
+- test_config_loading() - konfiguratsiya yuklash testi
+- test_api_keys_loading() - API kalitlar testi
+- test_fallback_config() - fallback konfiguratsiya testi
+- test_config_validation() - konfiguratsiya tekshirish testi
+- pytest fixtures ishlatish
+- Mock objects
+- Type hints
+- O'zbekcha komentarlar
+Fayl hajmi: 150-200 qator"
+```
+
+#### 📄 tests/test_api_clients.py
+```
+AI PROMPT:
+"tests/test_api_clients.py yaratish - API client testlari.
+Quyidagi testlar bo'lsin:
+- test_oneinch_client() - 1inch API testi
+- test_telegram_client() - Telegram API testi
+- test_huggingface_client() - HuggingFace API testi
+- test_rate_limiting() - rate limit testi
+- test_fallback_system() - fallback tizimi testi
+- API response mock qilish
+- Error handling testlari
+- Type hints
+- O'zbekcha komentarlar
+Fayl hajmi: 200-300 qator"
+```
+
+#### 📄 tests/test_data_processing.py
+```
+AI PROMPT:
+"tests/test_data_processing.py yaratish - Data processing testlari.
+Quyidagi testlar bo'lsin:
+- test_order_flow_analyzer() - order flow tahlil testi
+- test_sentiment_analyzer() - sentiment tahlil testi
+- test_signal_generator() - signal generator testi
+- test_market_analyzer() - market tahlil testi
+- Sample data bilan testlar
+- Processing accuracy testlari
+- Type hints
+- O'zbekcha komentarlar
+Fayl hajmi: 200-300 qator"
+```
+
+#### 📄 tests/test_risk_management.py
+```
+AI PROMPT:
+"tests/test_risk_management.py yaratish - Risk management testlari.
+Quyidagi testlar bo'lsin:
+- test_risk_calculator() - risk hisoblash testi
+- test_position_sizer() - position size testi
+- test_trade_monitor() - trade monitoring testi
+- test_propshot_limits() - propshot limit testlari
+- Risk scenario testlari
+- Limit checking testlari
+- Type hints
+- O'zbekcha komentarlar
+Fayl hajmi: 200-250 qator"
+```
+
+#### 📄 tests/test_trading.py
+```
+AI PROMPT:
+"tests/test_trading.py yaratish - Trading testlari.
+Quyidagi testlar bo'lsin:
+- test_strategy_manager() - strategiya boshqaruv testi
+- test_execution_engine() - savdo bajarish testi
+- test_propshot_connector() - propshot bog'lanish testi
+- test_backtest_engine() - backtest tizimi testi
+- Mock trading environment
+- Performance testlari
+- Type hints
+- O'zbekcha komentarlar
+Fayl hajmi: 250-300 qator"
+```
+
+#### 📄 tests/test_utils.py
+```
+AI PROMPT:
+"tests/test_utils.py yaratish - Utils testlari.
+Quyidagi testlar bo'lsin:
+- test_logger() - logger testi
+- test_error_handler() - error handler testi
+- test_rate_limiter() - rate limiter testi
+- test_retry_handler() - retry handler testi
+- test_fallback_manager() - fallback manager testi
+- Utility functions testlari
+- Type hints
+- O'zbekcha komentarlar
+Fayl hajmi: 200-250 qator"
+```
+
+#### 📄 tests/conftest.py
+```
+AI PROMPT:
+"tests/conftest.py yaratish - PyTest konfiguratsiya.
+Quyidagi fixtures bo'lsin:
+- mock_api_client() - API client mock
+- mock_database() - database mock
+- sample_data() - test ma'lumotlari
+- mock_telegram() - telegram mock
+- mock_config() - konfiguratsiya mock
+- pytest fixtures setup
+- Mock objects yaratish
+- Test environment setup
+- Type hints
+- O'zbekcha komentarlar
+Fayl hajmi: 150-200 qator"
+```
+
+### 📂 database/migrations/ - Database Migratsiya (6 ta fayl)
+
+#### 📄 database/migrations/__init__.py
+```python
+# AI yo'riqnomasi: Bo'sh __init__.py fayl
+"""
+Database migrations modulini yaratish
+"""
+pass
+```
+
+#### 📄 database/migrations/001_initial_tables.py
+```
+AI PROMPT:
+"database/migrations/001_initial_tables.py yaratish - Asosiy jadvallar.
+Quyidagi jadvallar bo'lsin:
+- users table - foydalanuvchilar jadvali
+- config table - konfiguratsiya jadvali
+- api_keys table - API kalitlar jadvali
+- settings table - sozlamalar jadvali
+- Alembic migration format
+- SQLAlchemy ORM
+- Table creation scripts
+- Type hints
+- O'zbekcha komentarlar
+Fayl hajmi: 200-250 qator"
+```
+
+#### 📄 database/migrations/002_add_signals_table.py
+```
+AI PROMPT:
+"database/migrations/002_add_signals_table.py yaratish - Signal jadvali.
+Quyidagi jadval bo'lsin:
+- signals table - signallar jadvali
+- signal_id, timestamp, symbol, action, price, confidence
+- stop_loss, take_profit, risk_percent
+- status, result, notes
+- Alembic migration
+- Foreign key relationships
+- Indexes
+- Type hints
+- O'zbekcha komentarlar
+Fayl hajmi: 150-200 qator"
+```
+
+#### 📄 database/migrations/003_add_trades_table.py
+```
+AI PROMPT:
+"database/migrations/003_add_trades_table.py yaratish - Savdo jadvali.
+Quyidagi jadval bo'lsin:
+- trades table - savdolar jadvali
+- trade_id, signal_id, entry_time, exit_time
+- entry_price, exit_price, lot_size, profit_loss
+- status, account_id, notes
+- Alembic migration
+- Foreign key to signals
+- Indexes
+- Type hints
+- O'zbekcha komentarlar
+Fayl hajmi: 150-200 qator"
+```
+
+#### 📄 database/migrations/004_add_logs_table.py
+```
+AI PROMPT:
+"database/migrations/004_add_logs_table.py yaratish - Log jadvali.
+Quyidagi jadval bo'lsin:
+- logs table - loglar jadvali
+- log_id, timestamp, level, module, message
+- error_details, stack_trace, user_id
+- Alembic migration
+- Log level enum
+- Text search indexes
+- Type hints
+- O'zbekcha komentarlar
+Fayl hajmi: 150-200 qator"
+```
+
+#### 📄 database/migrations/005_add_indexes.py
+```
+AI PROMPT:
+"database/migrations/005_add_indexes.py yaratish - Index qo'shish.
+Quyidagi indexlar bo'lsin:
+- timestamp indexes - vaqt bo'yicha
+- symbol indexes - simbol bo'yicha
+- status indexes - holat bo'yicha
+- user_id indexes - foydalanuvchi bo'yicha
+- composite indexes - murakkab indexlar
+- Alembic migration
+- Performance optimization
+- Type hints
+- O'zbekcha komentarlar
+Fayl hajmi: 100-150 qator"
+```
+
+### 📂 data/ - Ma'lumotlar (12 ta fayl)
+
+#### 📂 data/backtest/ - Backtest ma'lumotlari (3 ta fayl)
+
+#### 📄 data/backtest/historical_data.csv
+```
+AI PROMPT:
+"data/backtest/historical_data.csv yaratish - Tarixiy ma'lumotlar.
+Quyidagi ma'lumotlar bo'lsin:
+- timestamp, symbol, open, high, low, close, volume
+- EURUSD, GBPUSD, USDJPY, AUDUSD, USDCAD
+- 1 yillik ma'lumotlar
+- CSV format
+- Backtest uchun sample data
+- O'zbekcha header komentarlar
+Fayl hajmi: 1000-2000 qator"
+```
+
+#### 📄 data/backtest/strategy_results.json
+```
+AI PROMPT:
+"data/backtest/strategy_results.json yaratish - Strategiya natijalari.
+Quyidagi ma'lumotlar bo'lsin:
+- strategy_name, backtest_period, total_trades
+- win_rate, profit_factor, max_drawdown
+- sharpe_ratio, sortino_ratio, calmar_ratio
+- monthly_returns, yearly_returns
+- JSON format
+- Multiple strategies
+- Performance metrics
+- O'zbekcha field descriptions
+Fayl hajmi: 500-1000 qator"
+```
+
+#### 📄 data/backtest/performance_metrics.json
+```
+AI PROMPT:
+"data/backtest/performance_metrics.json yaratish - Performance metrikalar.
+Quyidagi metrikalar bo'lsin:
+- total_return, annualized_return, volatility
+- max_drawdown, recovery_time, var_95
+- correlation_matrix, beta, alpha
+- information_ratio, treynor_ratio
+- JSON format
+- Statistical metrics
+- Risk metrics
+- O'zbekcha descriptions
+Fayl hajmi: 300-500 qator"
+```
+
+#### 📂 data/models/ - AI modellari (3 ta fayl)
+
+#### 📄 data/models/sentiment_model.pkl
+```
+AI PROMPT:
+"data/models/sentiment_model.pkl yaratish - Sentiment AI modeli.
+Quyidagi model bo'lsin:
+- Trained sentiment classifier
+- Input: text, Output: sentiment score
+- Scikit-learn yoki HuggingFace model
+- Crypto/forex news uchun
+- Pickle format
+- Model versioning
+- Performance: 85%+ accuracy
+- O'zbekcha model description
+Binary fayl - 5-10 MB"
+```
+
+#### 📄 data/models/price_prediction_model.pkl
+```
+AI PROMPT:
+"data/models/price_prediction_model.pkl yaratish - Narx prognoz modeli.
+Quyidagi model bo'lsin:
+- Price prediction model
+- Input: OHLCV data, Output: price direction
+- LSTM yoki RandomForest
+- 1H-4H timeframe prediction
+- Pickle format
+- Model performance metrics
+- Feature importance
+- O'zbekcha model description
+Binary fayl - 10-20 MB"
+```
+
+#### 📄 data/models/signal_classifier.pkl
+```
+AI PROMPT:
+"data/models/signal_classifier.pkl yaratish - Signal klassifikator.
+Quyidagi model bo'lsin:
+- Signal quality classifier
+- Input: multiple indicators, Output: signal strength
+- Ensemble model
+- Buy/Sell/Hold classification
+- Pickle format
+- Cross-validation results
+- Feature engineering
+- O'zbekcha model description
+Binary fayl - 5-15 MB"
+```
+
+#### 📂 data/cache/ - Kesh ma'lumotlari (3 ta fayl)
+
+#### 📄 data/cache/market_data.json
+```
+AI PROMPT:
+"data/cache/market_data.json yaratish - Market ma'lumotlar keshi.
+Quyidagi ma'lumotlar bo'lsin:
+- cached_time, symbol, price, volume, change
+- bid, ask, spread, last_update
+- OHLCV data
+- Multiple timeframes
+- JSON format
+- Cache expiry time
+- Data freshness
+- O'zbekcha field names
+Fayl hajmi: 200-500 qator"
+```
+
+#### 📄 data/cache/orderflow_cache.json
+```
+AI PROMPT:
+"data/cache/orderflow_cache.json yaratish - Order flow keshi.
+Quyidagi ma'lumotlar bo'lsin:
+- cached_time, symbol, buy_pressure, sell_pressure
+- large_orders, whale_activity, flow_strength
+- liquidity_levels, support_resistance
+- JSON format
+- Real-time data cache
+- Cache validation
+- O'zbekcha descriptions
+Fayl hajmi: 300-600 qator"
+```
+
+#### 📄 data/cache/sentiment_cache.json
+```
+AI PROMPT:
+"data/cache/sentiment_cache.json yaratish - Sentiment keshi.
+Quyidagi ma'lumotlar bo'lsin:
+- cached_time, symbol, news_sentiment, social_sentiment
+- reddit_buzz, twitter_sentiment, overall_score
+- sentiment_sources, confidence_level
+- JSON format
+- Sentiment aggregation
+- Source tracking
+- O'zbekcha field descriptions
+Fayl hajmi: 200-400 qator"
+```
+
+#### 📂 data/exports/ - Export fayllar (3 ta fayl)
+
+#### 📄 data/exports/daily_report.csv
+```
+AI PROMPT:
+"data/exports/daily_report.csv yaratish - Kunlik hisobot.
+Quyidagi ma'lumotlar bo'lsin:
+- date, symbol, signal_count, trade_count
+- profit_loss, win_rate, drawdown
+- best_trade, worst_trade, total_pips
+- CSV format
+- Daily performance summary
+- Export template
+- O'zbekcha headers
+Fayl hajmi: 100-200 qator"
+```
+
+#### 📄 data/exports/weekly_summary.json
+```
+AI PROMPT:
+"data/exports/weekly_summary.json yaratish - Haftalik xulosa.
+Quyidagi ma'lumotlar bo'lsin:
+- week_start, week_end, total_trades, profit_loss
+- win_rate, sharpe_ratio, max_drawdown
+- best_day, worst_day, weekly_return
+- strategy_performance, risk_metrics
+- JSON format
+- Weekly analytics
+- O'zbekcha descriptions
+Fayl hajmi: 200-300 qator"
+```
+
+#### 📄 data/exports/monthly_stats.xlsx
+```
+AI PROMPT:
+"data/exports/monthly_stats.xlsx yaratish - Oylik statistika.
+Quyidagi ma'lumotlar bo'lsin:
+- Monthly performance sheets
+- Trade log sheet
+- Risk metrics sheet
+- Strategy comparison sheet
+- Charts va graphs
+- Excel format
+- Professional reporting
+- O'zbekcha sheet names
+Excel fayl - 1-2 MB"
+```
+
+### 📂 logs/ - Log fayllar (7 ta fayl)
+
+#### 📄 logs/bot.log
+```
+AI PROMPT:
+"logs/bot.log yaratish - Asosiy bot logi.
+Quyidagi log formatida:
+- timestamp, level, module, message
+- Bot startup/shutdown logs
+- Main process logs
+- Error summaries
+- Performance logs
+- O'zbekcha log messages
+- Rotation ready
+Sample log entries: 500-1000 qator"
+```
+
+#### 📄 logs/api_calls.log
+```
+AI PROMPT:
+"logs/api_calls.log yaratish - API so'rovlar logi.
+Quyidagi log formatida:
+- timestamp, api_name, endpoint, status_code
+- response_time, rate_limit_remaining
+- error_details, retry_count
+- Request/response logs
+- Performance monitoring
+- O'zbekcha descriptions
+Sample log entries: 300-500 qator"
+```
+
+#### 📄 logs/trading.log
+```
+AI PROMPT:
+"logs/trading.log yaratish - Savdo loglari.
+Quyidagi log formatida:
+- timestamp, symbol, action, price, lot_size
+- entry_time, exit_time, profit_loss
+- signal_id, strategy_name, confidence
+- Order execution logs
+- Trade results
+- O'zbekcha trading terms
+Sample log entries: 200-400 qator"
+```
+
+#### 📄 logs/errors.log
+```
+AI PROMPT:
+"logs/errors.log yaratish - Xatolar logi.
+Quyidagi log formatida:
+- timestamp, error_level, module, error_message
+- stack_trace, context_info
+- resolution_status, recovery_action
+- Critical errors
+- Exception handling
+- O'zbekcha error messages
+Sample log entries: 100-200 qator"
+```
+
+#### 📄 logs/fallback.log
+```
+AI PROMPT:
+"logs/fallback.log yaratish - Fallback loglari.
+Quyidagi log formatida:
+- timestamp, primary_service, fallback_service
+- failure_reason, switch_time, success_rate
+- Fallback activations
+- Service health monitoring
+- Recovery tracking
+- O'zbekcha status messages
+Sample log entries: 100-200 qator"
+```
+
+#### 📄 logs/telegram.log
+```
+AI PROMPT:
+"logs/telegram.log yaratish - Telegram loglari.
+Quyidagi log formatida:
+- timestamp, chat_id, message_type, status
+- signal_sent, user_response, callback_data
+- Telegram bot activities
+- Message delivery status
+- User interactions
+- O'zbekcha messages
+Sample log entries: 200-300 qator"
+```
+
+#### 📄 logs/archive/ (papka)
+```
+AI PROMPT:
+"logs/archive/ papka yaratish - Arxiv loglar.
+Quyidagi struktura bo'lsin:
+- 2024-01/, 2024-02/, 2024-03/ papkalar
+- Compressed log files
+- Monthly archives
+- Automatic cleanup
+- Storage optimization
+- O'zbekcha folder names
+Directory structure"
+```
+
+---
+
+## 📊 FAYLLAR STATISTIKASI
+
+### 📈 **Jami fayllar soni: 39 ta**
+
+#### 📂 **tests/**: 8 ta fayl
+- Python test fayllar: 7 ta
+- Konfiguratsiya: 1 ta
+
+#### 📂 **database/migrations/**: 6 ta fayl  
+- Migration scriptlar: 5 ta
+- Init fayl: 1 ta
+
+#### 📂 **data/**: 12 ta fayl
+- Backtest: 3 ta
+- Models: 3 ta  
+- Cache: 3 ta
+- Exports: 3 ta
+
+#### 📂 **logs/**: 7 ta fayl
+- Log fayllar: 6 ta
+- Archive papka: 1 ta
+
+### 💾 **Fayl hajmi taxminlari:**
+- **Kichik fayllar (100-200 qator):** 20 ta
+- **O'rtacha fayllar (200-500 qator):** 15 ta
+- **Katta fayllar (500+ qator):** 4 ta
+
+### 🎯 **Fayl turlari:**
+- **Python fayllar:** 20 ta
+- **JSON fayllar:** 10 ta
+- **CSV fayllar:** 4 ta
+- **Binary fayllar:** 3 ta
+- **Log fayllar:** 7 ta
+- **Excel fayllar:** 1 ta
+
+---
+
+## 🚀 YARATISH KETMA-KETLIGI
+
+### 1. **Testlar (muhim):**
+```
+1. tests/conftest.py
+2. tests/test_config.py
+3. tests/test_api_clients.py
+4. tests/test_utils.py
+```
+
+### 2. **Database migrations:**
+```
+5. database/migrations/001_initial_tables.py
+6. database/migrations/002_add_signals_table.py
+7. database/migrations/003_add_trades_table.py
+```
+
+### 3. **Data fayllar:**
+```
+8. data/cache/market_data.json
+9. data/backtest/historical_data.csv
+10. data/models/sentiment_model.pkl
+```
+
+### 4. **Log fayllar:**
+```
+11. logs/bot.log
+12. logs/api_calls.log
+13. logs/trading.log
+```
+
+---
+
+## 💡 FAYL YARATISH NAMUNASI
+
+```
+"tests/test_config.py yaratish - Config testlari.
+Kerakli testlar:
+- test_config_loading() - konfiguratsiya yuklash
+- test_api_keys_loading() - API kalitlar
+- test_validation() - validatsiya
+- pytest fixtures ishlatish
+- Mock objects
+- 150-200 qator
+- O'zbekcha komentarlar"
+```

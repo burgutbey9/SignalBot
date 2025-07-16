@@ -1,0 +1,609 @@
+#!/usr/bin/env python3
+"""
+AI OrderFlow & Signal Bot - Price Prediction Model Creator
+Narx prognoz modeli yaratish va saqlash
+"""
+
+import os
+import sys
+import pickle
+import numpy as np
+import pandas as pd
+from datetime import datetime, timedelta
+from pathlib import Path
+from typing import Tuple, Dict, Any, Optional, List
+from dataclasses import dataclass
+import logging
+
+# Machine Learning imports
+from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
+from sklearn.model_selection import train_test_split, cross_val_score, GridSearchCV
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
+import warnings
+warnings.filterwarnings('ignore')
+
+# Technical Analysis
+try:
+    import talib
+    TALIB_AVAILABLE = True
+except ImportError:
+    TALIB_AVAILABLE = False
+    print("Warning: TA-Lib not available. Using basic indicators.")
+
+@dataclass
+class ModelPerformance:
+    """Model performance metrikalar"""
+    train_score: float
+    test_score: float
+    cross_val_score: float
+    mse: float
+    mae: float
+    r2: float
+    directional_accuracy: float
+    sharpe_ratio: float
+    max_drawdown: float
+    
+@dataclass
+class ModelConfig:
+    """Model konfiguratsiya"""
+    model_type: str = "ensemble"  # "lstm", "rf", "gb", "ensemble"
+    sequence_length: int = 60  # LSTM uchun
+    prediction_horizon: int = 24  # Nechtadan keyin prognoz (soat)
+    features: List[str] = None
+    target: str = "close_direction"  # "close_price", "close_direction", "high_low"
+    train_test_split: float = 0.8
+    validation_split: float = 0.2
+    random_state: int = 42
+
+class TechnicalIndicators:
+    """Texnik indikatorlar kalkulyatori"""
+    
+    @staticmethod
+    def calculate_sma(data: np.ndarray, period: int) -> np.ndarray:
+        """Simple Moving Average"""
+        return pd.Series(data).rolling(window=period).mean().values
+    
+    @staticmethod
+    def calculate_ema(data: np.ndarray, period: int) -> np.ndarray:
+        """Exponential Moving Average"""
+        return pd.Series(data).ewm(span=period).mean().values
+    
+    @staticmethod
+    def calculate_rsi(data: np.ndarray, period: int = 14) -> np.ndarray:
+        """Relative Strength Index"""
+        delta = pd.Series(data).diff()
+        gain = delta.where(delta > 0, 0)
+        loss = -delta.where(delta < 0, 0)
+        avg_gain = gain.rolling(window=period).mean()
+        avg_loss = loss.rolling(window=period).mean()
+        rs = avg_gain / avg_loss
+        rsi = 100 - (100 / (1 + rs))
+        return rsi.values
+    
+    @staticmethod
+    def calculate_macd(data: np.ndarray, fast: int = 12, slow: int = 26, signal: int = 9) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+        """MACD indikatori"""
+        exp1 = pd.Series(data).ewm(span=fast).mean()
+        exp2 = pd.Series(data).ewm(span=slow).mean()
+        macd = exp1 - exp2
+        signal_line = macd.ewm(span=signal).mean()
+        histogram = macd - signal_line
+        return macd.values, signal_line.values, histogram.values
+    
+    @staticmethod
+    def calculate_bollinger_bands(data: np.ndarray, period: int = 20, std_dev: float = 2.0) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+        """Bollinger Bands"""
+        sma = pd.Series(data).rolling(window=period).mean()
+        std = pd.Series(data).rolling(window=period).std()
+        upper_band = sma + (std * std_dev)
+        lower_band = sma - (std * std_dev)
+        return upper_band.values, sma.values, lower_band.values
+    
+    @staticmethod
+    def calculate_stochastic(high: np.ndarray, low: np.ndarray, close: np.ndarray, k_period: int = 14, d_period: int = 3) -> Tuple[np.ndarray, np.ndarray]:
+        """Stochastic Oscillator"""
+        lowest_low = pd.Series(low).rolling(window=k_period).min()
+        highest_high = pd.Series(high).rolling(window=k_period).max()
+        k_percent = 100 * ((close - lowest_low) / (highest_high - lowest_low))
+        d_percent = k_percent.rolling(window=d_period).mean()
+        return k_percent.values, d_percent.values
+
+class FeatureEngineering:
+    """Feature yaratish va tayyorlash"""
+    
+    def __init__(self):
+        self.scalers = {}
+        self.feature_names = []
+        self.indicators = TechnicalIndicators()
+    
+    def create_features(self, df: pd.DataFrame) -> pd.DataFrame:
+        """Barcha featurlar yaratish"""
+        features_df = df.copy()
+        
+        # Asosiy narx featurelar
+        features_df['price_change'] = features_df['close'].pct_change()
+        features_df['price_change_abs'] = features_df['price_change'].abs()
+        features_df['high_low_ratio'] = features_df['high'] / features_df['low']
+        features_df['open_close_ratio'] = features_df['open'] / features_df['close']
+        
+        # Volume featurelar
+        if 'volume' in features_df.columns:
+            features_df['volume_change'] = features_df['volume'].pct_change()
+            features_df['volume_ma'] = features_df['volume'].rolling(window=20).mean()
+            features_df['volume_ratio'] = features_df['volume'] / features_df['volume_ma']
+        
+        # Moving averages
+        for period in [5, 10, 20, 50, 100]:
+            features_df[f'sma_{period}'] = self.indicators.calculate_sma(features_df['close'].values, period)
+            features_df[f'ema_{period}'] = self.indicators.calculate_ema(features_df['close'].values, period)
+            features_df[f'price_to_sma_{period}'] = features_df['close'] / features_df[f'sma_{period}']
+        
+        # RSI
+        features_df['rsi'] = self.indicators.calculate_rsi(features_df['close'].values)
+        features_df['rsi_overbought'] = (features_df['rsi'] > 70).astype(int)
+        features_df['rsi_oversold'] = (features_df['rsi'] < 30).astype(int)
+        
+        # MACD
+        macd, signal, histogram = self.indicators.calculate_macd(features_df['close'].values)
+        features_df['macd'] = macd
+        features_df['macd_signal'] = signal
+        features_df['macd_histogram'] = histogram
+        features_df['macd_bullish'] = (features_df['macd'] > features_df['macd_signal']).astype(int)
+        
+        # Bollinger Bands
+        bb_upper, bb_middle, bb_lower = self.indicators.calculate_bollinger_bands(features_df['close'].values)
+        features_df['bb_upper'] = bb_upper
+        features_df['bb_middle'] = bb_middle
+        features_df['bb_lower'] = bb_lower
+        features_df['bb_width'] = (bb_upper - bb_lower) / bb_middle
+        features_df['bb_position'] = (features_df['close'] - bb_lower) / (bb_upper - bb_lower)
+        
+        # Stochastic
+        if 'high' in features_df.columns and 'low' in features_df.columns:
+            stoch_k, stoch_d = self.indicators.calculate_stochastic(
+                features_df['high'].values, 
+                features_df['low'].values, 
+                features_df['close'].values
+            )
+            features_df['stoch_k'] = stoch_k
+            features_df['stoch_d'] = stoch_d
+            features_df['stoch_oversold'] = (features_df['stoch_k'] < 20).astype(int)
+            features_df['stoch_overbought'] = (features_df['stoch_k'] > 80).astype(int)
+        
+        # Volatility
+        features_df['volatility'] = features_df['close'].rolling(window=20).std()
+        features_df['volatility_ratio'] = features_df['volatility'] / features_df['volatility'].rolling(window=50).mean()
+        
+        # Momentum
+        for period in [1, 5, 10, 20]:
+            features_df[f'momentum_{period}'] = features_df['close'].pct_change(period)
+        
+        # Time features
+        if 'timestamp' in features_df.columns:
+            features_df['hour'] = pd.to_datetime(features_df['timestamp']).dt.hour
+            features_df['day_of_week'] = pd.to_datetime(features_df['timestamp']).dt.dayofweek
+            features_df['month'] = pd.to_datetime(features_df['timestamp']).dt.month
+            
+            # Market session features
+            features_df['london_session'] = ((features_df['hour'] >= 8) & (features_df['hour'] <= 17)).astype(int)
+            features_df['ny_session'] = ((features_df['hour'] >= 13) & (features_df['hour'] <= 22)).astype(int)
+            features_df['tokyo_session'] = ((features_df['hour'] >= 0) & (features_df['hour'] <= 9)).astype(int)
+        
+        # Target yaratish - narx yo'nalishi
+        features_df['future_close'] = features_df['close'].shift(-24)  # 24 soat keyingi narx
+        features_df['price_direction'] = (features_df['future_close'] > features_df['close']).astype(int)
+        features_df['price_change_future'] = (features_df['future_close'] - features_df['close']) / features_df['close']
+        
+        # NaN qiymatlarni to'ldirish
+        features_df.fillna(method='ffill', inplace=True)
+        features_df.fillna(0, inplace=True)
+        
+        return features_df
+    
+    def select_features(self, df: pd.DataFrame) -> List[str]:
+        """Eng muhim featurlarni tanlash"""
+        # Asosiy featurlar
+        base_features = [
+            'price_change', 'price_change_abs', 'high_low_ratio', 
+            'rsi', 'macd', 'macd_histogram', 'bb_width', 'bb_position',
+            'volatility', 'volatility_ratio'
+        ]
+        
+        # MA featurlar
+        ma_features = [f'price_to_sma_{period}' for period in [5, 10, 20, 50]]
+        
+        # Momentum featurlar
+        momentum_features = [f'momentum_{period}' for period in [1, 5, 10, 20]]
+        
+        # Time featurlar
+        time_features = ['hour', 'day_of_week', 'london_session', 'ny_session']
+        
+        # Stochastic featurlar
+        stoch_features = []
+        if 'stoch_k' in df.columns:
+            stoch_features = ['stoch_k', 'stoch_d']
+        
+        # Volume featurlar
+        volume_features = []
+        if 'volume_ratio' in df.columns:
+            volume_features = ['volume_ratio', 'volume_change']
+        
+        all_features = base_features + ma_features + momentum_features + time_features + stoch_features + volume_features
+        
+        # Mavjud featurlarni saqlash
+        available_features = [f for f in all_features if f in df.columns]
+        
+        return available_features
+    
+    def scale_features(self, X_train: np.ndarray, X_test: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+        """Feature scaling"""
+        scaler = StandardScaler()
+        X_train_scaled = scaler.fit_transform(X_train)
+        X_test_scaled = scaler.transform(X_test)
+        
+        self.scalers['feature_scaler'] = scaler
+        
+        return X_train_scaled, X_test_scaled
+
+class PricePredictionModel:
+    """Narx prognoz modeli"""
+    
+    def __init__(self, config: ModelConfig):
+        self.config = config
+        self.model = None
+        self.feature_engineering = FeatureEngineering()
+        self.performance = None
+        self.feature_names = []
+        
+        # Logger setup
+        self.logger = logging.getLogger(__name__)
+        
+        # Model initialization
+        self._initialize_model()
+    
+    def _initialize_model(self):
+        """Model boshlash"""
+        if self.config.model_type == "rf":
+            self.model = RandomForestRegressor(
+                n_estimators=200,
+                max_depth=10,
+                min_samples_split=5,
+                min_samples_leaf=2,
+                random_state=self.config.random_state,
+                n_jobs=-1
+            )
+        elif self.config.model_type == "gb":
+            self.model = GradientBoostingRegressor(
+                n_estimators=200,
+                max_depth=6,
+                learning_rate=0.1,
+                subsample=0.8,
+                random_state=self.config.random_state
+            )
+        elif self.config.model_type == "ensemble":
+            from sklearn.ensemble import VotingRegressor
+            rf_model = RandomForestRegressor(
+                n_estimators=100,
+                max_depth=8,
+                random_state=self.config.random_state
+            )
+            gb_model = GradientBoostingRegressor(
+                n_estimators=100,
+                max_depth=6,
+                learning_rate=0.1,
+                random_state=self.config.random_state
+            )
+            
+            self.model = VotingRegressor([
+                ('rf', rf_model),
+                ('gb', gb_model)
+            ])
+        else:
+            raise ValueError(f"Noma'lum model turi: {self.config.model_type}")
+    
+    def prepare_data(self, df: pd.DataFrame) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+        """Ma'lumotlarni tayyorlash"""
+        # Featurlar yaratish
+        features_df = self.feature_engineering.create_features(df)
+        
+        # Feature selection
+        feature_columns = self.feature_engineering.select_features(features_df)
+        self.feature_names = feature_columns
+        
+        # Target va features ajratish
+        X = features_df[feature_columns].values
+        
+        if self.config.target == "close_direction":
+            y = features_df['price_direction'].values
+        elif self.config.target == "close_price":
+            y = features_df['future_close'].values
+        else:
+            y = features_df['price_change_future'].values
+        
+        # NaN qiymatlarni olib tashlash
+        valid_mask = ~(np.isnan(X).any(axis=1) | np.isnan(y))
+        X = X[valid_mask]
+        y = y[valid_mask]
+        
+        # Train/test split
+        split_idx = int(len(X) * self.config.train_test_split)
+        X_train, X_test = X[:split_idx], X[split_idx:]
+        y_train, y_test = y[:split_idx], y[split_idx:]
+        
+        # Feature scaling
+        X_train_scaled, X_test_scaled = self.feature_engineering.scale_features(X_train, X_test)
+        
+        return X_train_scaled, X_test_scaled, y_train, y_test
+    
+    def train(self, df: pd.DataFrame) -> ModelPerformance:
+        """Model o'qitish"""
+        self.logger.info("Model o'qitish boshlandi...")
+        
+        # Ma'lumotlarni tayyorlash
+        X_train, X_test, y_train, y_test = self.prepare_data(df)
+        
+        # Model o'qitish
+        self.model.fit(X_train, y_train)
+        
+        # Prognozlar
+        y_train_pred = self.model.predict(X_train)
+        y_test_pred = self.model.predict(X_test)
+        
+        # Performance hisoblash
+        performance = self._calculate_performance(
+            y_train, y_test, y_train_pred, y_test_pred
+        )
+        
+        self.performance = performance
+        
+        self.logger.info(f"Model o'qitish tugadi. Test score: {performance.test_score:.4f}")
+        
+        return performance
+    
+    def _calculate_performance(self, y_train, y_test, y_train_pred, y_test_pred) -> ModelPerformance:
+        """Performance metrikalarni hisoblash"""
+        
+        # Asosiy metrikalar
+        train_score = r2_score(y_train, y_train_pred)
+        test_score = r2_score(y_test, y_test_pred)
+        mse = mean_squared_error(y_test, y_test_pred)
+        mae = mean_absolute_error(y_test, y_test_pred)
+        r2 = r2_score(y_test, y_test_pred)
+        
+        # Cross-validation
+        cv_scores = cross_val_score(self.model, 
+                                   np.vstack([y_train.reshape(-1, 1), y_test.reshape(-1, 1)]), 
+                                   np.hstack([y_train, y_test]), 
+                                   cv=5, scoring='r2')
+        cross_val_score_mean = cv_scores.mean()
+        
+        # Yo'nalish aniqligi (classification uchun)
+        if self.config.target == "close_direction":
+            y_test_pred_class = (y_test_pred > 0.5).astype(int)
+            directional_accuracy = np.mean(y_test == y_test_pred_class)
+        else:
+            # Regression uchun yo'nalish aniqligi
+            actual_direction = np.sign(y_test)
+            predicted_direction = np.sign(y_test_pred)
+            directional_accuracy = np.mean(actual_direction == predicted_direction)
+        
+        # Sharpe ratio (simplified)
+        if len(y_test_pred) > 1:
+            returns = np.diff(y_test_pred)
+            if np.std(returns) != 0:
+                sharpe_ratio = np.mean(returns) / np.std(returns) * np.sqrt(252)
+            else:
+                sharpe_ratio = 0.0
+        else:
+            sharpe_ratio = 0.0
+        
+        # Max drawdown
+        cumulative_returns = np.cumsum(y_test_pred)
+        running_max = np.maximum.accumulate(cumulative_returns)
+        drawdown = (cumulative_returns - running_max) / running_max
+        max_drawdown = np.min(drawdown) if len(drawdown) > 0 else 0.0
+        
+        return ModelPerformance(
+            train_score=train_score,
+            test_score=test_score,
+            cross_val_score=cross_val_score_mean,
+            mse=mse,
+            mae=mae,
+            r2=r2,
+            directional_accuracy=directional_accuracy,
+            sharpe_ratio=sharpe_ratio,
+            max_drawdown=max_drawdown
+        )
+    
+    def predict(self, df: pd.DataFrame) -> np.ndarray:
+        """Prognoz qilish"""
+        if self.model is None:
+            raise ValueError("Model hali o'qitilmagan!")
+        
+        # Featurlar yaratish
+        features_df = self.feature_engineering.create_features(df)
+        
+        # Feature selection
+        X = features_df[self.feature_names].values
+        
+        # Scaling
+        if hasattr(self.feature_engineering, 'scalers') and 'feature_scaler' in self.feature_engineering.scalers:
+            X_scaled = self.feature_engineering.scalers['feature_scaler'].transform(X)
+        else:
+            X_scaled = X
+        
+        # Prognoz
+        predictions = self.model.predict(X_scaled)
+        
+        return predictions
+    
+    def get_feature_importance(self) -> Dict[str, float]:
+        """Feature importance olish"""
+        if self.model is None:
+            return {}
+        
+        if hasattr(self.model, 'feature_importances_'):
+            importances = self.model.feature_importances_
+        elif hasattr(self.model, 'estimators_'):
+            # Ensemble model uchun
+            importances = np.mean([
+                estimator.feature_importances_ 
+                for estimator in self.model.estimators_
+            ], axis=0)
+        else:
+            return {}
+        
+        feature_importance = dict(zip(self.feature_names, importances))
+        
+        # Sortlash
+        sorted_importance = dict(sorted(feature_importance.items(), 
+                                      key=lambda x: x[1], 
+                                      reverse=True))
+        
+        return sorted_importance
+    
+    def save_model(self, file_path: str):
+        """Modelni saqlash"""
+        model_data = {
+            'model': self.model,
+            'config': self.config,
+            'feature_names': self.feature_names,
+            'feature_engineering': self.feature_engineering,
+            'performance': self.performance,
+            'created_at': datetime.now().isoformat(),
+            'version': '1.0.0',
+            'description': 'AI OrderFlow & Signal Bot - Price Prediction Model',
+            'model_type': self.config.model_type,
+            'features_count': len(self.feature_names) if self.feature_names else 0,
+            'performance_summary': {
+                'test_score': self.performance.test_score if self.performance else 0,
+                'directional_accuracy': self.performance.directional_accuracy if self.performance else 0,
+                'sharpe_ratio': self.performance.sharpe_ratio if self.performance else 0
+            }
+        }
+        
+        # Papkani yaratish
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+        
+        # Modelni saqlash
+        with open(file_path, 'wb') as f:
+            pickle.dump(model_data, f)
+        
+        self.logger.info(f"Model saqlandi: {file_path}")
+    
+    @classmethod
+    def load_model(cls, file_path: str):
+        """Modelni yuklash"""
+        with open(file_path, 'rb') as f:
+            model_data = pickle.load(f)
+        
+        # Model instance yaratish
+        instance = cls(model_data['config'])
+        instance.model = model_data['model']
+        instance.feature_names = model_data['feature_names']
+        instance.feature_engineering = model_data['feature_engineering']
+        instance.performance = model_data['performance']
+        
+        return instance
+
+def create_sample_data() -> pd.DataFrame:
+    """Sample ma'lumotlar yaratish"""
+    np.random.seed(42)
+    
+    # 2 yillik ma'lumotlar
+    dates = pd.date_range(start='2022-01-01', end='2024-01-01', freq='H')
+    
+    # Trend va seasonality
+    trend = np.linspace(1.1000, 1.2000, len(dates))
+    seasonal = 0.01 * np.sin(2 * np.pi * np.arange(len(dates)) / (24 * 7))  # Haftalik sikllar
+    
+    # Random walk
+    random_walk = np.cumsum(np.random.normal(0, 0.0001, len(dates)))
+    
+    # Narx yaratish
+    close_prices = trend + seasonal + random_walk
+    
+    # OHLC yaratish
+    high_prices = close_prices + np.random.uniform(0, 0.002, len(dates))
+    low_prices = close_prices - np.random.uniform(0, 0.002, len(dates))
+    open_prices = close_prices + np.random.uniform(-0.001, 0.001, len(dates))
+    
+    # Volume
+    volume = np.random.uniform(1000000, 5000000, len(dates))
+    
+    df = pd.DataFrame({
+        'timestamp': dates,
+        'open': open_prices,
+        'high': high_prices,
+        'low': low_prices,
+        'close': close_prices,
+        'volume': volume
+    })
+    
+    return df
+
+def main():
+    """Asosiy function - model yaratish va saqlash"""
+    print("🤖 AI OrderFlow & Signal Bot - Price Prediction Model Creator")
+    print("=" * 60)
+    
+    # Logging setup
+    logging.basicConfig(level=logging.INFO)
+    logger = logging.getLogger(__name__)
+    
+    # Model konfiguratsiyasi
+    config = ModelConfig(
+        model_type="ensemble",
+        prediction_horizon=24,
+        target="close_direction",
+        train_test_split=0.8,
+        random_state=42
+    )
+    
+    # Sample ma'lumotlar yaratish
+    logger.info("Sample ma'lumotlar yaratish...")
+    df = create_sample_data()
+    
+    # Model yaratish
+    logger.info("Model yaratish va o'qitish...")
+    model = PricePredictionModel(config)
+    
+    # Model o'qitish
+    performance = model.train(df)
+    
+    # Natijalarni ko'rsatish
+    print(f"\n📊 Model Performance:")
+    print(f"Test R² Score: {performance.test_score:.4f}")
+    print(f"Directional Accuracy: {performance.directional_accuracy:.4f}")
+    print(f"Cross-validation Score: {performance.cross_val_score:.4f}")
+    print(f"MAE: {performance.mae:.6f}")
+    print(f"MSE: {performance.mse:.6f}")
+    print(f"Sharpe Ratio: {performance.sharpe_ratio:.4f}")
+    print(f"Max Drawdown: {performance.max_drawdown:.4f}")
+    
+    # Feature importance
+    feature_importance = model.get_feature_importance()
+    print(f"\n🔍 Top 10 Features:")
+    for i, (feature, importance) in enumerate(list(feature_importance.items())[:10]):
+        print(f"{i+1}. {feature}: {importance:.4f}")
+    
+    # Modelni saqlash
+    model_path = "data/models/price_prediction_model.pkl"
+    model.save_model(model_path)
+    
+    # Test prognoz
+    test_prediction = model.predict(df.tail(100))
+    print(f"\n🎯 Son 10 ta prognoz:")
+    for i, pred in enumerate(test_prediction[-10:]):
+        print(f"Prognoz {i+1}: {pred:.4f}")
+    
+    print(f"\n✅ Model muvaffaqiyatli yaratildi va saqlandi!")
+    print(f"📁 Fayl: {model_path}")
+    print(f"🔧 Model turi: {config.model_type}")
+    print(f"📈 Prognoz ufqi: {config.prediction_horizon} soat")
+    print(f"🎯 Target: {config.target}")
+    print(f"📊 Featurlar soni: {len(model.feature_names)}")
+
+if __name__ == "__main__":
+    main()

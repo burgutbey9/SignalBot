@@ -1,0 +1,393 @@
+#!/usr/bin/env python3
+"""
+Signal Classifier Model Creator
+AI OrderFlow & Signal Bot - Signal sifatini baholash modeli
+
+Bu fayl signal_classifier.pkl modelini yaratish uchun ishlatiladi.
+Model multiple indikatorlar asosida signal kuchini baholaydi.
+"""
+
+import pickle
+import numpy as np
+import pandas as pd
+from sklearn.ensemble import RandomForestClassifier, VotingClassifier
+from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.linear_model import LogisticRegression
+from sklearn.svm import SVC
+from sklearn.feature_selection import SelectKBest, f_classif
+from datetime import datetime, timedelta
+import warnings
+warnings.filterwarnings('ignore')
+
+class SignalClassifierBuilder:
+    """Signal klassifikator modeli yaratuvchi"""
+    
+    def __init__(self):
+        self.model = None
+        self.scaler = StandardScaler()
+        self.feature_selector = SelectKBest(f_classif, k=15)
+        self.feature_names = []
+        self.model_info = {}
+        
+    def create_sample_data(self, n_samples=10000):
+        """
+        Sample training data yaratish
+        Real loyihada bu ma'lumotlar tarixiy trade data dan keladi
+        """
+        print("📊 Sample training data yaratilmoqda...")
+        
+        np.random.seed(42)
+        
+        # Technical indicators (normalized -1 to 1)
+        rsi = np.random.normal(0, 0.3, n_samples)
+        macd = np.random.normal(0, 0.2, n_samples)
+        bb_position = np.random.normal(0, 0.4, n_samples)
+        stoch = np.random.normal(0, 0.3, n_samples)
+        
+        # Volume indicators
+        volume_ratio = np.random.lognormal(0, 0.5, n_samples)
+        volume_sma_ratio = np.random.normal(1, 0.3, n_samples)
+        
+        # Price action indicators
+        price_momentum = np.random.normal(0, 0.25, n_samples)
+        volatility = np.random.lognormal(-1, 0.5, n_samples)
+        
+        # Market structure indicators
+        support_distance = np.random.exponential(0.002, n_samples)
+        resistance_distance = np.random.exponential(0.002, n_samples)
+        
+        # Order flow indicators
+        order_flow_imbalance = np.random.normal(0, 0.3, n_samples)
+        large_order_ratio = np.random.beta(2, 5, n_samples)
+        
+        # Sentiment indicators
+        news_sentiment = np.random.normal(0, 0.4, n_samples)
+        social_sentiment = np.random.normal(0, 0.3, n_samples)
+        
+        # Time-based features
+        hour = np.random.randint(0, 24, n_samples)
+        day_of_week = np.random.randint(0, 7, n_samples)
+        
+        # Market condition indicators
+        trend_strength = np.random.beta(2, 3, n_samples)
+        market_volatility = np.random.lognormal(-1, 0.5, n_samples)
+        
+        # Confluence indicators
+        confluence_score = np.random.beta(3, 2, n_samples)
+        signal_clarity = np.random.beta(2, 2, n_samples)
+        
+        # Features array
+        features = np.column_stack([
+            rsi, macd, bb_position, stoch,
+            volume_ratio, volume_sma_ratio,
+            price_momentum, volatility,
+            support_distance, resistance_distance,
+            order_flow_imbalance, large_order_ratio,
+            news_sentiment, social_sentiment,
+            hour, day_of_week,
+            trend_strength, market_volatility,
+            confluence_score, signal_clarity
+        ])
+        
+        self.feature_names = [
+            'rsi', 'macd', 'bb_position', 'stoch',
+            'volume_ratio', 'volume_sma_ratio',
+            'price_momentum', 'volatility',
+            'support_distance', 'resistance_distance',
+            'order_flow_imbalance', 'large_order_ratio',
+            'news_sentiment', 'social_sentiment',
+            'hour', 'day_of_week',
+            'trend_strength', 'market_volatility',
+            'confluence_score', 'signal_clarity'
+        ]
+        
+        # Signal quality labels yaratish (0: Hold, 1: Weak, 2: Strong)
+        # Murakkab qoidalar asosida labellar yaratish
+        signal_quality = np.zeros(n_samples)
+        
+        for i in range(n_samples):
+            score = 0
+            
+            # RSI asosida
+            if abs(rsi[i]) > 0.3:
+                score += 1
+            
+            # MACD va momentum
+            if macd[i] * price_momentum[i] > 0:
+                score += 1
+            
+            # Volume confirmation
+            if volume_ratio[i] > 1.2:
+                score += 1
+            
+            # Order flow
+            if abs(order_flow_imbalance[i]) > 0.2:
+                score += 1
+            
+            # Sentiment alignment
+            if news_sentiment[i] * social_sentiment[i] > 0:
+                score += 1
+            
+            # Confluence
+            if confluence_score[i] > 0.6:
+                score += 1
+            
+            # Market condition
+            if trend_strength[i] > 0.5 and market_volatility[i] < 0.5:
+                score += 1
+            
+            # Support/Resistance
+            if min(support_distance[i], resistance_distance[i]) > 0.001:
+                score += 1
+            
+            # Signal clarity
+            if signal_clarity[i] > 0.7:
+                score += 1
+            
+            # Final classification
+            if score >= 7:
+                signal_quality[i] = 2  # Strong signal
+            elif score >= 4:
+                signal_quality[i] = 1  # Weak signal
+            else:
+                signal_quality[i] = 0  # Hold
+        
+        return features, signal_quality.astype(int)
+    
+    def build_model(self):
+        """Ensemble model yaratish"""
+        print("🤖 Model yaratilmoqda...")
+        
+        # Base models
+        rf_model = RandomForestClassifier(
+            n_estimators=100,
+            max_depth=10,
+            min_samples_split=5,
+            min_samples_leaf=2,
+            random_state=42
+        )
+        
+        lr_model = LogisticRegression(
+            random_state=42,
+            max_iter=1000,
+            C=0.1
+        )
+        
+        svm_model = SVC(
+            kernel='rbf',
+            probability=True,
+            random_state=42,
+            C=1.0
+        )
+        
+        # Voting classifier
+        self.model = VotingClassifier(
+            estimators=[
+                ('rf', rf_model),
+                ('lr', lr_model),
+                ('svm', svm_model)
+            ],
+            voting='soft'
+        )
+        
+        return self.model
+    
+    def train_model(self, X, y):
+        """Model o'qitish"""
+        print("📚 Model o'qitilmoqda...")
+        
+        # Data split
+        X_train, X_test, y_train, y_test = train_test_split(
+            X, y, test_size=0.2, random_state=42, stratify=y
+        )
+        
+        # Feature scaling
+        X_train_scaled = self.scaler.fit_transform(X_train)
+        X_test_scaled = self.scaler.transform(X_test)
+        
+        # Feature selection
+        X_train_selected = self.feature_selector.fit_transform(X_train_scaled, y_train)
+        X_test_selected = self.feature_selector.transform(X_test_scaled)
+        
+        # Model training
+        self.model.fit(X_train_selected, y_train)
+        
+        # Model evaluation
+        train_score = self.model.score(X_train_selected, y_train)
+        test_score = self.model.score(X_test_selected, y_test)
+        
+        print(f"✅ Training accuracy: {train_score:.4f}")
+        print(f"✅ Test accuracy: {test_score:.4f}")
+        
+        # Cross-validation
+        cv_scores = cross_val_score(self.model, X_train_selected, y_train, cv=5)
+        print(f"✅ Cross-validation accuracy: {cv_scores.mean():.4f} ± {cv_scores.std():.4f}")
+        
+        # Predictions
+        y_pred = self.model.predict(X_test_selected)
+        
+        # Classification report
+        print("\n📊 Classification Report:")
+        print(classification_report(y_test, y_pred, 
+                                  target_names=['Hold', 'Weak', 'Strong']))
+        
+        # Feature importance (Random Forest dan)
+        rf_model = self.model.named_estimators_['rf']
+        selected_features = self.feature_selector.get_support()
+        selected_feature_names = [name for name, selected in zip(self.feature_names, selected_features) if selected]
+        
+        feature_importance = pd.DataFrame({
+            'feature': selected_feature_names,
+            'importance': rf_model.feature_importances_
+        }).sort_values('importance', ascending=False)
+        
+        print("\n🎯 Top 10 Feature Importance:")
+        print(feature_importance.head(10))
+        
+        # Model info saqash
+        self.model_info = {
+            'model_type': 'Ensemble Signal Classifier',
+            'created_date': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            'n_features': X_train_selected.shape[1],
+            'n_samples': X_train.shape[0],
+            'train_accuracy': train_score,
+            'test_accuracy': test_score,
+            'cv_accuracy_mean': cv_scores.mean(),
+            'cv_accuracy_std': cv_scores.std(),
+            'feature_names': selected_feature_names,
+            'feature_importance': feature_importance.to_dict('records'),
+            'class_labels': ['Hold', 'Weak Signal', 'Strong Signal'],
+            'model_version': '1.0.0',
+            'description': 'Signal quality classifier - Multiple indicators asosida signal kuchini baholaydi'
+        }
+        
+        return self.model
+    
+    def save_model(self, filename='data/models/signal_classifier.pkl'):
+        """Modelni saqlash"""
+        print(f"💾 Model saqlanmoqda: {filename}")
+        
+        model_package = {
+            'model': self.model,
+            'scaler': self.scaler,
+            'feature_selector': self.feature_selector,
+            'feature_names': self.feature_names,
+            'model_info': self.model_info
+        }
+        
+        with open(filename, 'wb') as f:
+            pickle.dump(model_package, f)
+        
+        print(f"✅ Model muvaffaqiyatli saqlandi: {filename}")
+        return filename
+    
+    def load_model(self, filename='data/models/signal_classifier.pkl'):
+        """Modelni yuklash"""
+        print(f"📂 Model yuklanmoqda: {filename}")
+        
+        with open(filename, 'rb') as f:
+            model_package = pickle.load(f)
+        
+        self.model = model_package['model']
+        self.scaler = model_package['scaler']
+        self.feature_selector = model_package['feature_selector']
+        self.feature_names = model_package['feature_names']
+        self.model_info = model_package['model_info']
+        
+        print("✅ Model muvaffaqiyatli yuklandi")
+        return self.model
+    
+    def predict_signal_quality(self, features):
+        """Signal sifatini prognoz qilish"""
+        if self.model is None:
+            raise ValueError("Model o'qitilmagan yoki yuklanmagan")
+        
+        # Preprocessing
+        features_scaled = self.scaler.transform(features.reshape(1, -1))
+        features_selected = self.feature_selector.transform(features_scaled)
+        
+        # Prediction
+        prediction = self.model.predict(features_selected)[0]
+        probabilities = self.model.predict_proba(features_selected)[0]
+        
+        signal_labels = ['Hold', 'Weak Signal', 'Strong Signal']
+        
+        result = {
+            'signal_quality': signal_labels[prediction],
+            'confidence': probabilities[prediction],
+            'probabilities': {
+                'hold': probabilities[0],
+                'weak': probabilities[1],
+                'strong': probabilities[2]
+            }
+        }
+        
+        return result
+    
+    def get_model_info(self):
+        """Model ma'lumotlarini olish"""
+        return self.model_info
+
+def main():
+    """Asosiy funksiya - model yaratish va saqlash"""
+    print("🚀 Signal Classifier Model yaratish boshlandi...")
+    print("=" * 50)
+    
+    # Model builder yaratish
+    builder = SignalClassifierBuilder()
+    
+    # Sample data yaratish
+    X, y = builder.create_sample_data(n_samples=10000)
+    
+    # Model yaratish
+    model = builder.build_model()
+    
+    # Model o'qitish
+    trained_model = builder.train_model(X, y)
+    
+    # Model saqlash
+    filename = builder.save_model()
+    
+    # Model info
+    print("\n📋 Model Ma'lumotlari:")
+    print("=" * 30)
+    info = builder.get_model_info()
+    for key, value in info.items():
+        if key not in ['feature_importance', 'feature_names']:
+            print(f"{key}: {value}")
+    
+    # Test prediction
+    print("\n🧪 Test Prediction:")
+    print("=" * 20)
+    
+    # Random test sample
+    test_features = np.random.normal(0, 0.3, len(builder.feature_names))
+    result = builder.predict_signal_quality(test_features)
+    
+    print(f"Signal Quality: {result['signal_quality']}")
+    print(f"Confidence: {result['confidence']:.4f}")
+    print(f"Probabilities: {result['probabilities']}")
+    
+    print("\n✅ Signal Classifier Model muvaffaqiyatli yaratildi!")
+    print(f"📁 Fayl: {filename}")
+    print(f"📊 Model accuracy: {info['test_accuracy']:.4f}")
+    print(f"🎯 Features: {info['n_features']}")
+    print(f"📈 Samples: {info['n_samples']}")
+    
+    return filename
+
+if __name__ == "__main__":
+    # Model yaratish
+    model_file = main()
+    
+    print("\n" + "="*50)
+    print("🎯 MODEL YARATISH TUGADI")
+    print("="*50)
+    print(f"📄 Fayl: {model_file}")
+    print("📋 Model: Ensemble Signal Classifier")
+    print("🎯 Maqsad: Signal sifatini baholash")
+    print("📊 Klasslar: Hold, Weak Signal, Strong Signal")
+    print("🤖 Algoritm: Random Forest + Logistic Regression + SVM")
+    print("✅ Tayyor: Trading botda ishlatish uchun")

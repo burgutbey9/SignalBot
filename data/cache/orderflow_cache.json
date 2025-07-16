@@ -1,0 +1,547 @@
+{
+  "cache_info": {
+    "created_at": "2024-07-12T10:30:00Z",
+    "last_updated": "2024-07-12T10:30:00Z",
+    "cache_version": "1.0",
+    "expiry_time": "2024-07-12T10:35:00Z",
+    "cache_duration_minutes": 5,
+    "data_sources": ["1inch", "thegraph", "alchemy"],
+    "comment": "Order flow ma'lumotlari keshi - 5 daqiqada yangilanadi"
+  },
+  "orderflow_data": {
+    "EURUSD": {
+      "symbol": "EURUSD",
+      "cached_time": "2024-07-12T10:30:00Z",
+      "timeframe": "1H",
+      "buy_pressure": 0.67,
+      "sell_pressure": 0.33,
+      "net_flow": 0.34,
+      "flow_strength": "strong_bullish",
+      "large_orders": {
+        "buy_orders": [
+          {
+            "size": 250000,
+            "price": 1.0985,
+            "timestamp": "2024-07-12T10:29:45Z",
+            "order_type": "market"
+          },
+          {
+            "size": 180000,
+            "price": 1.0987,
+            "timestamp": "2024-07-12T10:29:20Z",
+            "order_type": "limit"
+          }
+        ],
+        "sell_orders": [
+          {
+            "size": 120000,
+            "price": 1.0990,
+            "timestamp": "2024-07-12T10:29:30Z",
+            "order_type": "limit"
+          }
+        ]
+      },
+      "whale_activity": {
+        "detected": true,
+        "whale_count": 3,
+        "total_volume": 550000,
+        "average_size": 183333,
+        "sentiment": "bullish"
+      },
+      "liquidity_levels": {
+        "support_levels": [
+          {
+            "price": 1.0980,
+            "strength": 0.85,
+            "volume": 450000
+          },
+          {
+            "price": 1.0975,
+            "strength": 0.72,
+            "volume": 320000
+          }
+        ],
+        "resistance_levels": [
+          {
+            "price": 1.0995,
+            "strength": 0.78,
+            "volume": 380000
+          },
+          {
+            "price": 1.1000,
+            "strength": 0.90,
+            "volume": 520000
+          }
+        ]
+      },
+      "order_book_imbalance": 0.42,
+      "volume_weighted_price": 1.0987,
+      "confidence_level": 0.83,
+      "data_quality": "high"
+    },
+    "GBPUSD": {
+      "symbol": "GBPUSD",
+      "cached_time": "2024-07-12T10:30:00Z",
+      "timeframe": "1H",
+      "buy_pressure": 0.45,
+      "sell_pressure": 0.55,
+      "net_flow": -0.10,
+      "flow_strength": "weak_bearish",
+      "large_orders": {
+        "buy_orders": [
+          {
+            "size": 95000,
+            "price": 1.2890,
+            "timestamp": "2024-07-12T10:28:15Z",
+            "order_type": "limit"
+          }
+        ],
+        "sell_orders": [
+          {
+            "size": 160000,
+            "price": 1.2895,
+            "timestamp": "2024-07-12T10:29:10Z",
+            "order_type": "market"
+          },
+          {
+            "size": 130000,
+            "price": 1.2900,
+            "timestamp": "2024-07-12T10:28:45Z",
+            "order_type": "limit"
+          }
+        ]
+      },
+      "whale_activity": {
+        "detected": true,
+        "whale_count": 2,
+        "total_volume": 385000,
+        "average_size": 192500,
+        "sentiment": "bearish"
+      },
+      "liquidity_levels": {
+        "support_levels": [
+          {
+            "price": 1.2880,
+            "strength": 0.75,
+            "volume": 280000
+          },
+          {
+            "price": 1.2875,
+            "strength": 0.68,
+            "volume": 220000
+          }
+        ],
+        "resistance_levels": [
+          {
+            "price": 1.2900,
+            "strength": 0.82,
+            "volume": 350000
+          },
+          {
+            "price": 1.2910,
+            "strength": 0.77,
+            "volume": 290000
+          }
+        ]
+      },
+      "order_book_imbalance": -0.18,
+      "volume_weighted_price": 1.2893,
+      "confidence_level": 0.76,
+      "data_quality": "medium"
+    },
+    "USDJPY": {
+      "symbol": "USDJPY",
+      "cached_time": "2024-07-12T10:30:00Z",
+      "timeframe": "1H",
+      "buy_pressure": 0.72,
+      "sell_pressure": 0.28,
+      "net_flow": 0.44,
+      "flow_strength": "strong_bullish",
+      "large_orders": {
+        "buy_orders": [
+          {
+            "size": 340000,
+            "price": 157.85,
+            "timestamp": "2024-07-12T10:29:35Z",
+            "order_type": "market"
+          },
+          {
+            "size": 210000,
+            "price": 157.80,
+            "timestamp": "2024-07-12T10:29:00Z",
+            "order_type": "limit"
+          }
+        ],
+        "sell_orders": [
+          {
+            "size": 85000,
+            "price": 157.90,
+            "timestamp": "2024-07-12T10:28:50Z",
+            "order_type": "limit"
+          }
+        ]
+      },
+      "whale_activity": {
+        "detected": true,
+        "whale_count": 4,
+        "total_volume": 635000,
+        "average_size": 158750,
+        "sentiment": "very_bullish"
+      },
+      "liquidity_levels": {
+        "support_levels": [
+          {
+            "price": 157.75,
+            "strength": 0.88,
+            "volume": 480000
+          },
+          {
+            "price": 157.60,
+            "strength": 0.79,
+            "volume": 360000
+          }
+        ],
+        "resistance_levels": [
+          {
+            "price": 158.00,
+            "strength": 0.85,
+            "volume": 420000
+          },
+          {
+            "price": 158.20,
+            "strength": 0.91,
+            "volume": 550000
+          }
+        ]
+      },
+      "order_book_imbalance": 0.58,
+      "volume_weighted_price": 157.83,
+      "confidence_level": 0.89,
+      "data_quality": "high"
+    },
+    "AUDUSD": {
+      "symbol": "AUDUSD",
+      "cached_time": "2024-07-12T10:30:00Z",
+      "timeframe": "1H",
+      "buy_pressure": 0.38,
+      "sell_pressure": 0.62,
+      "net_flow": -0.24,
+      "flow_strength": "moderate_bearish",
+      "large_orders": {
+        "buy_orders": [
+          {
+            "size": 75000,
+            "price": 0.6785,
+            "timestamp": "2024-07-12T10:28:30Z",
+            "order_type": "limit"
+          }
+        ],
+        "sell_orders": [
+          {
+            "size": 195000,
+            "price": 0.6790,
+            "timestamp": "2024-07-12T10:29:25Z",
+            "order_type": "market"
+          },
+          {
+            "size": 140000,
+            "price": 0.6795,
+            "timestamp": "2024-07-12T10:29:05Z",
+            "order_type": "limit"
+          }
+        ]
+      },
+      "whale_activity": {
+        "detected": true,
+        "whale_count": 2,
+        "total_volume": 410000,
+        "average_size": 205000,
+        "sentiment": "bearish"
+      },
+      "liquidity_levels": {
+        "support_levels": [
+          {
+            "price": 0.6780,
+            "strength": 0.73,
+            "volume": 240000
+          },
+          {
+            "price": 0.6775,
+            "strength": 0.69,
+            "volume": 190000
+          }
+        ],
+        "resistance_levels": [
+          {
+            "price": 0.6800,
+            "strength": 0.80,
+            "volume": 310000
+          },
+          {
+            "price": 0.6810,
+            "strength": 0.75,
+            "volume": 270000
+          }
+        ]
+      },
+      "order_book_imbalance": -0.31,
+      "volume_weighted_price": 0.6789,
+      "confidence_level": 0.71,
+      "data_quality": "medium"
+    },
+    "USDCAD": {
+      "symbol": "USDCAD",
+      "cached_time": "2024-07-12T10:30:00Z",
+      "timeframe": "1H",
+      "buy_pressure": 0.52,
+      "sell_pressure": 0.48,
+      "net_flow": 0.04,
+      "flow_strength": "neutral",
+      "large_orders": {
+        "buy_orders": [
+          {
+            "size": 115000,
+            "price": 1.3565,
+            "timestamp": "2024-07-12T10:29:15Z",
+            "order_type": "limit"
+          }
+        ],
+        "sell_orders": [
+          {
+            "size": 105000,
+            "price": 1.3570,
+            "timestamp": "2024-07-12T10:29:40Z",
+            "order_type": "limit"
+          }
+        ]
+      },
+      "whale_activity": {
+        "detected": false,
+        "whale_count": 0,
+        "total_volume": 220000,
+        "average_size": 110000,
+        "sentiment": "neutral"
+      },
+      "liquidity_levels": {
+        "support_levels": [
+          {
+            "price": 1.3560,
+            "strength": 0.65,
+            "volume": 180000
+          },
+          {
+            "price": 1.3555,
+            "strength": 0.61,
+            "volume": 150000
+          }
+        ],
+        "resistance_levels": [
+          {
+            "price": 1.3575,
+            "strength": 0.68,
+            "volume": 200000
+          },
+          {
+            "price": 1.3585,
+            "strength": 0.72,
+            "volume": 230000
+          }
+        ]
+      },
+      "order_book_imbalance": 0.08,
+      "volume_weighted_price": 1.3567,
+      "confidence_level": 0.64,
+      "data_quality": "medium"
+    }
+  },
+  "crypto_orderflow": {
+    "BTCUSD": {
+      "symbol": "BTCUSD",
+      "cached_time": "2024-07-12T10:30:00Z",
+      "timeframe": "1H",
+      "buy_pressure": 0.78,
+      "sell_pressure": 0.22,
+      "net_flow": 0.56,
+      "flow_strength": "very_strong_bullish",
+      "large_orders": {
+        "buy_orders": [
+          {
+            "size": 850000,
+            "price": 68500,
+            "timestamp": "2024-07-12T10:29:50Z",
+            "order_type": "market"
+          },
+          {
+            "size": 520000,
+            "price": 68450,
+            "timestamp": "2024-07-12T10:29:20Z",
+            "order_type": "limit"
+          }
+        ],
+        "sell_orders": [
+          {
+            "size": 280000,
+            "price": 68600,
+            "timestamp": "2024-07-12T10:29:10Z",
+            "order_type": "limit"
+          }
+        ]
+      },
+      "whale_activity": {
+        "detected": true,
+        "whale_count": 6,
+        "total_volume": 1650000,
+        "average_size": 275000,
+        "sentiment": "very_bullish"
+      },
+      "liquidity_levels": {
+        "support_levels": [
+          {
+            "price": 68400,
+            "strength": 0.92,
+            "volume": 1200000
+          },
+          {
+            "price": 68200,
+            "strength": 0.87,
+            "volume": 980000
+          }
+        ],
+        "resistance_levels": [
+          {
+            "price": 68800,
+            "strength": 0.85,
+            "volume": 1050000
+          },
+          {
+            "price": 69000,
+            "strength": 0.94,
+            "volume": 1380000
+          }
+        ]
+      },
+      "order_book_imbalance": 0.68,
+      "volume_weighted_price": 68475,
+      "confidence_level": 0.94,
+      "data_quality": "high"
+    },
+    "ETHUSD": {
+      "symbol": "ETHUSD",
+      "cached_time": "2024-07-12T10:30:00Z",
+      "timeframe": "1H",
+      "buy_pressure": 0.61,
+      "sell_pressure": 0.39,
+      "net_flow": 0.22,
+      "flow_strength": "moderate_bullish",
+      "large_orders": {
+        "buy_orders": [
+          {
+            "size": 420000,
+            "price": 3650,
+            "timestamp": "2024-07-12T10:29:35Z",
+            "order_type": "market"
+          }
+        ],
+        "sell_orders": [
+          {
+            "size": 250000,
+            "price": 3680,
+            "timestamp": "2024-07-12T10:29:05Z",
+            "order_type": "limit"
+          }
+        ]
+      },
+      "whale_activity": {
+        "detected": true,
+        "whale_count": 3,
+        "total_volume": 670000,
+        "average_size": 223333,
+        "sentiment": "bullish"
+      },
+      "liquidity_levels": {
+        "support_levels": [
+          {
+            "price": 3620,
+            "strength": 0.81,
+            "volume": 580000
+          },
+          {
+            "price": 3600,
+            "strength": 0.76,
+            "volume": 450000
+          }
+        ],
+        "resistance_levels": [
+          {
+            "price": 3700,
+            "strength": 0.83,
+            "volume": 620000
+          },
+          {
+            "price": 3750,
+            "strength": 0.88,
+            "volume": 750000
+          }
+        ]
+      },
+      "order_book_imbalance": 0.35,
+      "volume_weighted_price": 3657,
+      "confidence_level": 0.79,
+      "data_quality": "high"
+    }
+  },
+  "aggregated_metrics": {
+    "total_symbols_tracked": 7,
+    "high_confidence_signals": 4,
+    "medium_confidence_signals": 2,
+    "low_confidence_signals": 1,
+    "bullish_signals": 4,
+    "bearish_signals": 2,
+    "neutral_signals": 1,
+    "whale_activity_detected": 6,
+    "average_confidence": 0.78,
+    "market_sentiment": "bullish",
+    "risk_level": "medium",
+    "recommended_action": "selective_buy"
+  },
+  "flow_analysis": {
+    "dominant_flow": "buy_pressure",
+    "flow_strength": 0.73,
+    "flow_consistency": 0.82,
+    "flow_momentum": "increasing",
+    "flow_divergence": false,
+    "institutional_activity": "high",
+    "retail_activity": "moderate",
+    "algorithmic_activity": "high"
+  },
+  "risk_indicators": {
+    "volatility_risk": "medium",
+    "liquidity_risk": "low",
+    "concentration_risk": "medium",
+    "correlation_risk": "low",
+    "tail_risk": "low",
+    "overall_risk_score": 0.42
+  },
+  "cache_health": {
+    "cache_hit_rate": 0.94,
+    "data_freshness": "excellent",
+    "api_response_time": 0.85,
+    "error_rate": 0.02,
+    "fallback_usage": 0.08,
+    "cache_performance": "optimal"
+  },
+  "uzbek_translations": {
+    "buy_pressure": "sotib_olish_bosimi",
+    "sell_pressure": "sotish_bosimi",
+    "net_flow": "sof_oqim",
+    "flow_strength": "oqim_kuchi",
+    "whale_activity": "kit_faoliyati",
+    "liquidity_levels": "likvidlik_daraja",
+    "support_levels": "qo'llab_quvvatlash_darajasi",
+    "resistance_levels": "qarshilik_darajasi",
+    "order_book_imbalance": "buyurtma_kitob_nomuvozanat",
+    "confidence_level": "ishonch_darajasi",
+    "market_sentiment": "bozor_kayfiyati",
+    "risk_level": "risk_darajasi"
+  }
+}

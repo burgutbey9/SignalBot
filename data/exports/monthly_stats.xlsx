@@ -1,0 +1,925 @@
+#!/usr/bin/env python3
+"""
+AI OrderFlow Signal Bot - Monthly Statistics Excel Generator
+Oylik statistika Excel fayl yaratuvchi
+
+Bu fayl monthly_stats.xlsx yaratish uchun ishlatiladi
+"""
+
+import pandas as pd
+import numpy as np
+from datetime import datetime, timedelta
+import os
+from pathlib import Path
+
+def create_monthly_stats_excel():
+    """
+    Oylik statistika Excel faylini yaratish
+    Creates monthly statistics Excel file with multiple sheets
+    """
+    
+    # Excel fayl yo'li
+    file_path = Path("data/exports/monthly_stats.xlsx")
+    file_path.parent.mkdir(parents=True, exist_ok=True)
+    
+    # Joriy oy ma'lumotlari
+    current_date = datetime.now()
+    month_start = current_date.replace(day=1)
+    
+    # Excel writer yaratish
+    with pd.ExcelWriter(file_path, engine='openpyxl') as writer:
+        
+        # 1. Oylik Umumiy Ko'rsatkichlar (Monthly Overview)
+        monthly_overview = create_monthly_overview_sheet()
+        monthly_overview.to_excel(writer, sheet_name='Oylik Umumiy', index=False)
+        
+        # 2. Savdo Jurnali (Trade Log)
+        trade_log = create_trade_log_sheet()
+        trade_log.to_excel(writer, sheet_name='Savdo Jurnali', index=False)
+        
+        # 3. Risk Metrikalar (Risk Metrics)
+        risk_metrics = create_risk_metrics_sheet()
+        risk_metrics.to_excel(writer, sheet_name='Risk Metrikalar', index=False)
+        
+        # 4. Strategiya Taqqoslash (Strategy Comparison)
+        strategy_comparison = create_strategy_comparison_sheet()
+        strategy_comparison.to_excel(writer, sheet_name='Strategiya Taqqoslash', index=False)
+        
+        # 5. Kunlik Natijalar (Daily Results)
+        daily_results = create_daily_results_sheet()
+        daily_results.to_excel(writer, sheet_name='Kunlik Natijalar', index=False)
+        
+        # 6. AI Signal Tahlili (AI Signal Analysis)
+        ai_signal_analysis = create_ai_signal_analysis_sheet()
+        ai_signal_analysis.to_excel(writer, sheet_name='AI Signal Tahlili', index=False)
+        
+        # 7. Propshot Hisoboti (Propshot Report)
+        propshot_report = create_propshot_report_sheet()
+        propshot_report.to_excel(writer, sheet_name='Propshot Hisoboti', index=False)
+        
+        # 8. Bozor Tahlili (Market Analysis)
+        market_analysis = create_market_analysis_sheet()
+        market_analysis.to_excel(writer, sheet_name='Bozor Tahlili', index=False)
+    
+    print(f"✅ Monthly stats Excel fayl yaratildi: {file_path}")
+    return file_path
+
+def create_monthly_overview_sheet():
+    """Oylik umumiy ko'rsatkichlar sahifasi"""
+    
+    # Sample data - haqiqiy botda database dan keladi
+    data = {
+        'Ko\'rsatkich': [
+            'Jami Savdolar',
+            'Muvaffaqiyatli Savdolar', 
+            'Muvaffaqiyat Foizi (%)',
+            'Jami Foyda/Zarar (USD)',
+            'Eng Yaxshi Savdo (USD)',
+            'Eng Yomon Savdo (USD)',
+            'O\'rtacha Foyda (USD)',
+            'O\'rtacha Zarar (USD)',
+            'Maksimal Cho\'kish (%)',
+            'Sharpe Nisbati',
+            'Sortino Nisbati',
+            'Profit Factor',
+            'Umumiy Pipslar',
+            'O\'rtacha Kunlik Foyda (%)',
+            'Eng Yaxshi Kun (USD)',
+            'Eng Yomon Kun (USD)',
+            'Ishchi Kunlar',
+            'Savdo Kuni',
+            'AI Signallar Soni',
+            'Propshot Limitiga Yetish',
+            'Risk Buzilishlar',
+            'Telegram Signallar',
+            'Auto Savdolar',
+            'Manual Savdolar'
+        ],
+        'Qiymat': [
+            147,
+            89,
+            60.5,
+            2847.50,
+            245.80,
+            -189.30,
+            127.45,
+            -98.20,
+            12.4,
+            1.34,
+            1.67,
+            1.42,
+            2856,
+            1.23,
+            398.70,
+            -267.40,
+            22,
+            18,
+            892,
+            3,
+            0,
+            834,
+            679,
+            168
+        ],
+        'Holat': [
+            'Yaxshi',
+            'Yaxshi',
+            'O\'rtacha',
+            'Yaxshi',
+            'Yaxshi',
+            'Yomon',
+            'Yaxshi',
+            'Yaxshi',
+            'Yaxshi',
+            'Yaxshi',
+            'Yaxshi',
+            'Yaxshi',
+            'Yaxshi',
+            'Yaxshi',
+            'Yaxshi',
+            'Yomon',
+            'Yaxshi',
+            'Yaxshi',
+            'Yaxshi',
+            'Yaxshi',
+            'Mukammal',
+            'Yaxshi',
+            'Yaxshi',
+            'O\'rtacha'
+        ],
+        'Oylik Maqsad': [
+            150,
+            95,
+            65.0,
+            3000.0,
+            300.0,
+            -150.0,
+            150.0,
+            -80.0,
+            10.0,
+            1.5,
+            1.8,
+            1.5,
+            3000,
+            1.5,
+            400.0,
+            -200.0,
+            23,
+            20,
+            900,
+            2,
+            0,
+            850,
+            700,
+            150
+        ],
+        'Foiz (%)': [
+            98.0,
+            93.7,
+            93.1,
+            94.9,
+            81.9,
+            126.2,
+            84.9,
+            122.8,
+            124.0,
+            89.3,
+            92.8,
+            94.7,
+            95.2,
+            82.0,
+            99.7,
+            133.7,
+            95.7,
+            90.0,
+            99.1,
+            150.0,
+            0.0,
+            98.1,
+            97.0,
+            112.0
+        ]
+    }
+    
+    return pd.DataFrame(data)
+
+def create_trade_log_sheet():
+    """Savdo jurnali sahifasi"""
+    
+    # Sample trade data
+    np.random.seed(42)
+    
+    trades = []
+    for i in range(1, 148):  # 147 savdo
+        trade = {
+            'ID': f'TR{i:04d}',
+            'Sana': (datetime.now() - timedelta(days=np.random.randint(0, 30))).strftime('%Y-%m-%d'),
+            'Vaqt': f'{np.random.randint(7, 19):02d}:{np.random.randint(0, 59):02d}',
+            'Simbol': np.random.choice(['EURUSD', 'GBPUSD', 'USDJPY', 'AUDUSD', 'USDCAD', 'NZDUSD', 'USDCHF']),
+            'Harakat': np.random.choice(['BUY', 'SELL']),
+            'Lot': round(np.random.uniform(0.01, 0.5), 2),
+            'Kirish Narxi': round(np.random.uniform(1.0500, 1.2000), 5),
+            'Chiqish Narxi': round(np.random.uniform(1.0500, 1.2000), 5),
+            'Stop Loss': round(np.random.uniform(1.0400, 1.1900), 5),
+            'Take Profit': round(np.random.uniform(1.0600, 1.2100), 5),
+            'Pipslar': np.random.randint(-45, 85),
+            'Foyda/Zarar': round(np.random.uniform(-189.30, 245.80), 2),
+            'Davomiyligi': f'{np.random.randint(15, 480)} min',
+            'Strategiya': np.random.choice(['AI OrderFlow', 'Sentiment Signal', 'Hybrid Strategy']),
+            'AI Ishonch': f'{np.random.randint(65, 95)}%',
+            'Propshot': np.random.choice(['Ha', 'Yo\'q']),
+            'Holat': np.random.choice(['Yopilgan', 'Stop Loss', 'Take Profit']),
+            'Sabab': np.random.choice(['AI Signal', 'Order Flow', 'Sentiment Change', 'Manual Close'])
+        }
+        trades.append(trade)
+    
+    return pd.DataFrame(trades)
+
+def create_risk_metrics_sheet():
+    """Risk metrikalar sahifasi"""
+    
+    data = {
+        'Risk Turi': [
+            'Maksimal Cho\'kish',
+            'VaR (95%)',
+            'Expected Shortfall',
+            'Beta',
+            'Alpha',
+            'Volatillik',
+            'Sharpe Ratio',
+            'Sortino Ratio',
+            'Calmar Ratio',
+            'Information Ratio',
+            'Treynor Ratio',
+            'Maximum Drawdown Duration',
+            'Recovery Factor',
+            'Profit/Loss Ratio',
+            'Win/Loss Ratio',
+            'Average Win',
+            'Average Loss',
+            'Largest Win',
+            'Largest Loss',
+            'Consecutive Wins',
+            'Consecutive Losses',
+            'Correlation with Market',
+            'Tracking Error',
+            'Downside Deviation'
+        ],
+        'Qiymat': [
+            '-12.4%',
+            '-4.2%',
+            '-5.8%',
+            '0.65',
+            '2.34%',
+            '18.5%',
+            '1.34',
+            '1.67',
+            '0.89',
+            '0.78',
+            '12.4%',
+            '5 kun',
+            '3.2',
+            '1.42',
+            '1.52',
+            '$127.45',
+            '-$98.20',
+            '$245.80',
+            '-$189.30',
+            '7',
+            '4',
+            '0.23',
+            '12.3%',
+            '13.2%'
+        ],
+        'Benchmark': [
+            '-15.0%',
+            '-5.0%',
+            '-7.0%',
+            '1.0',
+            '0.0%',
+            '20.0%',
+            '1.0',
+            '1.2',
+            '0.5',
+            '0.0',
+            '8.0%',
+            '10 kun',
+            '2.0',
+            '1.0',
+            '1.0',
+            '$100.00',
+            '-$100.00',
+            '$200.00',
+            '-$200.00',
+            '5',
+            '5',
+            '0.8',
+            '15.0%',
+            '15.0%'
+        ],
+        'Holat': [
+            'Yaxshi',
+            'Yaxshi',
+            'Yaxshi',
+            'Yaxshi',
+            'Mukammal',
+            'Yaxshi',
+            'Yaxshi',
+            'Yaxshi',
+            'Yaxshi',
+            'Yaxshi',
+            'Yaxshi',
+            'Mukammal',
+            'Yaxshi',
+            'Yaxshi',
+            'Yaxshi',
+            'Yaxshi',
+            'Yaxshi',
+            'Yaxshi',
+            'Yaxshi',
+            'Yaxshi',
+            'Yaxshi',
+            'Mukammal',
+            'Yaxshi',
+            'Yaxshi'
+        ]
+    }
+    
+    return pd.DataFrame(data)
+
+def create_strategy_comparison_sheet():
+    """Strategiya taqqoslash sahifasi"""
+    
+    data = {
+        'Strategiya': [
+            'AI OrderFlow',
+            'Sentiment Signal',
+            'Hybrid Strategy',
+            'Manual Override',
+            'Propshot EA'
+        ],
+        'Savdolar': [
+            89,
+            34,
+            24,
+            0,
+            0
+        ],
+        'Muvaffaqiyat (%)': [
+            62.9,
+            58.8,
+            54.2,
+            0.0,
+            0.0
+        ],
+        'Foyda/Zarar': [
+            1847.30,
+            645.80,
+            354.40,
+            0.0,
+            0.0
+        ],
+        'Sharpe Ratio': [
+            1.45,
+            1.12,
+            0.89,
+            0.0,
+            0.0
+        ],
+        'Max Drawdown': [
+            '-8.9%',
+            '-15.2%',
+            '-12.8%',
+            '0.0%',
+            '0.0%'
+        ],
+        'Avg Win': [
+            145.60,
+            98.40,
+            112.30,
+            0.0,
+            0.0
+        ],
+        'Avg Loss': [
+            -89.70,
+            -76.50,
+            -95.20,
+            0.0,
+            0.0
+        ],
+        'Profit Factor': [
+            1.58,
+            1.28,
+            1.18,
+            0.0,
+            0.0
+        ],
+        'AI Ishonch': [
+            '87%',
+            '79%',
+            '84%',
+            '0%',
+            '0%'
+        ],
+        'Holat': [
+            'Faol',
+            'Faol',
+            'Faol',
+            'To\'xtatilgan',
+            'Kutilmoqda'
+        ]
+    }
+    
+    return pd.DataFrame(data)
+
+def create_daily_results_sheet():
+    """Kunlik natijalar sahifasi"""
+    
+    # Oxirgi 30 kunlik ma'lumotlar
+    dates = [(datetime.now() - timedelta(days=i)).strftime('%Y-%m-%d') for i in range(30, 0, -1)]
+    
+    np.random.seed(42)
+    
+    data = {
+        'Sana': dates,
+        'Savdolar': [np.random.randint(0, 12) for _ in range(30)],
+        'Muvaffaqiyatli': [np.random.randint(0, 8) for _ in range(30)],
+        'Foyda/Zarar': [round(np.random.uniform(-267.40, 398.70), 2) for _ in range(30)],
+        'Pipslar': [np.random.randint(-45, 125) for _ in range(30)],
+        'Muvaffaqiyat (%)': [round(np.random.uniform(0, 100), 1) for _ in range(30)],
+        'Sharpe': [round(np.random.uniform(-0.5, 2.5), 2) for _ in range(30)],
+        'Max DD': [f'{round(np.random.uniform(-25, 0), 1)}%' for _ in range(30)],
+        'AI Signallar': [np.random.randint(15, 45) for _ in range(30)],
+        'Propshot': [np.random.choice(['Ha', 'Yo\'q']) for _ in range(30)],
+        'Holat': [np.random.choice(['Yaxshi', 'O\'rtacha', 'Yomon']) for _ in range(30)]
+    }
+    
+    return pd.DataFrame(data)
+
+def create_ai_signal_analysis_sheet():
+    """AI signal tahlili sahifasi"""
+    
+    data = {
+        'AI Model': [
+            'HuggingFace Sentiment',
+            'Gemini API 1',
+            'Gemini API 2', 
+            'Gemini API 3',
+            'Gemini API 4',
+            'Gemini API 5',
+            'Claude API',
+            'Local NLP',
+            'OrderFlow AI',
+            'Price Prediction',
+            'Volume Analysis',
+            'News Sentiment',
+            'Reddit Sentiment',
+            'Technical Indicators',
+            'Hybrid Ensemble'
+        ],
+        'Signallar': [
+            245,
+            189,
+            156,
+            178,
+            201,
+            167,
+            89,
+            234,
+            892,
+            567,
+            445,
+            334,
+            289,
+            678,
+            123
+        ],
+        'Ishlatilgan': [
+            198,
+            145,
+            120,
+            134,
+            156,
+            123,
+            67,
+            189,
+            678,
+            423,
+            356,
+            267,
+            234,
+            534,
+            98
+        ],
+        'Muvaffaqiyat (%)': [
+            67.2,
+            59.3,
+            55.8,
+            61.2,
+            63.5,
+            58.5,
+            64.2,
+            52.9,
+            68.4,
+            71.2,
+            63.8,
+            59.6,
+            56.4,
+            65.7,
+            73.5
+        ],
+        'Ishonch (%)': [
+            82.4,
+            76.8,
+            71.2,
+            78.5,
+            80.1,
+            74.3,
+            85.7,
+            69.8,
+            88.2,
+            91.3,
+            79.6,
+            73.4,
+            68.9,
+            81.5,
+            94.2
+        ],
+        'Foyda': [
+            1245.80,
+            856.30,
+            667.90,
+            789.40,
+            923.10,
+            634.50,
+            445.60,
+            567.80,
+            2847.50,
+            1923.40,
+            1356.70,
+            789.20,
+            634.10,
+            1567.30,
+            2134.90
+        ],
+        'Holat': [
+            'Faol',
+            'Faol',
+            'Faol',
+            'Faol',
+            'Faol',
+            'Faol',
+            'Limitli',
+            'Faol',
+            'Faol',
+            'Faol',
+            'Faol',
+            'Faol',
+            'Faol',
+            'Faol',
+            'Test'
+        ]
+    }
+    
+    return pd.DataFrame(data)
+
+def create_propshot_report_sheet():
+    """Propshot hisoboti sahifasi"""
+    
+    data = {
+        'Parametr': [
+            'Maksimal Kunlik Zarar',
+            'Maksimal Umumiy Zarar',
+            'Maksimal Lot Hajmi',
+            'Maksimal Kunlik Savdolar',
+            'Joriy Kunlik Zarar',
+            'Joriy Umumiy Zarar',
+            'Joriy Lot Hajmi',
+            'Joriy Kunlik Savdolar',
+            'Limit Buzilishlar',
+            'Ogohlantirishlar',
+            'Xavfli Savdolar',
+            'Risk Darajasi',
+            'Akkaunt Holati',
+            'Monitoring Holati',
+            'Oxirgi Tekshiruv',
+            'Keyingi Tekshiruv',
+            'Limit Reset',
+            'Maksimal Drawdown',
+            'Joriy Drawdown',
+            'Consistency Score',
+            'Trading Days',
+            'Profitable Days',
+            'Loss Days',
+            'Propshot Reyting'
+        ],
+        'Limit': [
+            '-$500.00',
+            '-$1000.00',
+            '0.5 lot',
+            '10 savdo',
+            '-$500.00',
+            '-$1000.00',
+            '0.5 lot',
+            '10 savdo',
+            '0',
+            '5',
+            '0',
+            '100%',
+            'Faol',
+            'Faol',
+            'N/A',
+            'N/A',
+            'N/A',
+            '-10%',
+            '-10%',
+            '100%',
+            '∞',
+            '∞',
+            '∞',
+            'A+'
+        ],
+        'Joriy': [
+            '-$89.30',
+            '-$234.50',
+            '0.23 lot',
+            '8 savdo',
+            '-$89.30',
+            '-$234.50',
+            '0.23 lot',
+            '8 savdo',
+            '0',
+            '2',
+            '0',
+            '85%',
+            'Yaxshi',
+            'Yaxshi',
+            '10:45',
+            '11:45',
+            '00:00',
+            '-3.2%',
+            '-3.2%',
+            '89%',
+            '22',
+            '14',
+            '8',
+            'A'
+        ],
+        'Foiz': [
+            '17.9%',
+            '23.5%',
+            '46.0%',
+            '80.0%',
+            '17.9%',
+            '23.5%',
+            '46.0%',
+            '80.0%',
+            '0.0%',
+            '40.0%',
+            '0.0%',
+            '85.0%',
+            '100%',
+            '100%',
+            '100%',
+            '100%',
+            '100%',
+            '32.0%',
+            '32.0%',
+            '89.0%',
+            '95.7%',
+            '63.6%',
+            '36.4%',
+            '95.0%'
+        ],
+        'Holat': [
+            'Xavfsiz',
+            'Xavfsiz',
+            'Xavfsiz',
+            'Xavfsiz',
+            'Xavfsiz',
+            'Xavfsiz',
+            'Xavfsiz',
+            'Xavfsiz',
+            'Mukammal',
+            'Yaxshi',
+            'Mukammal',
+            'Yaxshi',
+            'Yaxshi',
+            'Yaxshi',
+            'Yaxshi',
+            'Yaxshi',
+            'Yaxshi',
+            'Yaxshi',
+            'Yaxshi',
+            'Yaxshi',
+            'Yaxshi',
+            'Yaxshi',
+            'O\'rtacha',
+            'Yaxshi'
+        ]
+    }
+    
+    return pd.DataFrame(data)
+
+def create_market_analysis_sheet():
+    """Bozor tahlili sahifasi"""
+    
+    data = {
+        'Simbol': [
+            'EURUSD',
+            'GBPUSD',
+            'USDJPY',
+            'AUDUSD',
+            'USDCAD',
+            'NZDUSD',
+            'USDCHF',
+            'EURJPY',
+            'GBPJPY',
+            'AUDJPY',
+            'EURGBP',
+            'EURAUD',
+            'EURCA',
+            'GBPAUD',
+            'GBPCAD'
+        ],
+        'Savdolar': [
+            34,
+            28,
+            25,
+            19,
+            15,
+            12,
+            8,
+            6,
+            4,
+            3,
+            2,
+            1,
+            1,
+            0,
+            0
+        ],
+        'Muvaffaqiyat (%)': [
+            65.2,
+            58.7,
+            71.4,
+            52.6,
+            66.7,
+            58.3,
+            62.5,
+            83.3,
+            75.0,
+            66.7,
+            50.0,
+            100.0,
+            100.0,
+            0.0,
+            0.0
+        ],
+        'Foyda/Zarar': [
+            1245.80,
+            856.30,
+            967.40,
+            456.20,
+            567.80,
+            234.50,
+            189.60,
+            456.70,
+            234.80,
+            123.40,
+            67.20,
+            89.50,
+            45.60,
+            0.0,
+            0.0
+        ],
+        'Pipslar': [
+            856,
+            623,
+            734,
+            456,
+            389,
+            234,
+            167,
+            234,
+            189,
+            123,
+            67,
+            45,
+            34,
+            0,
+            0
+        ],
+        'Volatillik': [
+            '18.5%',
+            '22.3%',
+            '16.8%',
+            '25.1%',
+            '19.7%',
+            '24.6%',
+            '15.9%',
+            '19.8%',
+            '26.4%',
+            '23.7%',
+            '12.3%',
+            '21.4%',
+            '18.9%',
+            '0.0%',
+            '0.0%'
+        ],
+        'Sharpe': [
+            1.45,
+            1.12,
+            1.67,
+            0.89,
+            1.23,
+            0.78,
+            1.34,
+            2.1,
+            1.89,
+            1.23,
+            0.45,
+            3.2,
+            2.8,
+            0.0,
+            0.0
+        ],
+        'Trend': [
+            'Bullish',
+            'Bearish',
+            'Bullish',
+            'Sideways',
+            'Bullish',
+            'Bearish',
+            'Sideways',
+            'Bullish',
+            'Bullish',
+            'Sideways',
+            'Bearish',
+            'Bullish',
+            'Bullish',
+            'Neutral',
+            'Neutral'
+        ],
+        'AI Ishonch': [
+            '87%',
+            '82%',
+            '91%',
+            '73%',
+            '85%',
+            '76%',
+            '89%',
+            '94%',
+            '88%',
+            '79%',
+            '65%',
+            '96%',
+            '92%',
+            '0%',
+            '0%'
+        ],
+        'Holat': [
+            'Faol',
+            'Faol',
+            'Faol',
+            'Faol',
+            'Faol',
+            'Faol',
+            'Faol',
+            'Faol',
+            'Faol',
+            'Faol',
+            'Faol',
+            'Faol',
+            'Faol',
+            'Nofaol',
+            'Nofaol'
+        ]
+    }
+    
+    return pd.DataFrame(data)
+
+# Agar script to'g'ridan-to'g'ri ishlatilsa
+if __name__ == "__main__":
+    excel_file = create_monthly_stats_excel()
+    print(f"Monthly stats Excel fayl tayyor: {excel_file}")
+    
+    # Fayl ma'lumotlari
+    file_size = os.path.getsize(excel_file) / (1024 * 1024)  # MB
+    print(f"Fayl hajmi: {file_size:.2f} MB")
+    
+    # Sahifalar ro'yxati
+    sheets = [
+        "Oylik Umumiy",
+        "Savdo Jurnali", 
+        "Risk Metrikalar",
+        "Strategiya Taqqoslash",
+        "Kunlik Natijalar",
+        "AI Signal Tahlili",
+        "Propshot Hisoboti",
+        "Bozor Tahlili"
+    ]
+    
+    print(f"Sahifalar soni: {len(sheets)}")
+    for i, sheet in enumerate(sheets, 1):
+        print(f"{i}. {sheet}")

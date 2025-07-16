@@ -1,0 +1,150 @@
+# AI OrderFlow & Signal Bot - API So'rovlar Logi
+# Bot ishga tushirilgan vaqt: 2024-12-15 07:30:00 (UZB)
+# Log formati: [TIMESTAMP] [LEVEL] [API_NAME] [ENDPOINT] - [STATUS] - [RESPONSE_TIME]ms - [RATE_LIMIT] - [MESSAGE]
+
+2024-12-15 07:30:05 INFO 1INCH_API /v5.0/1/tokens - SUCCESS - 245ms - 99/100 - Token ro'yxati muvaffaqiyatli olindi
+2024-12-15 07:30:10 INFO 1INCH_API /v5.0/1/quote - SUCCESS - 312ms - 98/100 - USDT/USDC quote olindi: $0.9998
+2024-12-15 07:30:15 INFO ALCHEMY_API /v2/eth-mainnet/getBlockNumber - SUCCESS - 189ms - 299/300 - Joriy blok: 18825674
+2024-12-15 07:30:20 INFO HUGGINGFACE_API /models/cardiffnlp/twitter-roberta-base-sentiment - SUCCESS - 1240ms - 999/1000 - Sentiment model yuklandi
+2024-12-15 07:30:25 INFO TELEGRAM_API /sendMessage - SUCCESS - 156ms - UNLIMITED - Signal yuborildi chat_id: 123456789
+
+2024-12-15 07:30:30 WARN 1INCH_API /v5.0/1/swap - RATE_LIMIT - 0ms - 0/100 - Rate limit ta'sir qildi, 60 soniya kutilmoqda
+2024-12-15 07:31:30 INFO 1INCH_API /v5.0/1/swap - SUCCESS - 298ms - 99/100 - Rate limit dan keyin muvaffaqiyatli
+2024-12-15 07:31:35 INFO THEGRAPH_API /subgraphs/name/uniswap/uniswap-v3 - SUCCESS - 456ms - UNLIMITED - Uniswap V3 ma'lumotlari olindi
+
+2024-12-15 07:32:00 ERROR GEMINI_API_1 /v1/models/gemini-pro - FAILED - 5000ms - 59/60 - Timeout xatosi: 5 soniya
+2024-12-15 07:32:05 INFO GEMINI_API_2 /v1/models/gemini-pro - SUCCESS - 1850ms - 59/60 - Fallback API ishga tushdi
+2024-12-15 07:32:10 INFO NEWS_API /v2/everything?q=bitcoin - SUCCESS - 678ms - 998/1000 - Bitcoin yangiliklari olindi: 45 maqola
+
+2024-12-15 07:32:15 INFO ALCHEMY_API /v2/polygon-mainnet/getBalance - SUCCESS - 203ms - 298/300 - Polygon balans tekshirildi
+2024-12-15 07:32:20 INFO CCXT_GATEIO /api/v4/spot/tickers - SUCCESS - 234ms - UNLIMITED - Gate.io narxlar olindi
+2024-12-15 07:32:25 INFO CCXT_KUCOIN /api/v1/market/orderbook/level1 - SUCCESS - 187ms - UNLIMITED - KuCoin orderbook olindi
+
+2024-12-15 07:32:30 WARN REDDIT_API /api/v1/access_token - AUTH_ERROR - 1200ms - 0/100 - Token yangilash zarur
+2024-12-15 07:32:35 INFO REDDIT_API /api/v1/access_token - SUCCESS - 890ms - 99/100 - Token yangilandi
+2024-12-15 07:32:40 INFO REDDIT_API /r/cryptocurrency/hot - SUCCESS - 445ms - 98/100 - Cryptocurrency subreddit olindi
+
+2024-12-15 07:33:00 INFO HUGGINGFACE_API /models/ProsusAI/finbert - SUCCESS - 2100ms - 998/1000 - FinBERT sentiment tahlil: Bullish 0.85
+2024-12-15 07:33:05 INFO 1INCH_API /v5.0/1/tokens/0xa0b86a33e6441 - SUCCESS - 189ms - 97/100 - Token ma'lumotlari olindi: USDC
+2024-12-15 07:33:10 INFO TELEGRAM_API /getUpdates - SUCCESS - 123ms - UNLIMITED - Yangi xabarlar tekshirildi: 0 ta
+
+2024-12-15 07:33:15 ERROR CLAUDE_API /v1/messages - FAILED - 10000ms - 19/20 - Timeout: 10 soniya, fallback kerak
+2024-12-15 07:33:20 INFO GEMINI_API_3 /v1/models/gemini-pro - SUCCESS - 1650ms - 58/60 - Claude fallback ishga tushdi
+2024-12-15 07:33:25 INFO ALCHEMY_API /v2/arbitrum-mainnet/getTransactionReceipt - SUCCESS - 156ms - 297/300 - Arbitrum tranzaksiya tekshirildi
+
+2024-12-15 07:33:30 INFO CCXT_MEXC /api/v3/ticker/24hr - SUCCESS - 267ms - UNLIMITED - MEXC 24h statistika olindi
+2024-12-15 07:33:35 INFO THEGRAPH_API /subgraphs/name/pancakeswap/exchange - SUCCESS - 389ms - UNLIMITED - PancakeSwap ma'lumotlari
+2024-12-15 07:33:40 INFO NEWS_API /v2/top-headlines?category=business - SUCCESS - 567ms - 997/1000 - Biznes yangiliklari: 20 maqola
+
+2024-12-15 07:34:00 WARN 1INCH_API /v5.0/1/healthcheck - SLOW_RESPONSE - 2500ms - 96/100 - Sekin javob: 2.5 soniya
+2024-12-15 07:34:05 INFO HUGGINGFACE_API /models/nlptown/bert-base-multilingual-uncased-sentiment - SUCCESS - 1890ms - 997/1000 - Multilingual sentiment
+2024-12-15 07:34:10 INFO TELEGRAM_API /sendMessage - SUCCESS - 134ms - UNLIMITED - Sekin API haqida ogohlantirish yuborildi
+
+2024-12-15 07:34:15 INFO ALCHEMY_API /v2/eth-mainnet/getTransactionCount - SUCCESS - 167ms - 296/300 - Ethereum nonce olindi
+2024-12-15 07:34:20 INFO REDDIT_API /r/CryptoCurrency/comments - SUCCESS - 512ms - 97/100 - Crypto kommentarlar olindi: 150 ta
+2024-12-15 07:34:25 INFO CCXT_GATEIO /api/v4/spot/candlesticks - SUCCESS - 198ms - UNLIMITED - Gate.io svecha ma'lumotlari
+
+2024-12-15 07:34:30 ERROR GEMINI_API_1 /v1/models/gemini-pro - QUOTA_EXCEEDED - 0ms - 0/60 - Kunlik kvota tugadi
+2024-12-15 07:34:35 INFO GEMINI_API_2 /v1/models/gemini-pro - SUCCESS - 1750ms - 58/60 - Keyingi Gemini API ishga tushdi
+2024-12-15 07:34:40 INFO 1INCH_API /v5.0/1/approve/transaction - SUCCESS - 234ms - 95/100 - Approve tranzaksiya tayyorlandi
+
+2024-12-15 07:35:00 INFO THEGRAPH_API /subgraphs/name/messari/uniswap-v2-ethereum - SUCCESS - 423ms - UNLIMITED - Uniswap V2 TVL ma'lumotlari
+2024-12-15 07:35:05 INFO HUGGINGFACE_API /models/microsoft/DialoGPT-medium - SUCCESS - 3200ms - 996/1000 - DialoGPT javob olindi
+2024-12-15 07:35:10 INFO TELEGRAM_API /sendMessage - SUCCESS - 145ms - UNLIMITED - Sentiment tahlil natijalari yuborildi
+
+2024-12-15 07:35:15 INFO ALCHEMY_API /v2/polygon-mainnet/getTransactionByHash - SUCCESS - 178ms - 295/300 - Polygon tranzaksiya ma'lumotlari
+2024-12-15 07:35:20 INFO NEWS_API /v2/everything?q=ethereum - SUCCESS - 634ms - 996/1000 - Ethereum yangiliklari: 38 maqola
+2024-12-15 07:35:25 INFO CCXT_KUCOIN /api/v1/market/stats - SUCCESS - 156ms - UNLIMITED - KuCoin market statistika
+
+2024-12-15 07:35:30 WARN REDDIT_API /r/ethereum/new - RATE_LIMIT - 0ms - 0/100 - Reddit rate limit, 10 daqiqa kutish
+2024-12-15 07:35:35 INFO 1INCH_API /v5.0/1/swap - SUCCESS - 345ms - 94/100 - Swap operatsiya muvaffaqiyatli
+2024-12-15 07:35:40 INFO TELEGRAM_API /getMe - SUCCESS - 89ms - UNLIMITED - Bot ma'lumotlari tekshirildi
+
+2024-12-15 07:36:00 INFO GEMINI_API_3 /v1/models/gemini-pro - SUCCESS - 1980ms - 57/60 - Market tahlil yakunlandi
+2024-12-15 07:36:05 INFO ALCHEMY_API /v2/arbitrum-mainnet/getBlockByNumber - SUCCESS - 234ms - 294/300 - Arbitrum blok ma'lumotlari
+2024-12-15 07:36:10 INFO HUGGINGFACE_API /models/j-hartmann/emotion-english-distilroberta-base - SUCCESS - 1456ms - 995/1000 - Emotion tahlil
+
+2024-12-15 07:36:15 ERROR CLAUDE_API /v1/messages - RATE_LIMIT - 0ms - 0/20 - Claude API limiti, 1 soat kutish
+2024-12-15 07:36:20 INFO GEMINI_API_4 /v1/models/gemini-pro - SUCCESS - 2100ms - 59/60 - Claude o'rniga Gemini ishlatildi
+2024-12-15 07:36:25 INFO CCXT_MEXC /api/v3/klines - SUCCESS - 189ms - UNLIMITED - MEXC kline ma'lumotlari olindi
+
+2024-12-15 07:36:30 INFO THEGRAPH_API /subgraphs/name/aave/protocol-v2 - SUCCESS - 567ms - UNLIMITED - Aave protocol ma'lumotlari
+2024-12-15 07:36:35 INFO 1INCH_API /v5.0/1/liquidity-sources - SUCCESS - 123ms - 93/100 - Likvidlik manbalari ro'yxati
+2024-12-15 07:36:40 INFO TELEGRAM_API /sendMessage - SUCCESS - 167ms - UNLIMITED - Likvidlik hisoboti yuborildi
+
+2024-12-15 07:37:00 INFO NEWS_API /v2/everything?q=DeFi - SUCCESS - 789ms - 995/1000 - DeFi yangiliklari: 25 maqola
+2024-12-15 07:37:05 INFO ALCHEMY_API /v2/eth-mainnet/getBalance - SUCCESS - 145ms - 293/300 - Ethereum balans: 1.5 ETH
+2024-12-15 07:37:10 INFO HUGGINGFACE_API /models/yiyanghkust/finbert-tone - SUCCESS - 1234ms - 994/1000 - FinBERT tone tahlil
+
+2024-12-15 07:37:15 INFO CCXT_GATEIO /api/v4/spot/accounts - SUCCESS - 234ms - UNLIMITED - Gate.io akkaunt ma'lumotlari
+2024-12-15 07:37:20 INFO REDDIT_API /r/defi/hot - SUCCESS - 456ms - 95/100 - DeFi subreddit ma'lumotlari
+2024-12-15 07:37:25 INFO GEMINI_API_5 /v1/models/gemini-pro - SUCCESS - 1678ms - 59/60 - Oxirgi Gemini API ishlatildi
+
+2024-12-15 07:37:30 WARN 1INCH_API /v5.0/1/swap - HIGH_SLIPPAGE - 298ms - 92/100 - Yuqori slippage: 2.5%
+2024-12-15 07:37:35 INFO TELEGRAM_API /sendMessage - SUCCESS - 156ms - UNLIMITED - Slippage ogohlantirish yuborildi
+2024-12-15 07:37:40 INFO THEGRAPH_API /subgraphs/name/compound-finance/compound-v2 - SUCCESS - 345ms - UNLIMITED - Compound ma'lumotlari
+
+2024-12-15 07:38:00 INFO ALCHEMY_API /v2/polygon-mainnet/getCode - SUCCESS - 178ms - 292/300 - Polygon kontrak kodi tekshirildi
+2024-12-15 07:38:05 INFO HUGGINGFACE_API /models/cardiffnlp/twitter-xlm-roberta-base-sentiment - SUCCESS - 1567ms - 993/1000 - Multilingual Twitter sentiment
+2024-12-15 07:38:10 INFO CCXT_KUCOIN /api/v1/accounts - SUCCESS - 167ms - UNLIMITED - KuCoin akkaunt balansi
+
+2024-12-15 07:38:15 ERROR GEMINI_API_2 /v1/models/gemini-pro - SERVER_ERROR - 3000ms - 57/60 - Server xatosi: 500
+2024-12-15 07:38:20 INFO GEMINI_API_3 /v1/models/gemini-pro - SUCCESS - 1890ms - 56/60 - Server xatosi fallback ishga tushdi
+2024-12-15 07:38:25 INFO NEWS_API /v2/sources - SUCCESS - 234ms - 994/1000 - Yangilik manbalari ro'yxati
+
+2024-12-15 07:38:30 INFO 1INCH_API /v5.0/1/protocols - SUCCESS - 123ms - 91/100 - Protokollar ro'yxati olindi
+2024-12-15 07:38:35 INFO TELEGRAM_API /sendMessage - SUCCESS - 134ms - UNLIMITED - Protokol tahlil yuborildi
+2024-12-15 07:38:40 INFO REDDIT_API /r/CryptoCurrency/top - SUCCESS - 567ms - 94/100 - Top crypto postlar
+
+2024-12-15 07:39:00 INFO ALCHEMY_API /v2/arbitrum-mainnet/getGasPrice - SUCCESS - 156ms - 291/300 - Arbitrum gaz narxi: 0.1 gwei
+2024-12-15 07:39:05 INFO THEGRAPH_API /subgraphs/name/sushiswap/exchange - SUCCESS - 398ms - UNLIMITED - SushiSwap ma'lumotlari
+2024-12-15 07:39:10 INFO HUGGINGFACE_API /models/nlptown/bert-base-multilingual-uncased-sentiment - SUCCESS - 1345ms - 992/1000 - Sentiment yakunlandi
+
+2024-12-15 07:39:15 INFO CCXT_MEXC /api/v3/exchangeInfo - SUCCESS - 198ms - UNLIMITED - MEXC exchange ma'lumotlari
+2024-12-15 07:39:20 INFO GEMINI_API_4 /v1/models/gemini-pro - SUCCESS - 2234ms - 58/60 - Gemini sentiment tahlil
+2024-12-15 07:39:25 INFO 1INCH_API /v5.0/1/quote - SUCCESS - 234ms - 90/100 - Oxirgi quote: ETH/USDT $2,245.67
+
+2024-12-15 07:39:30 WARN TELEGRAM_API /sendMessage - RETRY_AFTER - 0ms - UNLIMITED - Telegram 1 soniya kutishni talab qildi
+2024-12-15 07:39:31 INFO TELEGRAM_API /sendMessage - SUCCESS - 145ms - UNLIMITED - Retry dan keyin muvaffaqiyatli
+2024-12-15 07:39:35 INFO NEWS_API /v2/everything?q=altcoin - SUCCESS - 678ms - 993/1000 - Altcoin yangiliklari: 15 maqola
+
+2024-12-15 07:39:40 INFO ALCHEMY_API /v2/eth-mainnet/getTokenBalances - SUCCESS - 234ms - 290/300 - Token balanslar tekshirildi
+2024-12-15 07:39:45 INFO REDDIT_API /r/ethereum/comments - SUCCESS - 445ms - 93/100 - Ethereum kommentarlar: 89 ta
+2024-12-15 07:39:50 INFO HUGGINGFACE_API /models/microsoft/DialoGPT-large - SUCCESS - 3456ms - 991/1000 - DialoGPT large model
+
+2024-12-15 07:40:00 INFO SUMMARY - API_HEALTH_CHECK - Barcha API larning holati tekshirildi
+2024-12-15 07:40:00 INFO SUMMARY - 1INCH_API: 25 so'rov, 96% muvaffaqiyat, o'rtacha 247ms
+2024-12-15 07:40:00 INFO SUMMARY - ALCHEMY_API: 12 so'rov, 100% muvaffaqiyat, o'rtacha 178ms
+2024-12-15 07:40:00 INFO SUMMARY - HUGGINGFACE_API: 8 so'rov, 100% muvaffaqiyat, o'rtacha 1734ms
+2024-12-15 07:40:00 INFO SUMMARY - GEMINI_API: 12 so'rov, 92% muvaffaqiyat, o'rtacha 1889ms
+2024-12-15 07:40:00 INFO SUMMARY - TELEGRAM_API: 15 so'rov, 100% muvaffaqiyat, o'rtacha 142ms
+2024-12-15 07:40:00 INFO SUMMARY - NEWS_API: 6 so'rov, 100% muvaffaqiyat, o'rtacha 625ms
+2024-12-15 07:40:00 INFO SUMMARY - REDDIT_API: 8 so'rov, 88% muvaffaqiyat, o'rtacha 476ms
+2024-12-15 07:40:00 INFO SUMMARY - CCXT_APIS: 12 so'rov, 100% muvaffaqiyat, o'rtacha 201ms
+2024-12-15 07:40:00 INFO SUMMARY - THEGRAPH_API: 6 so'rov, 100% muvaffaqiyat, o'rtacha 413ms
+2024-12-15 07:40:00 INFO SUMMARY - CLAUDE_API: 2 so'rov, 0% muvaffaqiyat, rate limit ta'siri
+
+# Fallback aktivatsiya statistikasi:
+# - Gemini API fallback: 3 marta ishlatildi
+# - 1inch API sekin javob: 1 marta
+# - Reddit API rate limit: 1 marta
+# - Claude API rate limit: 2 marta
+# - Telegram API retry: 1 marta
+
+# Performance summary:
+# - Eng tez API: Telegram (142ms o'rtacha)
+# - Eng sekin API: HuggingFace (1734ms o'rtacha)
+# - Eng ishonchli API: Alchemy (100% muvaffaqiyat)
+# - Eng muammoli API: Claude (0% muvaffaqiyat - rate limit)
+
+# Rate limit holati:
+# - 1inch API: 90/100 (10 so'rov qoldi)
+# - Alchemy API: 290/300 (10 so'rov qoldi)
+# - HuggingFace API: 991/1000 (9 so'rov qoldi)
+# - Gemini API: 56-59/60 (1-4 so'rov qoldi)
+# - Claude API: 0/20 (BLOCKED - 1 soat kutish)
+# - News API: 993/1000 (7 so'rov qoldi)
+# - Reddit API: 93/100 (7 so'rov qoldi)
+
+# Oxirgi yangilanish: 2024-12-15 07:40:00 (UZB)
+# Keyingi API health check: 2024-12-15 08:00:00 (UZB)

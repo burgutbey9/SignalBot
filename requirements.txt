@@ -1,0 +1,318 @@
+# 🤖 AI OrderFlow & Signal Bot - Requirements
+# ================================================
+# O'zbekcha: AI Order Flow va Signal Bot uchun kerakli kutubxonalar
+# Versiya: 1.0.0
+# Python: 3.9+
+# ================================================
+
+# 🔧 CORE DEPENDENCIES - Asosiy kutubxonalar
+# ================================================
+asyncio>=3.4.3                    # Async programming
+aiohttp>=3.8.6                    # HTTP client/server
+aiofiles>=23.2.1                  # Async file operations
+python-dotenv>=1.0.0              # Environment variables
+pydantic>=2.5.0                   # Data validation
+dataclasses-json>=0.6.3           # JSON serialization
+python-dateutil>=2.8.2            # Date utilities
+pytz>=2023.3                      # Timezone handling
+colorama>=0.4.6                   # Colored terminal output
+tqdm>=4.66.1                      # Progress bars
+
+# 🗄️ DATABASE - Ma'lumotlar bazasi
+# ================================================
+sqlalchemy>=2.0.23                # ORM
+alembic>=1.13.0                   # Database migrations
+aiosqlite>=0.19.0                 # Async SQLite
+psycopg2-binary>=2.9.9            # PostgreSQL driver
+aiomysql>=0.2.0                   # MySQL async driver
+
+# 📊 TRADING & MARKET DATA - Savdo va bozor ma'lumotlari
+# ================================================
+ccxt>=4.1.65                      # Cryptocurrency exchange trading
+pandas>=2.1.4                     # Data analysis
+numpy>=1.24.4                     # Numerical computing
+ta-lib>=0.4.28                    # Technical analysis
+yfinance>=0.2.25                  # Yahoo Finance data
+alpha-vantage>=2.3.1              # Alpha Vantage API
+
+# 🔗 METATRADER & PROPSHOT - Trading platformalar
+# ================================================
+MetaTrader5>=5.0.45               # MT5 integration
+websocket-client>=1.6.4           # WebSocket connections
+requests>=2.31.0                  # HTTP requests
+urllib3>=2.1.0                    # URL handling
+
+# 🧠 AI & MACHINE LEARNING - Sun'iy intellekt
+# ================================================
+transformers>=4.36.2              # HuggingFace transformers
+torch>=2.1.2                      # PyTorch
+torchvision>=0.16.2               # Computer vision
+scikit-learn>=1.3.2               # Machine learning
+tensorflow>=2.15.0                # TensorFlow (optional)
+keras>=2.15.0                     # Keras
+google-generativeai>=0.3.2        # Google Gemini API
+anthropic>=0.8.1                  # Claude API
+openai>=1.6.1                     # OpenAI API (backup)
+
+# 🌐 WEB3 & BLOCKCHAIN - Blokchain va Web3
+# ================================================
+web3>=6.13.0                      # Ethereum interaction
+eth-account>=0.10.0               # Ethereum accounts
+py-solc-x>=1.12.0                 # Solidity compiler
+requests-oauthlib>=1.3.1          # OAuth requests
+
+# 📱 TELEGRAM & SOCIAL - Telegram va ijtimoiy tarmoqlar
+# ================================================
+python-telegram-bot>=20.7         # Telegram bot
+aiogram>=3.3.0                    # Alternative Telegram framework
+praw>=7.7.1                       # Reddit API
+tweepy>=4.14.0                    # Twitter API (backup)
+
+# 📰 NEWS & SENTIMENT - Yangiliklar va sentiment
+# ================================================
+newsapi-python>=0.2.7             # News API
+feedparser>=6.0.10                # RSS feeds
+beautifulsoup4>=4.12.2            # Web scraping
+selenium>=4.16.0                  # Web automation
+textblob>=0.17.1                  # Text processing
+vaderSentiment>=3.3.2             # Sentiment analysis
+
+# 🌐 API CLIENTS - API mijozlar
+# ================================================
+websockets>=12.0                  # WebSocket connections
+httpx>=0.25.2                     # Alternative HTTP client
+tenacity>=8.2.3                   # Retry logic
+ratelimit>=2.2.1                  # Rate limiting
+backoff>=2.2.1                    # Exponential backoff
+
+# 📊 DATA PROCESSING - Ma'lumot qayta ishlash
+# ================================================
+openpyxl>=3.1.2                   # Excel files
+xlsxwriter>=3.1.9                 # Excel writing
+python-json-logger>=2.0.7         # JSON logging
+schedule>=1.2.0                   # Task scheduling
+apscheduler>=3.10.4               # Advanced scheduler
+
+# 🔒 SECURITY & ENCRYPTION - Xavfsizlik
+# ================================================
+cryptography>=41.0.8              # Encryption
+pycryptodome>=3.19.0              # Crypto operations
+bcrypt>=4.1.2                     # Password hashing
+jwt>=1.3.1                        # JSON Web Tokens
+python-jose>=3.3.0                # JWT handling
+
+# 🧪 TESTING - Testlar
+# ================================================
+pytest>=7.4.3                     # Testing framework
+pytest-asyncio>=0.21.1            # Async testing
+pytest-cov>=4.1.0                 # Coverage reports
+pytest-mock>=3.12.0               # Mocking
+hypothesis>=6.92.1                # Property-based testing
+factory-boy>=3.3.0                # Test data factories
+
+# 📊 MONITORING & LOGGING - Monitoring va logging
+# ================================================
+structlog>=23.2.0                 # Structured logging
+loguru>=0.7.2                     # Advanced logging
+sentry-sdk>=1.39.2                # Error tracking
+prometheus-client>=0.19.0         # Metrics collection
+psutil>=5.9.6                     # System monitoring
+
+# 🔧 DEVELOPMENT TOOLS - Rivojlantirish vositalari
+# ================================================
+black>=23.11.0                    # Code formatting
+flake8>=6.1.0                     # Linting
+isort>=5.12.0                     # Import sorting
+mypy>=1.7.1                       # Type checking
+pre-commit>=3.6.0                 # Pre-commit hooks
+bandit>=1.7.5                     # Security linting
+
+# 🚀 DEPLOYMENT - Joylashtirish
+# ================================================
+gunicorn>=21.2.0                  # WSGI server
+uvicorn>=0.24.0                   # ASGI server
+docker>=6.1.3                     # Docker SDK
+kubernetes>=28.1.0                # Kubernetes client
+fabric>=3.2.2                     # Deployment automation
+
+# 📈 PERFORMANCE - Unumdorlik
+# ================================================
+cython>=3.0.6                     # C extensions
+numba>=0.58.1                     # JIT compilation
+memory-profiler>=0.61.0           # Memory profiling
+line-profiler>=4.1.1              # Line profiling
+py-spy>=0.3.14                    # Production profiler
+
+# 🔄 ASYNC & CONCURRENCY - Async va parallellik
+# ================================================
+asyncpg>=0.29.0                   # PostgreSQL async
+aiokafka>=0.10.0                  # Kafka async
+aioredis>=2.0.1                   # Redis async
+celery>=5.3.4                     # Task queue
+kombu>=5.3.4                      # Message broker
+
+# 📊 DATA SCIENCE - Ma'lumotlar fani
+# ================================================
+matplotlib>=3.8.2                 # Plotting
+seaborn>=0.13.0                   # Statistical visualization
+plotly>=5.17.0                    # Interactive plots
+jupyter>=1.0.0                    # Jupyter notebooks
+ipython>=8.18.1                   # Interactive Python
+
+# 🌍 LOCALIZATION - Mahalliylashtirish
+# ================================================
+babel>=2.14.0                     # Internationalization
+pyicu>=2.12                       # Unicode support
+langdetect>=1.0.9                 # Language detection
+
+# 🔧 UTILITIES - Yordamchi vositalar
+# ================================================
+click>=8.1.7                      # CLI framework
+typer>=0.9.0                      # Modern CLI
+rich>=13.7.0                      # Rich text formatting
+tabulate>=0.9.0                   # Table formatting
+python-magic>=0.4.27              # File type detection
+
+# 🌐 NETWORK - Tarmoq
+# ================================================
+dnspython>=2.4.2                  # DNS utilities
+netaddr>=0.10.1                   # Network address manipulation
+scapy>=2.5.0                      # Packet manipulation
+paramiko>=3.4.0                   # SSH connections
+
+# 📁 FILE HANDLING - Fayl boshqaruv
+# ================================================
+watchdog>=3.0.0                   # File system monitoring
+pathlib2>=2.3.7                   # Path utilities
+send2trash>=1.8.2                 # Safe file deletion
+python-magic>=0.4.27              # File type detection
+
+# 🔍 DEBUGGING - Debugging
+# ================================================
+pdb++>=0.10.3                     # Enhanced debugger
+ipdb>=0.13.13                     # IPython debugger
+pudb>=2023.1                      # Full-screen debugger
+hunter>=3.6.1                     # Tracing
+
+# 📊 CACHING - Keshlash
+# ================================================
+redis>=5.0.1                      # Redis client
+memcached>=1.6.2                  # Memcached client
+diskcache>=5.6.3                  # Disk caching
+cachetools>=5.3.2                 # Cache utilities
+
+# ⚡ PERFORMANCE MONITORING - Unumdorlik monitoring
+# ================================================
+newrelic>=9.2.0                   # APM monitoring
+datadog>=0.48.0                   # Metrics & monitoring
+elastic-apm>=6.20.0               # Elastic APM
+
+# 🔐 ENVIRONMENT SPECIFIC - Muhit bo'yicha
+# ================================================
+python-decouple>=3.8              # Config management
+environs>=11.0.0                  # Environment parsing
+marshmallow>=3.20.1               # Serialization
+
+# 📱 MOBILE & NOTIFICATIONS - Mobil va bildirishnomalar
+# ================================================
+pyfcm>=1.5.4                      # Firebase Cloud Messaging
+plyer>=2.1.0                      # Platform-specific notifications
+pushbullet.py>=0.12.0             # Pushbullet notifications
+
+# 🎯 SPECIALIZED APIS - Maxsus API'lar
+# ================================================
+stripe>=7.8.0                     # Payment processing
+twilio>=8.11.0                    # SMS/Voice
+sendgrid>=6.11.0                  # Email service
+mailgun>=2.1.2                    # Email service
+
+# 🚀 PRODUCTION READY - Ishlab chiqarish uchun
+# ================================================
+supervisor>=4.2.5                 # Process management
+systemd-python>=235               # Systemd integration
+python-systemd>=235               # Systemd bindings
+
+# 🔧 CONFIGURATION - Konfiguratsiya
+# ================================================
+configparser>=6.0.0               # Config files
+toml>=0.10.2                      # TOML format
+yaml>=0.2.5                       # YAML format
+python-box>=7.1.1                 # Dict utilities
+
+# 📊 ANALYTICS - Analitika
+# ================================================
+google-analytics-reporting-api-v4>=1.1.1  # Google Analytics
+mixpanel>=4.10.0                  # Mixpanel analytics
+amplitude-python>=1.1.0           # Amplitude analytics
+
+# 🌟 EXTRAS - Qo'shimcha kutubxonalar
+# ================================================
+humanize>=4.9.0                   # Human readable numbers
+arrow>=1.3.0                      # Better datetime
+pendulum>=2.1.2                   # DateTime library
+python-slugify>=8.0.1             # URL slugs
+uuid>=1.30                        # UUID generation
+shortuuid>=1.0.11                 # Short UUIDs
+faker>=20.1.0                     # Fake data generation
+
+# 🔄 BACKUP & RECOVERY - Zaxira va qayta tiklash
+# ================================================
+duplicity>=2.2.3                  # Backup tool
+boto3>=1.34.0                     # AWS SDK
+azure-storage-blob>=12.19.0       # Azure storage
+google-cloud-storage>=2.10.0      # Google Cloud storage
+
+# 📝 DOCUMENTATION - Dokumentatsiya
+# ================================================
+sphinx>=7.2.6                     # Documentation generator
+mkdocs>=1.5.3                     # Markdown docs
+pdoc>=14.3.0                      # API documentation
+
+# 🎨 UI/UX - Foydalanuvchi interfeysi
+# ================================================
+tkinter>=8.6                      # GUI toolkit
+kivy>=2.2.0                       # Mobile/desktop GUI
+pygame>=2.5.2                     # Game development
+pillow>=10.1.0                    # Image processing
+
+# 🌐 INTERNATIONALIZATION - Xalqarolashtirish
+# ================================================
+polyglot>=16.7.4                  # Multi-language support
+textstat>=0.7.3                   # Text statistics
+langcodes>=3.3.0                  # Language codes
+
+# 🔧 SYSTEM INTEGRATION - Tizim integratsiyasi
+# ================================================
+psutil>=5.9.6                     # System utilities
+py-cpuinfo>=9.0.0                 # CPU information
+distro>=1.8.0                     # Linux distribution info
+platform>=1.0.8                   # Platform information
+
+# 💾 MEMORY MANAGEMENT - Xotira boshqaruv
+# ================================================
+pympler>=0.9                      # Memory profiling
+tracemalloc>=1.0                  # Memory tracing
+gc>=1.0                           # Garbage collection
+weakref>=1.0                      # Weak references
+
+# 🚀 OPTIMIZATION - Optimizatsiya
+# ================================================
+joblib>=1.3.2                     # Parallel processing
+multiprocessing>=2.6.2.1          # Multi-processing
+threading>=1.0                    # Threading
+concurrent.futures>=3.1.1         # Concurrent execution
+
+# 📊 FINAL NOTES - Oxirgi eslatmalar
+# ================================================
+# O'zbekcha: Barcha kutubxonalar Python 3.9+ uchun mo'ljallangan
+# Versiyalar: 2024-yil dekabr holatiga ko'ra
+# Jami kutubxonalar: 150+ ta
+# Loyiha hajmi: ~2-3 GB (barcha dependencies bilan)
+# RAM talabi: 4-8 GB (AI modellari bilan)
+# Disk maydoni: 10-15 GB (barcha ma'lumotlar bilan)
+
+# 🔧 INSTALLATION COMMAND - O'rnatish buyrug'i
+# ================================================
+# pip install -r requirements.txt
+# pip install --upgrade -r requirements.txt
+# pip install -r requirements.txt --no-cache-dir

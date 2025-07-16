@@ -1,0 +1,499 @@
+{
+  "cache_metadata": {
+    "cache_version": "1.0.0",
+    "last_updated": "2024-07-12T15:30:00Z",
+    "cache_ttl": 300,
+    "total_symbols": 8,
+    "data_sources": ["huggingface", "gemini", "reddit", "newsapi"],
+    "cache_status": "active"
+  },
+  "sentiment_data": {
+    "EURUSD": {
+      "cached_time": "2024-07-12T15:30:00Z",
+      "symbol": "EURUSD",
+      "overall_sentiment": {
+        "score": 0.65,
+        "direction": "bullish",
+        "confidence": 0.78,
+        "strength": "medium"
+      },
+      "news_sentiment": {
+        "score": 0.72,
+        "source_count": 15,
+        "positive_count": 11,
+        "negative_count": 4,
+        "neutral_count": 0,
+        "top_keywords": ["ECB", "inflation", "growth", "dovish"],
+        "sentiment_trend": "improving"
+      },
+      "social_sentiment": {
+        "reddit_buzz": {
+          "score": 0.58,
+          "post_count": 47,
+          "comment_count": 234,
+          "upvote_ratio": 0.73,
+          "trending_posts": 3
+        },
+        "twitter_sentiment": {
+          "score": 0.61,
+          "mention_count": 156,
+          "retweet_count": 89,
+          "sentiment_volume": "high"
+        }
+      },
+      "ai_analysis": {
+        "huggingface_score": 0.69,
+        "gemini_score": 0.63,
+        "claude_score": 0.67,
+        "consensus_score": 0.66,
+        "confidence_level": 0.82
+      },
+      "sentiment_sources": {
+        "news_articles": 15,
+        "reddit_posts": 47,
+        "twitter_mentions": 156,
+        "technical_analysis": 8,
+        "fundamental_data": 5
+      },
+      "market_context": {
+        "volatility": "low",
+        "volume": "normal",
+        "price_action": "consolidating",
+        "trend": "sideways"
+      }
+    },
+    "GBPUSD": {
+      "cached_time": "2024-07-12T15:29:45Z",
+      "symbol": "GBPUSD",
+      "overall_sentiment": {
+        "score": 0.42,
+        "direction": "bearish",
+        "confidence": 0.71,
+        "strength": "medium"
+      },
+      "news_sentiment": {
+        "score": 0.38,
+        "source_count": 12,
+        "positive_count": 4,
+        "negative_count": 8,
+        "neutral_count": 0,
+        "top_keywords": ["BoE", "Brexit", "uncertainty", "hawkish"],
+        "sentiment_trend": "declining"
+      },
+      "social_sentiment": {
+        "reddit_buzz": {
+          "score": 0.45,
+          "post_count": 31,
+          "comment_count": 167,
+          "upvote_ratio": 0.58,
+          "trending_posts": 1
+        },
+        "twitter_sentiment": {
+          "score": 0.43,
+          "mention_count": 98,
+          "retweet_count": 34,
+          "sentiment_volume": "medium"
+        }
+      },
+      "ai_analysis": {
+        "huggingface_score": 0.41,
+        "gemini_score": 0.44,
+        "claude_score": 0.40,
+        "consensus_score": 0.42,
+        "confidence_level": 0.75
+      },
+      "sentiment_sources": {
+        "news_articles": 12,
+        "reddit_posts": 31,
+        "twitter_mentions": 98,
+        "technical_analysis": 6,
+        "fundamental_data": 4
+      },
+      "market_context": {
+        "volatility": "medium",
+        "volume": "high",
+        "price_action": "declining",
+        "trend": "bearish"
+      }
+    },
+    "USDJPY": {
+      "cached_time": "2024-07-12T15:29:30Z",
+      "symbol": "USDJPY",
+      "overall_sentiment": {
+        "score": 0.78,
+        "direction": "bullish",
+        "confidence": 0.85,
+        "strength": "strong"
+      },
+      "news_sentiment": {
+        "score": 0.82,
+        "source_count": 18,
+        "positive_count": 15,
+        "negative_count": 3,
+        "neutral_count": 0,
+        "top_keywords": ["BoJ", "intervention", "carry", "strength"],
+        "sentiment_trend": "strengthening"
+      },
+      "social_sentiment": {
+        "reddit_buzz": {
+          "score": 0.74,
+          "post_count": 52,
+          "comment_count": 298,
+          "upvote_ratio": 0.81,
+          "trending_posts": 4
+        },
+        "twitter_sentiment": {
+          "score": 0.76,
+          "mention_count": 187,
+          "retweet_count": 143,
+          "sentiment_volume": "very_high"
+        }
+      },
+      "ai_analysis": {
+        "huggingface_score": 0.77,
+        "gemini_score": 0.79,
+        "claude_score": 0.78,
+        "consensus_score": 0.78,
+        "confidence_level": 0.89
+      },
+      "sentiment_sources": {
+        "news_articles": 18,
+        "reddit_posts": 52,
+        "twitter_mentions": 187,
+        "technical_analysis": 12,
+        "fundamental_data": 8
+      },
+      "market_context": {
+        "volatility": "high",
+        "volume": "very_high",
+        "price_action": "rallying",
+        "trend": "strong_bullish"
+      }
+    },
+    "AUDUSD": {
+      "cached_time": "2024-07-12T15:29:15Z",
+      "symbol": "AUDUSD",
+      "overall_sentiment": {
+        "score": 0.55,
+        "direction": "neutral_bullish",
+        "confidence": 0.68,
+        "strength": "weak"
+      },
+      "news_sentiment": {
+        "score": 0.59,
+        "source_count": 9,
+        "positive_count": 5,
+        "negative_count": 4,
+        "neutral_count": 0,
+        "top_keywords": ["RBA", "commodities", "China", "recovery"],
+        "sentiment_trend": "mixed"
+      },
+      "social_sentiment": {
+        "reddit_buzz": {
+          "score": 0.52,
+          "post_count": 23,
+          "comment_count": 89,
+          "upvote_ratio": 0.64,
+          "trending_posts": 1
+        },
+        "twitter_sentiment": {
+          "score": 0.54,
+          "mention_count": 67,
+          "retweet_count": 21,
+          "sentiment_volume": "low"
+        }
+      },
+      "ai_analysis": {
+        "huggingface_score": 0.56,
+        "gemini_score": 0.53,
+        "claude_score": 0.57,
+        "consensus_score": 0.55,
+        "confidence_level": 0.71
+      },
+      "sentiment_sources": {
+        "news_articles": 9,
+        "reddit_posts": 23,
+        "twitter_mentions": 67,
+        "technical_analysis": 5,
+        "fundamental_data": 3
+      },
+      "market_context": {
+        "volatility": "low",
+        "volume": "low",
+        "price_action": "ranging",
+        "trend": "sideways"
+      }
+    },
+    "USDCAD": {
+      "cached_time": "2024-07-12T15:29:00Z",
+      "symbol": "USDCAD",
+      "overall_sentiment": {
+        "score": 0.34,
+        "direction": "bearish",
+        "confidence": 0.72,
+        "strength": "medium"
+      },
+      "news_sentiment": {
+        "score": 0.31,
+        "source_count": 8,
+        "positive_count": 2,
+        "negative_count": 6,
+        "neutral_count": 0,
+        "top_keywords": ["BoC", "oil", "housing", "resilience"],
+        "sentiment_trend": "weakening"
+      },
+      "social_sentiment": {
+        "reddit_buzz": {
+          "score": 0.36,
+          "post_count": 18,
+          "comment_count": 72,
+          "upvote_ratio": 0.55,
+          "trending_posts": 0
+        },
+        "twitter_sentiment": {
+          "score": 0.35,
+          "mention_count": 43,
+          "retweet_count": 12,
+          "sentiment_volume": "very_low"
+        }
+      },
+      "ai_analysis": {
+        "huggingface_score": 0.33,
+        "gemini_score": 0.36,
+        "claude_score": 0.33,
+        "consensus_score": 0.34,
+        "confidence_level": 0.74
+      },
+      "sentiment_sources": {
+        "news_articles": 8,
+        "reddit_posts": 18,
+        "twitter_mentions": 43,
+        "technical_analysis": 4,
+        "fundamental_data": 2
+      },
+      "market_context": {
+        "volatility": "medium",
+        "volume": "medium",
+        "price_action": "declining",
+        "trend": "bearish"
+      }
+    },
+    "BTCUSD": {
+      "cached_time": "2024-07-12T15:28:45Z",
+      "symbol": "BTCUSD",
+      "overall_sentiment": {
+        "score": 0.82,
+        "direction": "bullish",
+        "confidence": 0.91,
+        "strength": "very_strong"
+      },
+      "news_sentiment": {
+        "score": 0.87,
+        "source_count": 25,
+        "positive_count": 22,
+        "negative_count": 3,
+        "neutral_count": 0,
+        "top_keywords": ["ETF", "adoption", "institutional", "bullish"],
+        "sentiment_trend": "very_positive"
+      },
+      "social_sentiment": {
+        "reddit_buzz": {
+          "score": 0.79,
+          "post_count": 89,
+          "comment_count": 567,
+          "upvote_ratio": 0.88,
+          "trending_posts": 7
+        },
+        "twitter_sentiment": {
+          "score": 0.81,
+          "mention_count": 342,
+          "retweet_count": 234,
+          "sentiment_volume": "extreme"
+        }
+      },
+      "ai_analysis": {
+        "huggingface_score": 0.83,
+        "gemini_score": 0.81,
+        "claude_score": 0.82,
+        "consensus_score": 0.82,
+        "confidence_level": 0.94
+      },
+      "sentiment_sources": {
+        "news_articles": 25,
+        "reddit_posts": 89,
+        "twitter_mentions": 342,
+        "technical_analysis": 18,
+        "fundamental_data": 12
+      },
+      "market_context": {
+        "volatility": "high",
+        "volume": "extreme",
+        "price_action": "surging",
+        "trend": "very_bullish"
+      }
+    },
+    "ETHUSD": {
+      "cached_time": "2024-07-12T15:28:30Z",
+      "symbol": "ETHUSD",
+      "overall_sentiment": {
+        "score": 0.73,
+        "direction": "bullish",
+        "confidence": 0.86,
+        "strength": "strong"
+      },
+      "news_sentiment": {
+        "score": 0.76,
+        "source_count": 21,
+        "positive_count": 16,
+        "negative_count": 5,
+        "neutral_count": 0,
+        "top_keywords": ["ETF", "staking", "upgrade", "DeFi"],
+        "sentiment_trend": "positive"
+      },
+      "social_sentiment": {
+        "reddit_buzz": {
+          "score": 0.71,
+          "post_count": 67,
+          "comment_count": 398,
+          "upvote_ratio": 0.82,
+          "trending_posts": 5
+        },
+        "twitter_sentiment": {
+          "score": 0.72,
+          "mention_count": 298,
+          "retweet_count": 187,
+          "sentiment_volume": "high"
+        }
+      },
+      "ai_analysis": {
+        "huggingface_score": 0.74,
+        "gemini_score": 0.72,
+        "claude_score": 0.73,
+        "consensus_score": 0.73,
+        "confidence_level": 0.88
+      },
+      "sentiment_sources": {
+        "news_articles": 21,
+        "reddit_posts": 67,
+        "twitter_mentions": 298,
+        "technical_analysis": 15,
+        "fundamental_data": 9
+      },
+      "market_context": {
+        "volatility": "high",
+        "volume": "high",
+        "price_action": "rising",
+        "trend": "bullish"
+      }
+    },
+    "XAUUSD": {
+      "cached_time": "2024-07-12T15:28:15Z",
+      "symbol": "XAUUSD",
+      "overall_sentiment": {
+        "score": 0.69,
+        "direction": "bullish",
+        "confidence": 0.79,
+        "strength": "medium"
+      },
+      "news_sentiment": {
+        "score": 0.74,
+        "source_count": 16,
+        "positive_count": 12,
+        "negative_count": 4,
+        "neutral_count": 0,
+        "top_keywords": ["inflation", "hedge", "uncertainty", "safe_haven"],
+        "sentiment_trend": "steady"
+      },
+      "social_sentiment": {
+        "reddit_buzz": {
+          "score": 0.65,
+          "post_count": 34,
+          "comment_count": 178,
+          "upvote_ratio": 0.76,
+          "trending_posts": 2
+        },
+        "twitter_sentiment": {
+          "score": 0.68,
+          "mention_count": 124,
+          "retweet_count": 67,
+          "sentiment_volume": "medium"
+        }
+      },
+      "ai_analysis": {
+        "huggingface_score": 0.70,
+        "gemini_score": 0.68,
+        "claude_score": 0.69,
+        "consensus_score": 0.69,
+        "confidence_level": 0.81
+      },
+      "sentiment_sources": {
+        "news_articles": 16,
+        "reddit_posts": 34,
+        "twitter_mentions": 124,
+        "technical_analysis": 10,
+        "fundamental_data": 6
+      },
+      "market_context": {
+        "volatility": "medium",
+        "volume": "medium",
+        "price_action": "consolidating",
+        "trend": "bullish"
+      }
+    }
+  },
+  "aggregated_sentiment": {
+    "forex_pairs": {
+      "overall_sentiment": 0.56,
+      "bullish_pairs": 3,
+      "bearish_pairs": 2,
+      "neutral_pairs": 0,
+      "market_mood": "mixed_bullish"
+    },
+    "crypto_pairs": {
+      "overall_sentiment": 0.78,
+      "bullish_pairs": 2,
+      "bearish_pairs": 0,
+      "neutral_pairs": 0,
+      "market_mood": "very_bullish"
+    },
+    "commodities": {
+      "overall_sentiment": 0.69,
+      "bullish_pairs": 1,
+      "bearish_pairs": 0,
+      "neutral_pairs": 0,
+      "market_mood": "bullish"
+    }
+  },
+  "sentiment_alerts": {
+    "extreme_bullish": ["BTCUSD"],
+    "extreme_bearish": [],
+    "sentiment_reversals": ["GBPUSD"],
+    "high_confidence": ["BTCUSD", "ETHUSD", "USDJPY"],
+    "low_confidence": ["AUDUSD"],
+    "trending_symbols": ["BTCUSD", "USDJPY", "ETHUSD"]
+  },
+  "data_quality": {
+    "total_sources": 486,
+    "active_sources": 478,
+    "failed_sources": 8,
+    "data_freshness": "excellent",
+    "coverage_percentage": 98.4,
+    "reliability_score": 0.92
+  },
+  "performance_metrics": {
+    "cache_hit_rate": 0.87,
+    "average_response_time": 0.234,
+    "memory_usage": "45.2MB",
+    "cpu_usage": "12.3%",
+    "last_cleanup": "2024-07-12T14:30:00Z"
+  },
+  "o'zbekcha_tavsiflar": {
+    "sentiment_score": "Sentiment balli: -1 (juda salbiy) dan +1 (juda ijobiy) gacha",
+    "confidence": "Ishonch darajasi: 0 (past) dan 1 (yuqori) gacha",
+    "direction": "Yo'nalish: bullish (ko'tarilish), bearish (tushish), neutral (neytral)",
+    "strength": "Kuch: weak (zaif), medium (o'rta), strong (kuchli), very_strong (juda kuchli)",
+    "trend": "Trend: sideways (yon), bullish (ko'tarilish), bearish (tushish)",
+    "volume": "Hajm: low (past), medium (o'rta), high (yuqori), extreme (juda yuqori)",
+    "cache_status": "Kesh holati: active (faol), updating (yangilanmoqda), expired (muddati o'tgan)"
+  }
+}

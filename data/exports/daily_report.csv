@@ -1,0 +1,99 @@
+# AI OrderFlow & Signal Bot - Kunlik Hisobot
+# Daily Report CSV - Export Template
+# Fayl: data/exports/daily_report.csv
+# Yaratilgan: 2024-12-XX
+# Maqsad: Kunlik performance hisoboti
+
+# CSV Headers - O'zbekcha
+sana,simbol,signal_soni,savdo_soni,foyda_zarar,g'alaba_foizi,maksimal_pasayish,eng_yaxshi_savdo,eng_yomon_savdo,jami_pips,risk_foizi,ishonch_darajasi,strategiya_nomi,akkaunt_balansi,kunlik_return,komentarlar
+
+# Sample Data - Namuna ma'lumotlar
+2024-12-01,EURUSD,5,3,+125.50,66.67,-2.1,+85.20,-15.30,35.2,1.5,92,AI_Sentiment_Flow,10000.00,1.26,"Yaxshi sentiment, kuchli signal"
+2024-12-01,GBPUSD,3,2,+45.80,50.00,-1.8,+65.40,-19.60,28.5,1.2,88,OrderFlow_Strategy,10125.50,0.45,"O'rtacha performance"
+2024-12-01,USDJPY,2,1,-35.20,0.00,-3.5,0.00,-35.20,-15.8,2.0,75,Hybrid_AI,10171.30,-0.35,"Zarar, strategiya qayta ko'rilsin"
+2024-12-01,AUDUSD,4,3,+95.40,100.00,0.0,+42.10,+18.50,42.3,1.8,95,Market_Flow,10136.10,0.94,"Barcha signallar muvaffaqiyatli"
+2024-12-01,USDCAD,1,1,+28.90,100.00,0.0,+28.90,+28.90,12.5,1.0,91,News_Sentiment,10231.50,0.28,"Yangilik asosida signal"
+
+2024-12-02,EURUSD,6,4,+185.70,75.00,-1.2,+95.30,-25.40,48.6,1.6,89,AI_Sentiment_Flow,10260.40,1.81,"Kuchli trending market"
+2024-12-02,GBPUSD,2,2,+35.60,50.00,-2.4,+58.20,-22.60,18.9,1.4,82,OrderFlow_Strategy,10446.10,0.34,"Mixed signals"
+2024-12-02,USDJPY,3,2,+68.40,50.00,-1.6,+85.70,-17.30,28.7,1.7,86,Hybrid_AI,10481.70,0.65,"Recovery trading"
+2024-12-02,AUDUSD,2,1,+45.20,100.00,0.0,+45.20,+45.20,18.4,1.5,93,Market_Flow,10550.10,0.43,"Kuchli support level"
+2024-12-02,USDCAD,1,0,0.00,0.00,0.0,0.00,0.00,0.0,0.0,65,News_Sentiment,10595.30,0.00,"Signal bekor qilindi"
+
+2024-12-03,EURUSD,4,3,+92.30,66.67,-1.8,+58.90,-12.40,38.2,1.3,87,AI_Sentiment_Flow,10595.30,0.87,"Barqaror performance"
+2024-12-03,GBPUSD,3,2,+78.50,100.00,0.0,+42.30,+36.20,35.4,1.1,94,OrderFlow_Strategy,10687.60,0.74,"Excellent execution"
+2024-12-03,USDJPY,5,3,+145.80,100.00,0.0,+68.20,+32.40,52.3,1.9,96,Hybrid_AI,10766.10,1.35,"Perfect trading day"
+2024-12-03,AUDUSD,2,1,-18.60,0.00,-1.7,0.00,-18.60,-8.2,1.2,78,Market_Flow,10911.90,-0.17,"False breakout"
+2024-12-03,USDCAD,3,2,+56.40,50.00,-0.9,+68.90,-12.50,24.8,1.4,88,News_Sentiment,10893.30,0.52,"BOC decision impact"
+
+2024-12-04,EURUSD,3,2,+48.70,50.00,-2.1,+72.80,-24.10,26.5,1.6,85,AI_Sentiment_Flow,10949.70,0.44,"Volatil market"
+2024-12-04,GBPUSD,4,3,+125.90,66.67,-1.5,+85.40,-18.30,48.7,1.3,90,OrderFlow_Strategy,10998.40,1.14,"Strong GBP momentum"
+2024-12-04,USDJPY,2,1,+38.20,100.00,0.0,+38.20,+38.20,16.8,1.1,92,Hybrid_AI,11124.30,0.34,"Clean breakout"
+2024-12-04,AUDUSD,1,1,+22.40,100.00,0.0,+22.40,+22.40,9.6,1.0,89,Market_Flow,11162.50,0.20,"RBA hawkish tone"
+2024-12-04,USDCAD,2,1,-15.80,0.00,-1.4,0.00,-15.80,-7.2,1.2,73,News_Sentiment,11184.90,-0.14,"Oil price impact"
+
+2024-12-05,EURUSD,7,5,+245.60,80.00,-0.8,+95.70,-8.20,68.4,1.7,93,AI_Sentiment_Flow,11169.10,2.19,"ECB dovish, EUR weak"
+2024-12-05,GBPUSD,3,2,+67.80,50.00,-1.9,+89.40,-21.60,32.1,1.5,86,OrderFlow_Strategy,11414.70,0.59,"Mixed UK data"
+2024-12-05,USDJPY,4,3,+158.30,100.00,0.0,+78.90,+42.60,54.7,1.8,97,Hybrid_AI,11482.50,1.38,"BoJ intervention fear"
+2024-12-05,AUDUSD,3,2,+84.50,100.00,0.0,+52.30,+32.20,36.8,1.4,94,Market_Flow,11640.80,0.73,"China stimulus news"
+2024-12-05,USDCAD,2,2,+45.70,100.00,0.0,+28.90,+16.80,20.3,1.2,91,News_Sentiment,11725.30,0.39,"CAD weakness"
+
+2024-12-06,EURUSD,2,1,+38.90,100.00,0.0,+38.90,+38.90,16.2,1.1,88,AI_Sentiment_Flow,11771.00,0.33,"Friday profit taking"
+2024-12-06,GBPUSD,1,1,+25.40,100.00,0.0,+25.40,+25.40,11.8,1.0,87,OrderFlow_Strategy,11809.90,0.21,"End of week signal"
+2024-12-06,USDJPY,3,2,+95.60,50.00,-1.3,+118.20,-22.60,38.9,1.6,84,Hybrid_AI,11835.30,0.81,"Profit booking"
+2024-12-06,AUDUSD,2,1,+32.80,100.00,0.0,+32.80,+32.80,14.2,1.2,89,Market_Flow,11930.90,0.28,"Weekly close strong"
+2024-12-06,USDCAD,1,0,0.00,0.00,0.0,0.00,0.00,0.0,0.0,70,News_Sentiment,11963.70,0.00,"Hafta oxiri signal yo'q"
+
+# Haftalik Xulosa - Weekly Summary
+# 2024-12-01 dan 2024-12-06 gacha
+# Jami signallar: 168 ta
+# Jami savdolar: 105 ta
+# Umumiy foyda: +1963.70 USD
+# G'alaba foizi: 71.43%
+# Maksimal pasayish: -3.5%
+# Eng yaxshi savdo: +118.20 USD
+# Eng yomon savdo: -35.20 USD
+# Jami pips: 847.3 pips
+# O'rtacha risk: 1.35%
+# O'rtacha ishonch: 87.2%
+
+# Strategiya bo'yicha Performance:
+# AI_Sentiment_Flow: 27 signal, 18 savdo, +736.70 USD, 72.2% win rate
+# OrderFlow_Strategy: 16 signal, 12 savdo, +378.00 USD, 66.7% win rate
+# Hybrid_AI: 19 signal, 12 savdo, +505.10 USD, 75.0% win rate
+# Market_Flow: 14 signal, 9 savdo, +261.30 USD, 88.9% win rate
+# News_Sentiment: 12 signal, 6 savdo, +115.00 USD, 66.7% win rate
+
+# Simbol bo'yicha Performance:
+# EURUSD: 27 signal, 18 savdo, +736.70 USD, 72.2% win rate
+# GBPUSD: 16 signal, 12 savdo, +378.00 USD, 66.7% win rate
+# USDJPY: 19 signal, 12 savdo, +505.10 USD, 75.0% win rate
+# AUDUSD: 14 signal, 9 savdo, +261.30 USD, 88.9% win rate
+# USDCAD: 12 signal, 6 savdo, +115.00 USD, 66.7% win rate
+
+# Risk Metrics:
+# Sharpe Ratio: 2.34
+# Maximum Drawdown: 3.5%
+# Recovery Factor: 56.1
+# Profit Factor: 3.21
+# Average Trade: +18.70 USD
+# Largest Win: +118.20 USD
+# Largest Loss: -35.20 USD
+# Win/Loss Ratio: 2.45
+
+# Komentarlar va Tavsiyalar:
+# - AI_Sentiment_Flow eng yaxshi performance ko'rsatdi
+# - USDJPY eng volatil, lekin foydali
+# - News_Sentiment strategiyasi optimization kerak
+# - Risk management yaxshi ishlayapti
+# - Haftalik maqsad +2000 USD ga yetildi
+# - Keyingi hafta trending market kutilmoqda
+
+# Export ma'lumotlari:
+# Fayl formati: CSV
+# Charset: UTF-8
+# Separator: Comma (,)
+# Decimal: Point (.)
+# Date format: YYYY-MM-DD
+# Time zone: UTC+5 (Tashkent)
+# Generated: Avtomatik har kuni 23:59

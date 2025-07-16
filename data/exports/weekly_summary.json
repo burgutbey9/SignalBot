@@ -1,0 +1,384 @@
+{
+  "_schema_version": "1.0",
+  "_description": "Haftalik savdo hisoboti - AI OrderFlow Signal Bot",
+  "_created_by": "AI OrderFlow Signal Bot",
+  "_uzbek_description": "Haftalik savdo natijalari va tahlil",
+  
+  "report_metadata": {
+    "hafta_boshi": "2024-01-01T00:00:00Z",
+    "hafta_oxiri": "2024-01-07T23:59:59Z",
+    "hafta_raqami": 1,
+    "yil": 2024,
+    "hisobot_yaratilgan_vaqt": "2024-01-08T06:00:00Z",
+    "hisobot_versiyasi": "1.0",
+    "mata_valyuta": "USD",
+    "vaqt_zonasi": "Asia/Tashkent"
+  },
+  
+  "asosiy_natijalar": {
+    "jami_savdolar": 47,
+    "muvaffaqiyatli_savdolar": 29,
+    "yutqazgan_savdolar": 18,
+    "yutish_foizi": 61.7,
+    "jami_foyda_zarar": 1247.83,
+    "jami_foyda_pipsda": 847,
+    "o_rtacha_foyda_per_savdo": 26.55,
+    "eng_katta_foyda": 156.42,
+    "eng_katta_zarar": -89.76,
+    "haftalik_daromad_foizi": 2.48,
+    "maksimal_pasayish": -4.23,
+    "maksimal_pasayish_foizi": -1.85
+  },
+  
+  "risk_metrikalari": {
+    "sharpe_ratio": 1.47,
+    "sortino_ratio": 2.13,
+    "calmar_ratio": 1.34,
+    "var_95_foiz": -234.56,
+    "expected_shortfall": -298.71,
+    "maximum_drawdown_duration": "2_kun_14_soat",
+    "recovery_factor": 0.89,
+    "profit_factor": 1.63,
+    "risk_adjusted_return": 2.34,
+    "kelly_criterion": 0.18
+  },
+  
+  "kunlik_natijalar": {
+    "dushanba": {
+      "sana": "2024-01-01",
+      "savdolar_soni": 8,
+      "foyda_zarar": 187.43,
+      "yutish_foizi": 62.5,
+      "maksimal_pasayish": -2.14,
+      "eng_yaxshi_savdo": 45.67,
+      "eng_yomon_savdo": -23.45,
+      "savdo_hajmi": 2.4,
+      "pips_jami": 124
+    },
+    "seshanba": {
+      "sana": "2024-01-02",
+      "savdolar_soni": 6,
+      "foyda_zarar": 98.76,
+      "yutish_foizi": 66.7,
+      "maksimal_pasayish": -1.23,
+      "eng_yaxshi_savdo": 67.89,
+      "eng_yomon_savdo": -12.34,
+      "savdo_hajmi": 1.8,
+      "pips_jami": 89
+    },
+    "chorshanba": {
+      "sana": "2024-01-03",
+      "savdolar_soni": 9,
+      "foyda_zarar": 234.12,
+      "yutish_foizi": 77.8,
+      "maksimal_pasayish": -0.87,
+      "eng_yaxshi_savdo": 89.45,
+      "eng_yomon_savdo": -15.67,
+      "savdo_hajmi": 2.7,
+      "pips_jami": 167
+    },
+    "payshanba": {
+      "sana": "2024-01-04",
+      "savdolar_soni": 5,
+      "foyda_zarar": -45.23,
+      "yutish_foizi": 40.0,
+      "maksimal_pasayish": -4.23,
+      "eng_yaxshi_savdo": 34.56,
+      "eng_yomon_savdo": -89.76,
+      "savdo_hajmi": 1.5,
+      "pips_jami": -78
+    },
+    "juma": {
+      "sana": "2024-01-05",
+      "savdolar_soni": 7,
+      "foyda_zarar": 156.87,
+      "yutish_foizi": 71.4,
+      "maksimal_pasayish": -1.45,
+      "eng_yaxshi_savdo": 156.42,
+      "eng_yomon_savdo": -23.45,
+      "savdo_hajmi": 2.1,
+      "pips_jami": 134
+    },
+    "shanba": {
+      "sana": "2024-01-06",
+      "savdolar_soni": 8,
+      "foyda_zarar": 298.45,
+      "yutish_foizi": 75.0,
+      "maksimal_pasayish": -0.95,
+      "eng_yaxshi_savdo": 87.65,
+      "eng_yomon_savdo": -18.76,
+      "savdo_hajmi": 2.4,
+      "pips_jami": 189
+    },
+    "yakshanba": {
+      "sana": "2024-01-07",
+      "savdolar_soni": 4,
+      "foyda_zarar": 317.43,
+      "yutish_foizi": 100.0,
+      "maksimal_pasayish": 0.0,
+      "eng_yaxshi_savdo": 98.76,
+      "eng_yomon_savdo": 0.0,
+      "savdo_hajmi": 1.2,
+      "pips_jami": 222
+    }
+  },
+  
+  "eng_yaxshi_kun": {
+    "sana": "2024-01-07",
+    "sabab": "Barcha savdolar muvaffaqiyatli",
+    "foyda": 317.43,
+    "yutish_foizi": 100.0,
+    "savdolar_soni": 4,
+    "asosiy_juftlik": "EURUSD"
+  },
+  
+  "eng_yomon_kun": {
+    "sana": "2024-01-04",
+    "sabab": "Katta zarar GBPUSD da",
+    "zarar": -45.23,
+    "yutish_foizi": 40.0,
+    "savdolar_soni": 5,
+    "asosiy_juftlik": "GBPUSD"
+  },
+  
+  "strategiya_tahlili": {
+    "ai_sentiment_strategiya": {
+      "savdolar_soni": 18,
+      "foyda_zarar": 567.89,
+      "yutish_foizi": 72.2,
+      "o_rtacha_foyda": 31.55,
+      "sharpe_ratio": 1.87,
+      "performance_rank": 1
+    },
+    "order_flow_strategiya": {
+      "savdolar_soni": 16,
+      "foyda_zarar": 445.32,
+      "yutish_foizi": 62.5,
+      "o_rtacha_foyda": 27.83,
+      "sharpe_ratio": 1.34,
+      "performance_rank": 2
+    },
+    "kombinatsiya_strategiya": {
+      "savdolar_soni": 13,
+      "foyda_zarar": 234.62,
+      "yutish_foizi": 53.8,
+      "o_rtacha_foyda": 18.05,
+      "sharpe_ratio": 1.12,
+      "performance_rank": 3
+    }
+  },
+  
+  "juftlik_bo_yicha_tahlil": {
+    "EURUSD": {
+      "savdolar_soni": 12,
+      "foyda_zarar": 387.45,
+      "yutish_foizi": 75.0,
+      "o_rtacha_spread": 1.2,
+      "volatillik": 0.0078,
+      "trend_yo_nalishi": "bullish",
+      "kuch_darajasi": 8.5
+    },
+    "GBPUSD": {
+      "savdolar_soni": 10,
+      "foyda_zarar": 198.76,
+      "yutish_foizi": 60.0,
+      "o_rtacha_spread": 1.8,
+      "volatillik": 0.0124,
+      "trend_yo_nalishi": "bearish",
+      "kuch_darajasi": 6.8
+    },
+    "USDJPY": {
+      "savdolar_soni": 9,
+      "foyda_zarar": 234.12,
+      "yutish_foizi": 66.7,
+      "o_rtacha_spread": 1.1,
+      "volatillik": 0.0089,
+      "trend_yo_nalishi": "sideways",
+      "kuch_darajasi": 7.2
+    },
+    "AUDUSD": {
+      "savdolar_soni": 8,
+      "foyda_zarar": 167.89,
+      "yutish_foizi": 62.5,
+      "o_rtacha_spread": 1.5,
+      "volatillik": 0.0098,
+      "trend_yo_nalishi": "bullish",
+      "kuch_darajasi": 7.8
+    },
+    "USDCAD": {
+      "savdolar_soni": 8,
+      "foyda_zarar": 259.61,
+      "yutish_foizi": 50.0,
+      "o_rtacha_spread": 1.9,
+      "volatillik": 0.0076,
+      "trend_yo_nalishi": "bearish",
+      "kuch_darajasi": 6.5
+    }
+  },
+  
+  "vaqt_bo_yicha_tahlil": {
+    "london_sessiya": {
+      "vaqt_oralig_i": "08:00-17:00",
+      "savdolar_soni": 19,
+      "foyda_zarar": 567.43,
+      "yutish_foizi": 68.4,
+      "o_rtacha_volatillik": 0.0095,
+      "eng_yaxshi_soat": "10:00-11:00"
+    },
+    "new_york_sessiya": {
+      "vaqt_oralig_i": "13:00-22:00",
+      "savdolar_soni": 21,
+      "foyda_zarar": 445.87,
+      "yutish_foizi": 57.1,
+      "o_rtacha_volatillik": 0.0087,
+      "eng_yaxshi_soat": "14:00-15:00"
+    },
+    "asiya_sessiya": {
+      "vaqt_oralig_i": "00:00-09:00",
+      "savdolar_soni": 7,
+      "foyda_zarar": 234.53,
+      "yutish_foizi": 57.1,
+      "o_rtacha_volatillik": 0.0056,
+      "eng_yaxshi_soat": "02:00-03:00"
+    }
+  },
+  
+  "signal_sifati": {
+    "yuqori_ishonchli_signallar": {
+      "confidence_85_100": {
+        "savdolar_soni": 15,
+        "yutish_foizi": 80.0,
+        "o_rtacha_foyda": 45.67
+      }
+    },
+    "o_rtacha_ishonchli_signallar": {
+      "confidence_65_84": {
+        "savdolar_soni": 22,
+        "yutish_foizi": 59.1,
+        "o_rtacha_foyda": 18.34
+      }
+    },
+    "past_ishonchli_signallar": {
+      "confidence_50_64": {
+        "savdolar_soni": 10,
+        "yutish_foizi": 40.0,
+        "o_rtacha_foyda": 8.92
+      }
+    }
+  },
+  
+  "risk_boshqaruvi": {
+    "maksimal_risk_per_savdo": 0.02,
+    "o_rtacha_risk_per_savdo": 0.015,
+    "jami_risk_exposure": 0.18,
+    "position_sizing_method": "kelly_criterion",
+    "stop_loss_statistics": {
+      "o_rtacha_stop_loss": 25.4,
+      "stop_loss_hit_rate": 0.38,
+      "o_rtacha_stop_loss_pips": 18.7
+    },
+    "take_profit_statistics": {
+      "o_rtacha_take_profit": 45.8,
+      "take_profit_hit_rate": 0.61,
+      "o_rtacha_take_profit_pips": 34.2
+    }
+  },
+  
+  "texnik_ko_rsatkichlar": {
+    "api_performance": {
+      "oneinch_api_uptime": 98.5,
+      "alchemy_api_uptime": 99.2,
+      "huggingface_api_uptime": 97.8,
+      "telegram_api_uptime": 99.9,
+      "o_rtacha_response_time": 0.45
+    },
+    "fallback_activations": {
+      "oneinch_to_thegraph": 3,
+      "huggingface_to_gemini": 7,
+      "newsapi_to_reddit": 2,
+      "jami_fallback_count": 12
+    },
+    "bot_performance": {
+      "signal_generation_speed": 0.23,
+      "trade_execution_speed": 0.15,
+      "data_processing_speed": 0.67,
+      "memory_usage_mb": 245.7,
+      "cpu_usage_percent": 15.4
+    }
+  },
+  
+  "market_sharoitlari": {
+    "volatillik_index": 6.8,
+    "market_sentiment": "neyтral",
+    "asosiy_yangiliklar": [
+      "Fed faiz stavkasi o'zgarishi",
+      "ECB pul-kredit siyosati",
+      "NFP ma'lumotlari",
+      "Inflation ma'lumotlari"
+    ],
+    "ekonomik_kalendar_ta_siri": {
+      "yuqori_ta_sir": 8,
+      "o_rtacha_ta_sir": 12,
+      "past_ta_sir": 15
+    }
+  },
+  
+  "keyingi_hafta_prognozi": {
+    "kutilayotgan_volatillik": 7.2,
+    "potentsial_imkoniyatlar": [
+      "EURUSD bullish breakout",
+      "GBPUSD range trading",
+      "USDJPY trend davomi"
+    ],
+    "risk_faktori": [
+      "Geopolitik voqealar",
+      "Markaziy bank e'lonlari",
+      "Makroiqtisodiy ma'lumotlar"
+    ],
+    "strategiya_tavsiyalari": [
+      "Trend following strategiyani kuchaytirish",
+      "Range trading dan foydalanish",
+      "Risk management ni qattiqlashtirish"
+    ]
+  },
+  
+  "foydalanuvchi_faoliyati": {
+    "qo_lda_tasdiqlangan_signallar": 28,
+    "avtomatik_bajarilgan_signallar": 19,
+    "bekor_qilingan_signallar": 5,
+    "o_rtacha_javob_vaqti": "45_sekund",
+    "telegram_faoliyat": {
+      "yuborilgan_signallar": 47,
+      "qabul_qilingan_javoblar": 42,
+      "javob_foizi": 89.4
+    }
+  },
+  
+  "xulosa_va_tavsiyalar": {
+    "haftalik_xulosa": "Muvaffaqiyatli hafta. Yutish foizi yaxshi, foyda musbat.",
+    "asosiy_yutuqlar": [
+      "Yuqori yutish foizi (61.7%)",
+      "Barqaror foyda olish",
+      "Yaxshi risk boshqaruvi",
+      "API barqarorligi"
+    ],
+    "yaxshilash_joylari": [
+      "Payshanba kuni zarar kamayтирish",
+      "Past ishonchli signallar sifatini oshirish",
+      "Stop loss strategiyasini optimallashtirish"
+    ],
+    "keyingi_hafta_rejasi": [
+      "Strategiya parametrlarini sozlash",
+      "Yangi juftliklar qo'shish",
+      "Risk management ni yangilash",
+      "Performance monitoring ni yaxshilash"
+    ]
+  },
+  
+  "hisobot_oxiri": {
+    "keyingi_hisobot_sanasi": "2024-01-15T06:00:00Z",
+    "hisobot_formati": "JSON",
+    "arxiv_joyi": "data/exports/archive/",
+    "qo_shimcha_ma_lumot": "Batafsil ma'lumot uchun daily_report.csv va monthly_stats.xlsx ga qarang"
+  }
+}

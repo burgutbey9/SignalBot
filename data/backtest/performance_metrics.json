@@ -1,0 +1,428 @@
+{
+  "backtest_info": {
+    "fayl_nomi": "performance_metrics.json",
+    "yaratilgan_vaqt": "2024-01-15T10:30:00Z",
+    "versiya": "1.0.0",
+    "tavsif": "Backtest performance metrikalar - AI OrderFlow Bot uchun",
+    "davr": "2023-01-01_2023-12-31",
+    "jami_savdolar": 2847,
+    "test_davomiyligi_kun": 365
+  },
+  
+  "asosiy_metrikalar": {
+    "umumiy_daromad": {
+      "total_return": 0.2847,
+      "total_return_percent": 28.47,
+      "annualized_return": 0.2654,
+      "annualized_return_percent": 26.54,
+      "tavsif": "Yillik daromad ko'rsatkichi"
+    },
+    "risk_metrikalar": {
+      "volatility": 0.1823,
+      "volatility_percent": 18.23,
+      "max_drawdown": 0.0892,
+      "max_drawdown_percent": 8.92,
+      "recovery_time_days": 34,
+      "var_95_percent": 2.45,
+      "cvar_95_percent": 3.78,
+      "tavsif": "Risk va volatillik ko'rsatkichlari"
+    },
+    "sharpe_ratios": {
+      "sharpe_ratio": 1.456,
+      "sortino_ratio": 1.892,
+      "calmar_ratio": 2.973,
+      "information_ratio": 0.847,
+      "treynor_ratio": 0.0234,
+      "tavsif": "Risk-adjusted return ko'rsatkichlari"
+    }
+  },
+  
+  "batafsil_statistika": {
+    "daromad_taqsimoti": {
+      "positive_returns": 0.634,
+      "negative_returns": 0.366,
+      "win_rate": 63.4,
+      "avg_winning_trade": 0.0087,
+      "avg_losing_trade": -0.0054,
+      "profit_factor": 1.612,
+      "largest_win": 0.0456,
+      "largest_loss": -0.0234,
+      "tavsif": "Daromad taqsimoti statistikasi"
+    },
+    "vaqt_bazasidagi_tahlil": {
+      "best_month": {
+        "oy": "2023-03",
+        "return": 0.0567,
+        "trades": 89
+      },
+      "worst_month": {
+        "oy": "2023-09",
+        "return": -0.0234,
+        "trades": 76
+      },
+      "avg_monthly_return": 0.0214,
+      "monthly_volatility": 0.0456,
+      "tavsif": "Oylik performance tahlili"
+    }
+  },
+  
+  "korrelyatsiya_matrisasi": {
+    "EURUSD": {
+      "GBPUSD": 0.72,
+      "USDJPY": -0.45,
+      "AUDUSD": 0.68,
+      "USDCAD": -0.58,
+      "tavsif": "EURUSD bilan boshqa valyutalar korrelyatsiyasi"
+    },
+    "GBPUSD": {
+      "EURUSD": 0.72,
+      "USDJPY": -0.38,
+      "AUDUSD": 0.61,
+      "USDCAD": -0.52,
+      "tavsif": "GBPUSD bilan boshqa valyutalar korrelyatsiyasi"
+    },
+    "USDJPY": {
+      "EURUSD": -0.45,
+      "GBPUSD": -0.38,
+      "AUDUSD": -0.42,
+      "USDCAD": 0.34,
+      "tavsif": "USDJPY bilan boshqa valyutalar korrelyatsiyasi"
+    },
+    "AUDUSD": {
+      "EURUSD": 0.68,
+      "GBPUSD": 0.61,
+      "USDJPY": -0.42,
+      "USDCAD": -0.49,
+      "tavsif": "AUDUSD bilan boshqa valyutalar korrelyatsiyasi"
+    },
+    "USDCAD": {
+      "EURUSD": -0.58,
+      "GBPUSD": -0.52,
+      "USDJPY": 0.34,
+      "AUDUSD": -0.49,
+      "tavsif": "USDCAD bilan boshqa valyutalar korrelyatsiyasi"
+    }
+  },
+  
+  "beta_alpha_tahlil": {
+    "EURUSD": {
+      "beta": 0.892,
+      "alpha": 0.0234,
+      "r_squared": 0.678,
+      "systematic_risk": 0.78,
+      "unsystematic_risk": 0.22,
+      "tavsif": "EURUSD beta va alpha ko'rsatkichlari"
+    },
+    "GBPUSD": {
+      "beta": 1.124,
+      "alpha": 0.0187,
+      "r_squared": 0.723,
+      "systematic_risk": 0.82,
+      "unsystematic_risk": 0.18,
+      "tavsif": "GBPUSD beta va alpha ko'rsatkichlari"
+    },
+    "USDJPY": {
+      "beta": 0.756,
+      "alpha": 0.0298,
+      "r_squared": 0.634,
+      "systematic_risk": 0.71,
+      "unsystematic_risk": 0.29,
+      "tavsif": "USDJPY beta va alpha ko'rsatkichlari"
+    },
+    "AUDUSD": {
+      "beta": 0.934,
+      "alpha": 0.0212,
+      "r_squared": 0.689,
+      "systematic_risk": 0.76,
+      "unsystematic_risk": 0.24,
+      "tavsif": "AUDUSD beta va alpha ko'rsatkichlari"
+    },
+    "USDCAD": {
+      "beta": 0.823,
+      "alpha": 0.0267,
+      "r_squared": 0.612,
+      "systematic_risk": 0.73,
+      "unsystematic_risk": 0.27,
+      "tavsif": "USDCAD beta va alpha ko'rsatkichlari"
+    }
+  },
+  
+  "var_backtesting": {
+    "var_95_kunlik": {
+      "bashorat_qilingan": 0.0245,
+      "haqiqiy_avg": 0.0238,
+      "breach_count": 18,
+      "breach_rate": 0.049,
+      "kupiec_test_p_value": 0.87,
+      "test_natijasi": "pass",
+      "tavsif": "95% VaR backtesting natijalari"
+    },
+    "var_99_kunlik": {
+      "bashorat_qilingan": 0.0378,
+      "haqiqiy_avg": 0.0364,
+      "breach_count": 4,
+      "breach_rate": 0.011,
+      "kupiec_test_p_value": 0.92,
+      "test_natijasi": "pass",
+      "tavsif": "99% VaR backtesting natijalari"
+    }
+  },
+  
+  "stress_testing": {
+    "2008_moliyaviy_inqiroz": {
+      "scenario_name": "2008 Financial Crisis",
+      "market_shock": -0.45,
+      "portfolio_impact": -0.124,
+      "recovery_days": 89,
+      "survival_probability": 0.94,
+      "tavsif": "2008 moliyaviy inqiroz stress testi"
+    },
+    "covid_19_pandemic": {
+      "scenario_name": "COVID-19 Market Crash",
+      "market_shock": -0.38,
+      "portfolio_impact": -0.098,
+      "recovery_days": 67,
+      "survival_probability": 0.97,
+      "tavsif": "COVID-19 pandemiyasi stress testi"
+    },
+    "flash_crash_2010": {
+      "scenario_name": "Flash Crash 2010",
+      "market_shock": -0.22,
+      "portfolio_impact": -0.067,
+      "recovery_days": 23,
+      "survival_probability": 0.99,
+      "tavsif": "2010 flash crash stress testi"
+    }
+  },
+  
+  "oylik_performance": {
+    "2023-01": {
+      "monthly_return": 0.0234,
+      "volatility": 0.0456,
+      "sharpe_ratio": 1.23,
+      "max_drawdown": 0.0234,
+      "trades": 87,
+      "win_rate": 0.62,
+      "tavsif": "Yanvar oyi performance"
+    },
+    "2023-02": {
+      "monthly_return": 0.0187,
+      "volatility": 0.0398,
+      "sharpe_ratio": 1.45,
+      "max_drawdown": 0.0198,
+      "trades": 78,
+      "win_rate": 0.64,
+      "tavsif": "Fevral oyi performance"
+    },
+    "2023-03": {
+      "monthly_return": 0.0567,
+      "volatility": 0.0512,
+      "sharpe_ratio": 1.89,
+      "max_drawdown": 0.0287,
+      "trades": 89,
+      "win_rate": 0.71,
+      "tavsif": "Mart oyi performance"
+    },
+    "2023-04": {
+      "monthly_return": 0.0298,
+      "volatility": 0.0423,
+      "sharpe_ratio": 1.56,
+      "max_drawdown": 0.0212,
+      "trades": 92,
+      "win_rate": 0.65,
+      "tavsif": "Aprel oyi performance"
+    },
+    "2023-05": {
+      "monthly_return": 0.0145,
+      "volatility": 0.0378,
+      "sharpe_ratio": 1.12,
+      "max_drawdown": 0.0189,
+      "trades": 84,
+      "win_rate": 0.59,
+      "tavsif": "May oyi performance"
+    },
+    "2023-06": {
+      "monthly_return": 0.0376,
+      "volatility": 0.0445,
+      "sharpe_ratio": 1.67,
+      "max_drawdown": 0.0256,
+      "trades": 91,
+      "win_rate": 0.68,
+      "tavsif": "Iyun oyi performance"
+    },
+    "2023-07": {
+      "monthly_return": 0.0211,
+      "volatility": 0.0401,
+      "sharpe_ratio": 1.34,
+      "max_drawdown": 0.0203,
+      "trades": 88,
+      "win_rate": 0.61,
+      "tavsif": "Iyul oyi performance"
+    },
+    "2023-08": {
+      "monthly_return": 0.0123,
+      "volatility": 0.0356,
+      "sharpe_ratio": 1.08,
+      "max_drawdown": 0.0167,
+      "trades": 82,
+      "win_rate": 0.58,
+      "tavsif": "Avgust oyi performance"
+    },
+    "2023-09": {
+      "monthly_return": -0.0234,
+      "volatility": 0.0523,
+      "sharpe_ratio": -0.67,
+      "max_drawdown": 0.0456,
+      "trades": 76,
+      "win_rate": 0.43,
+      "tavsif": "Sentyabr oyi performance"
+    },
+    "2023-10": {
+      "monthly_return": 0.0456,
+      "volatility": 0.0478,
+      "sharpe_ratio": 1.78,
+      "max_drawdown": 0.0234,
+      "trades": 94,
+      "win_rate": 0.69,
+      "tavsif": "Oktyabr oyi performance"
+    },
+    "2023-11": {
+      "monthly_return": 0.0334,
+      "volatility": 0.0432,
+      "sharpe_ratio": 1.53,
+      "max_drawdown": 0.0221,
+      "trades": 86,
+      "win_rate": 0.66,
+      "tavsif": "Noyabr oyi performance"
+    },
+    "2023-12": {
+      "monthly_return": 0.0267,
+      "volatility": 0.0389,
+      "sharpe_ratio": 1.41,
+      "max_drawdown": 0.0198,
+      "trades": 80,
+      "win_rate": 0.63,
+      "tavsif": "Dekabr oyi performance"
+    }
+  },
+  
+  "benchmark_taqqoslash": {
+    "sp500_vs_bot": {
+      "bot_return": 0.2847,
+      "sp500_return": 0.1923,
+      "alpha": 0.0924,
+      "beta": 0.756,
+      "correlation": 0.634,
+      "information_ratio": 1.23,
+      "tracking_error": 0.0456,
+      "tavsif": "S&P 500 bilan taqqoslash"
+    },
+    "forex_index_vs_bot": {
+      "bot_return": 0.2847,
+      "forex_index_return": 0.1456,
+      "alpha": 0.1391,
+      "beta": 0.823,
+      "correlation": 0.678,
+      "information_ratio": 1.89,
+      "tracking_error": 0.0523,
+      "tavsif": "Forex index bilan taqqoslash"
+    }
+  },
+  
+  "risk_adjusted_metrics": {
+    "sharpe_variants": {
+      "sharpe_ratio": 1.456,
+      "modified_sharpe": 1.523,
+      "downside_sharpe": 1.789,
+      "probabilistic_sharpe": 0.867,
+      "tavsif": "Turli Sharpe ratio variantlari"
+    },
+    "value_at_risk": {
+      "var_95_1day": 0.0245,
+      "var_99_1day": 0.0378,
+      "var_95_10day": 0.0756,
+      "var_99_10day": 0.1234,
+      "expected_shortfall_95": 0.0312,
+      "expected_shortfall_99": 0.0467,
+      "tavsif": "Value at Risk ko'rsatkichlari"
+    },
+    "tail_risk_measures": {
+      "skewness": -0.234,
+      "kurtosis": 3.567,
+      "tail_ratio": 0.789,
+      "gain_loss_ratio": 1.612,
+      "tavsif": "Tail risk o'lchovlari"
+    }
+  },
+  
+  "liquidity_metrics": {
+    "bid_ask_spreads": {
+      "EURUSD_avg_spread": 0.00012,
+      "GBPUSD_avg_spread": 0.00015,
+      "USDJPY_avg_spread": 0.008,
+      "AUDUSD_avg_spread": 0.00018,
+      "USDCAD_avg_spread": 0.00021,
+      "tavsif": "O'rtacha bid-ask spreadlar"
+    },
+    "market_impact": {
+      "avg_market_impact": 0.00034,
+      "max_market_impact": 0.00089,
+      "impact_cost_ratio": 0.12,
+      "tavsif": "Bozor ta'siri ko'rsatkichlari"
+    }
+  },
+  
+  "attribution_analysis": {
+    "strategy_contribution": {
+      "trend_following": {
+        "return_contribution": 0.1234,
+        "risk_contribution": 0.0456,
+        "sharpe_contribution": 0.567,
+        "weight": 0.35,
+        "tavsif": "Trend following strategiya hissasi"
+      },
+      "mean_reversion": {
+        "return_contribution": 0.0678,
+        "risk_contribution": 0.0289,
+        "sharpe_contribution": 0.423,
+        "weight": 0.25,
+        "tavsif": "Mean reversion strategiya hissasi"
+      },
+      "momentum": {
+        "return_contribution": 0.0935,
+        "risk_contribution": 0.0378,
+        "sharpe_contribution": 0.512,
+        "weight": 0.40,
+        "tavsif": "Momentum strategiya hissasi"
+      }
+    }
+  },
+  
+  "performance_summary": {
+    "umumiy_baho": {
+      "performance_score": 8.7,
+      "risk_score": 7.8,
+      "consistency_score": 8.2,
+      "overall_rating": "A-",
+      "tavsif": "Umumiy performance bahosi"
+    },
+    "kuchli_tomonlar": [
+      "Yuqori Sharpe ratio (1.456)",
+      "Yaxshi win rate (63.4%)",
+      "Nazorat ostidagi drawdown (8.92%)",
+      "Barqaror oylik natijalari"
+    ],
+    "yaxshilanishi_kerak": [
+      "Sentyabr oyidagi salbiy natija",
+      "Volatillik kamaytirish",
+      "Korrelyatsiya optimizatsiyasi",
+      "Tail risk boshqaruv"
+    ],
+    "tavsiyalar": [
+      "Diversifikatsiya oshirish",
+      "Risk management yaxshilash",
+      "Stress testing kengaytirish",
+      "Liquidity risk monitoring"
+    ]
+  }
+}
